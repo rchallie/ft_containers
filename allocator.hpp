@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/22 00:00:03 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/22 00:14:32 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ namespace ft
         ** Reference to constant element
         ** Give a constant reference to the element actually manage by the allocator
         */
-        typedef const T&    cont_reference; 
+        typedef const T&    const_reference; 
  
         /*
         ** Quantities of elements
@@ -87,8 +87,9 @@ namespace ft
             ** from another allocator object need to have the same
             ** value and allow exchange and free of the two allocator objects
             */
-            allocator();
-            allocator(const allocator&);
+            allocator() throw();;
+            allocator(const allocator&) throw();
+            template <class U> allocator(const allocator<U>&);
             
             /*
             ** Destructor
@@ -97,9 +98,9 @@ namespace ft
             virtual ~allocator();
 
             /*
-            ** Copy
+            ** Assignement
             */
-            allocator<T> &operator=(const allocator& op) { return *this; }
+            template <class U> allocator& operator=(const allocator<U>&) throw();
 
             // Functions
 
