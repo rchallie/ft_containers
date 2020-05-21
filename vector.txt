@@ -1,0 +1,37 @@
+VECTEUR:
+- Conteneur de séquence représentant un tableaux dont la taille peut varier
+- Utilise des emplacement de stockage. On peut utiliser des "offset" sur des pointeurs
+  régulier pour y accèder au élément (T_vecteur *ptr = Main_T_vecteur + x)
+- La taille peut changer dynamiquement, le stockage est gérer par le conteneur (Vecteur)
+
+- Le tableaux du vecteur devra peut-etre etre réalloué pour augmenter la taille quand un
+  nouvel élément est rajouté
+    Marche à suivre : 
+        > Allouer un nouveau tableux
+        > Déplacer tous les éléments
+        > Ajouté le nouvel élément
+  Ca demande beaucoup de temps de traitement, donc les vecteurs ne réallouent pas à chaque fois
+
+- Pour faire ça, on vas allouer du stockage supplémentaire pour s'adapter à une possible croissance
+  La capacité du conteneur peut être supérieure au stockage nécessaire (sa taille)
+  On peut réallouer un peut de comme on veut, on neréalouera que si la taille du vecteur avec le
+  nouvel élément dépace la capacité du conteneur, mais dans le tout les cas, les réallocations
+  ne doivent se produire qu'à des intervalles de taille logarithmiquement croissant 
+    (Apparté logarithmiquement croissant):
+        (https://fr.wikipedia.org/wiki/Logarithme)
+        (https://en.wikipedia.org/wiki/Logarithmic_growth)
+        > Si on est à 1024 de capacité et que l'on est en base 2 :
+            log2(1024) = 10 car 2^10 = 1024
+        > En soit on à :
+            log b (N) = P car b^P = x
+            Où "b" est la base numérique, "N" un entier naturel (ici la capacité du conteneur) et "P" (strictement positif) la puissance à laquelle il faut élevé "b" pour obternir "N".
+        Donc en soit si l'on veux faire évoluer quelque chose de manière logarithmiquement croissant on fera évoluer
+        "P" pour obternir un nombre "N".
+        On dit donc que ça évolue de manière logarithmiquement croissant car c'est "P" le résultat du logarithme de "N" en base "b" (trouvé par : log b (N) )
+        qui sera la puissance qui fera évoluer la capacité de notre conteneur.
+
+- La conséquence est qu'un vecteur utilisera plus de mémoire en contrepartie de performance et d'une gestion éfficace de la capacité
+
+- Le conteneur Vecteur est très utile pour la facilité à laquelle on peut accéder aux éléments qu'il contient. Et est
+  très éfficace quand il s'agit d'ajouté/supprimé des éléments à la fin de la liste, mais pas forcement quand il faut insérer ou
+  supprimé des éléments entre son début et sa fin. 
