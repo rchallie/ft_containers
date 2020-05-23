@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/23 12:24:33 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/23 18:29:33 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,17 +130,12 @@ namespace ft
         typedef typename allocator_type::size_type          size_type;
         
         private:
-            size_type       _count;
-            size_type       _capacity;
+            allocator_type  _alloc;
+            pointer         _start;
+            pointer         _end;
+            pointer         _end_capacity;
 
         public:
-
-            /* TO Test */
-            vector()
-            :
-                _count(0),
-                _capacity(0)
-            {};
 
             /*
             ** @brief Default.
@@ -152,11 +147,13 @@ namespace ft
             ** If in template this second argument is not defined,
             ** std::allocator will be used.
             */
-            /** ________________________ WIP ________________________*/
             explicit vector (const allocator_type& alloc = allocator_type())
-            {
-                
-            }
+            :
+                _alloc(alloc),
+                _start(nullptr),
+                _end(nullptr),
+                _end_capacity(nullptr)
+            {}
 
             /*
             ** Fill
@@ -191,7 +188,7 @@ namespace ft
             ** @return The number of elements in the container.
             ** (An unsigned integral type)
             */
-            size_type   size(void) const { return (_count); }
+            size_type   size(void) const { return (this->_end - this->_start); }
 
             /*
             ** @brief Returns the maximum potential number of elements the the
@@ -222,7 +219,7 @@ namespace ft
             ** The number elements it can hold.
             ** (An unsigned integral type)
             */
-            size_type   capacity (void) const { return (_capacity); }
+            size_type   capacity (void) const { return (this->_end_capacity - this->_start); }
 
             /*
             ** @brief Returns whether the container is empty.
