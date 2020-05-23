@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/23 12:15:54 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/23 12:24:33 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,10 +143,20 @@ namespace ft
             {};
 
             /*
-            ** Default
+            ** @brief Default.
+            ** Constructs an empty container, with no elements.
+            ** 
+            ** @param Allocator object.
+            ** The container keeps and uses an internal copy of this
+            ** allocator. It's an alias to the second template parameter.
+            ** If in template this second argument is not defined,
+            ** std::allocator will be used.
             */
             /** ________________________ WIP ________________________*/
-            // explicit vector (const allocator_type& alloc = allocator_type());
+            explicit vector (const allocator_type& alloc = allocator_type())
+            {
+                
+            }
 
             /*
             ** Fill
