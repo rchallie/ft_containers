@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/23 00:04:52 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/23 12:15:54 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,18 +129,102 @@ namespace ft
         */
         typedef typename allocator_type::size_type          size_type;
         
+        private:
+            size_type       _count;
+            size_type       _capacity;
+
         public:
-            // Coplien
-            vector() {};
-            vector(const vector&);
+
+            /* TO Test */
+            vector()
+            :
+                _count(0),
+                _capacity(0)
+            {};
+
+            /*
+            ** Default
+            */
+            /** ________________________ WIP ________________________*/
+            // explicit vector (const allocator_type& alloc = allocator_type());
+
+            /*
+            ** Fill
+            */
+            /** ________________________ WIP ________________________*/
+            // explicit vector (size_type n, const value_type& val = value_type(),
+            //                  const allocator_type& alloc = allocator_type());
+
+            /*
+            ** Range
+            */
+            /** ________________________ WIP ________________________*/
+            // template <class InputIterator>
+            //         vector (InputIterator first, InputIterator last,
+            //                 const allocator_type& alloc = allocator_type());
+            
+            /*
+            ** Copy
+            */
+            /** ________________________ WIP ________________________*/
+            vector (const vector&);
+            
             virtual ~vector() {};
             vector &operator=(const vector& op);
 
-            // Getter - Setter
+            // Capacity:
+            
+            /*
+            ** @brief Returns the number of elements stored.
+            ** It's not necessarily equal to the storage capacity
+            **
+            ** @return The number of elements in the container.
+            ** (An unsigned integral type)
+            */
+            size_type   size(void) const { return (_count); }
 
-            // Additionnal
+            /*
+            ** @brief Returns the maximum potential number of elements the the
+            ** vector can hold.
+            ** This size is due to known system or library limitations.
+            ** The vector is not garanteed to have this size, it can
+            ** fail a allocation for exemple.
+            ** 
+            ** Documentation :
+            ** https://www.viva64.com/en/a/0050/
+            **
+            ** @return The maximum potential number of elements the
+            ** container can hold.
+            ** (An unsigned integral type)
+            */
+            size_type   max_size(void) const { return (SIZE_MAX / sizeof(T)); }
 
-            // Exceptions
+            /** ________________________ WIP ________________________*/
+            void        resize (size_type n, value_type val = value_type());
+
+            /*
+            ** @brief Return size of allocated storage capacity.
+            ** Not necessarily equal to vector size. Can be equal
+            ** or greater, because extra space allocated by the container
+            ** forecast allocation system.
+            **
+            ** @return The size of currntly allocated storage capacity.
+            ** The number elements it can hold.
+            ** (An unsigned integral type)
+            */
+            size_type   capacity (void) const { return (_capacity); }
+
+            /*
+            ** @brief Returns whether the container is empty.
+            ** Does not modify container in any way.
+            **
+            ** @return true if the container size is 0, false otherwise.
+            */
+            bool        empty (void) const { return (size() == 0 ? true : false); }
+
+            /** ________________________ WIP ________________________*/
+            void        reserve (size_type n) { (void)n; }
+            
     };
 }
 // =============================================================================
