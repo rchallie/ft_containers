@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/23 22:53:14 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/24 20:16:12 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,8 @@
 
 // LIBS ========================================================================
 # include <memory>
-// =============================================================================
-
-// PROTOTYPES ==================================================================
+# include <tgmath.h>
+# include "Utils.hpp"
 // =============================================================================
 
 // CLASS DEFINITIONS ===========================================================
@@ -146,6 +145,48 @@ namespace ft
             pointer         _start;
             pointer         _end;
             pointer         _end_capacity;
+
+            /*
+            ** @brief Extend the actual capacity of the container
+            ** logarithmically of one with a base of two. 
+            ** Move (copy) values from the container inside and
+            ** deallocate previous allocation.
+            */
+            void extend(void)
+            {
+                pointer prev_start = _start;
+                pointer prev_end = _end;
+                size_type prev_size = this->size();
+                size_type prev_capacity = this->capacity();
+                double expos = log2(this->capacity());
+                int next_capacity = pow(2, ((expos == -INFINITY) ? 0 : expos + 1));
+                
+                _start = _alloc.allocate( next_capacity );
+                _end_capacity = _start + next_capacity;
+                _end = _start;
+                while (prev_start != prev_end)
+                {
+                    *_end = *prev_start;
+                    _end++;
+                    prev_start++;
+                }
+                _alloc.deallocate(prev_start - prev_size, prev_capacity);
+            }
+
+            /*
+            ** @brief Check if "n" is in the range of the container.
+            ** If "n" is out of range that's throw an std::out_of_range
+            ** exception.
+            **
+            ** @param n The position of the element to check.
+            */
+            void checkRange(const size_type& n) const
+            {
+                if (n >= this->size())
+                    throw (std::out_of_range("vector::checkRange: n (which is "
+                            + std::to_string(n) + ") >= this->size() (which is "
+                            + std::to_string(this->size()) + ")"));
+            }
 
         public:
 
@@ -278,14 +319,38 @@ namespace ft
 
             // Element access:
 
-            /** ________________________ WIP ________________________*/
-            reference operator[] (size_type n);
+            /*
+            ** @brief Returns a reference to the element at
+            ** position n in the vector container.
+            ** If "n" is out of range that's causes undefined behavior.
+            **
+            ** @param n Position of the element in the container.
+            ** @return The specified element at "n" position.
+            */
+            reference operator[] (size_type n)
+            {
+                return (*(_start + n));
+            }
 
             /** ________________________ WIP ________________________*/
             const_reference operator[] (size_type n) const;
             
-            /** ________________________ WIP ________________________*/
-            reference at (size_type n);
+            /*
+            ** @brief Returns a reference to the element at
+            ** position n in the vector container.
+            ** The main difference between this function and the
+            ** operator "[]" is that the function throw an
+            ** std::out_of_range exception if "n" is out of the range of
+            ** the container.
+            **
+            ** @param n Position of the element in the container.
+            ** @return The specified element at "n" position.
+            */
+            reference at (size_type n)
+            {
+                checkRange(n);
+                return ((*this)[n]);
+            }
 
             /** ________________________ WIP ________________________*/
             const_reference at (size_type n) const;
@@ -305,7 +370,13 @@ namespace ft
             // Modifiers:
 
             /*
-            ** Range
+            ** Range (1)
+            ** @brief Assigns new contents to the vector, replacing its current
+            ** contents, add modifying its size accordingly.
+            ** New elements are contruct from each of the elements in tht
+            ** range, between first and last, in the same order.
+            **
+            ** @param
             */
             /** ________________________ WIP ________________________*/
             template <class InputIterator>
@@ -317,8 +388,19 @@ namespace ft
             /** ________________________ WIP ________________________*/
             void assign (size_type n, const value_type& val);
 
-            /** ________________________ WIP ________________________*/
-            void push_back (const value_type& val);
+            /*
+            ** @brief Add new element at the end of the vector.
+            ** The content of "val" is copied (moved) to the new element.
+            ** 
+            ** @param val The value to be copied.
+            */
+            void push_back (const value_type& val)
+            {                
+                if (_end == _end_capacity)
+                    this->extend();
+                *_end = val;
+                _end++;
+            }
 
             /** ________________________ WIP ________________________*/
             void pop_back();
@@ -381,9 +463,6 @@ namespace ft
     template <class T, class Alloc>
         bool operator>= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
 }
-// =============================================================================
-
-// FUNCTIONS SUP PROTOYPES =====================================================
 // =============================================================================
 
 #endif
