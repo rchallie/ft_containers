@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/24 20:16:12 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/24 20:44:18 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,8 +332,18 @@ namespace ft
                 return (*(_start + n));
             }
 
-            /** ________________________ WIP ________________________*/
-            const_reference operator[] (size_type n) const;
+            /*
+            ** @brief Returns a const reference to the element at
+            ** position n in the vector container.
+            ** If "n" is out of range that's causes undefined behavior.
+            **
+            ** @param n Position of the element in the container.
+            ** @return The specified element at "n" position.
+            */
+            const_reference operator[] (size_type n) const
+            {
+                return (*(_start + n));
+            }
             
             /*
             ** @brief Returns a reference to the element at
@@ -352,8 +362,22 @@ namespace ft
                 return ((*this)[n]);
             }
 
-            /** ________________________ WIP ________________________*/
-            const_reference at (size_type n) const;
+            /*
+            ** @brief Returns a const reference to the element at
+            ** position n in the vector container.
+            ** The main difference between this function and the
+            ** operator "[]" is that the function throw an
+            ** std::out_of_range exception if "n" is out of the range of
+            ** the container.
+            **
+            ** @param n Position of the element in the container.
+            ** @return The specified element at "n" position.
+            */
+            const_reference at (size_type n) const
+            {
+                checkRange(n);
+                return ((*this)[n]);
+            }
 
             /** ________________________ WIP ________________________*/
             reference front ();
