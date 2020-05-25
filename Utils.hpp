@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/25 12:07:08 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/25 18:43:28 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,46 @@ namespace ft
     ** Take a look :
     ** http://www.cplusplus.com/reference/iterator/RandomAccessIterator/
     */
-    struct random_access_iterator_tag { };
+    class random_access_iterator_tag { };
 
     /*
-    ** 
+    ** @brief Empty class to identify the category of an
+    ** "bidirectional iterator". Bidirectional can be used to access
+    ** the sequence of elements in a range in both directions.
+    ** Take a look :
+    ** http://www.cplusplus.com/reference/iterator/BidirectionalIterator/
     */
-    struct bidirectional_iterator_tag { };
-    struct forward_iterator_tag { };
-    struct input_iterator_tag { };
-    struct output_iterator_tag { };
+    class bidirectional_iterator_tag { };
+
+    /*
+    ** @brief Empty class to identify the category of an
+    ** "forward iterator". Forward iterator can be used to 
+    ** access the sequence of elements in a range in the direction
+    ** that goes (begin to end).
+    ** Take a look :
+    ** http://www.cplusplus.com/reference/iterator/ForwardIterator/
+    */
+    class forward_iterator_tag { };
+
+    /*
+    ** @brief Empty class to identify the category of an
+    ** "input iterator". Input iterator can be used in sequential
+    ** input operations, values are read only once and the iterator
+    ** is icremented.
+    ** Take a look :
+    ** http://www.cplusplus.com/reference/iterator/InputIterator/
+    */
+    class input_iterator_tag { };
+
+    /*
+    ** @brief Empty class to identify the category of an
+    ** "output iterator". Output iterator can be used in sequential
+    ** output operations, values pointed by the iterator is written
+    ** a value only once and the iterator is incremented.
+    ** Take a look :
+    ** http://www.cplusplus.com/reference/iterator/OutputIterator/
+    */
+    class output_iterator_tag { };
 
     /*
     ** Stockage of iterator informations
