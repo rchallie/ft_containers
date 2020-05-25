@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/24 20:44:18 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/25 14:21:37 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 // LIBS ========================================================================
 # include <memory>
+# include <algorithm>
 # include <tgmath.h>
 # include "Utils.hpp"
 // =============================================================================
@@ -190,6 +191,19 @@ namespace ft
 
         public:
 
+            class iterator
+            {
+                /*
+                ** Default Constructor:
+                */
+                /** ________________________ WIP ________________________*/
+                iterator()
+
+                /*
+                ** 
+                */
+            };
+
             // Constructors:
             
             /*
@@ -315,7 +329,7 @@ namespace ft
             bool        empty (void) const { return (size() == 0 ? true : false); }
 
             /** ________________________ WIP ________________________*/
-            void        reserve (size_type n) { (void)n; }
+            void        reserve (size_type n);
 
             // Element access:
 
@@ -384,7 +398,7 @@ namespace ft
 
             /** ________________________ WIP ________________________*/
             const_reference front () const;
-
+            
             /** ________________________ WIP ________________________*/
             reference back ();
 
@@ -463,29 +477,60 @@ namespace ft
 
     // Non-member function overloads
     
-    /** ________________________ WIP ________________________*/
+    /*
+    ** @brief Compare vector container to know
+    ** if they are equal. Start to check if the size
+    ** is different.
+    **
+    ** @param lhs Vector to compare with "rhs".
+    ** @param rhs Vector for comparison of "lhs".
+    ** @return true if they are equal, false otherwise.
+    */
     template <class T, class Alloc>
-        bool operator== (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
+        bool operator== (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+        {
+            if (lhs.size() != rhs.size())
+                return (false);
+            return (&lhs == &rhs);
+        }
 
+    /*
+    ** Need implement lexicographical_compare
+    */ 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator!= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
+        bool operator!= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        {
+            return (!(lhs == rhs));
+        }
     
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator<  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
+        bool operator<  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        {
+            return (&lhs < &rhs);
+        }
 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator<= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
+        bool operator<= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        {
+            return (!(lhs < rhs));
+        }
 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator>  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
+        bool operator>  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        {
+            return (rhs < lhs);
+        }
 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator>= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs);
+        bool operator>= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        {
+            return (!(lhs < rhs));
+        }
 }
 // =============================================================================
 
