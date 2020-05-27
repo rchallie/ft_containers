@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/25 14:21:37 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/27 21:09:09 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,178 +32,117 @@ namespace ft
 {
     template < class T, class Alloc = std::allocator<T> >
     class vector
-    {
-        /*
-        ** The first template parameter (T)
-        */
-        typedef T                                           value_type;
-
-        /*
-        ** The second template parameter (Alloc)
-        */
-        typedef Alloc                                       allocator_type;
-
-        /*
-        ** allocator_type::reference
-        ** A type provides a reference to an element stored in
-        ** a vector.
-        ** For the default allocator is a reference to value_type
-        ** (value_type&)
-        */
-        typedef typename allocator_type::reference          reference;
-
-        /*
-        ** allocator_type::const_reference
-        ** Type that give a reference to a const element stored.
-        ** Usefull to read and perform const operator.
-        ** A type const_reference can't be used to modify the value
-        ** of an element.
-        ** For the default allocator is a const reference to value_type
-        ** (const value_type&)
-        */
-        typedef typename allocator_type::const_reference    const_reference;
-        
-        /*
-        ** allocator_type::pointer
-        ** Type that give a pointer to an element stored.
-        ** A type pointer can be used to modify the value of
-        ** an element.
-        ** For the default allocator is a pointer to value_type
-        ** (value_type*)
-        */
-        typedef typename allocator_type::pointer            pointer;
-
-        /*
-        ** allocator_type::const_pointer
-        ** Type that give a const pointer to an element stored.
-        ** Can't be used to modify the value of an element.
-        ** An iterator is prefered to access to an element.
-        ** For the default allocator is a const pointer to value_type
-        ** (const value_type*)
-        */
-        typedef typename allocator_type::const_pointer      const_pointer;
-
-        /*
-        ** A random access iterator to value_type
-        ** That can read or modify any element stored.
-        ** Convertible to const_iterator;
-        */
-        /** ________________________ WIP ________________________
-         * (Need to be replace by own reverse iterator)
-        */
-        typedef std::random_access_iterator_tag             iterator;
-
-        /*
-        ** A random access iterator to const value_type
-        ** That can read element stored.
-        */
-        /** ________________________ WIP ________________________
-         * (Need to be replace by own reverse iterator)
-        */
-        typedef std::random_access_iterator_tag             const_iterator;
-        
-        /*
-        ** ft::reverse_iterator<iterator>
-        ** That can read or modify any element in a reversed vector.
-        ** Used to iterate through the vector in reverse.
-        */
-        /** ________________________ WIP ________________________
-         * (Need to be replace by own reverse iterator)
-        */
-        typedef std::reverse_iterator<iterator>             reverse_iterator;
-
-        /*
-        ** ft::reverse_iterator<const_iterator>
-        ** That can read any element in a reversed the vector.
-        ** Can't be used to modify, used to iterate through the
-        ** the vector in reverse.
-        */
-        /** ________________________ WIP ________________________
-         * (Need to be replace by own reverse iterator)
-        */
-       typedef std::reverse_iterator<const_iterator>       const_reverse_iterator;
-
-        /*
-        ** A signed integral type:
-        ** Usually the same as ptrdiff_t.
-        ** Can represent the difference between iterators to the
-        ** element actually stored.
-        ** Can be described as te number of element between two pointers.
-        ** (Pointer to an element contains its address).
-        */
-        typedef typename allocator_type::difference_type    difference_type; 
-
-        /*
-        ** An unsigned integral type that can represent any
-        ** non-negative value of difference_type
-        ** Usually the same as size_t.
-        ** Is the number of elements in a vector.
-        */
-        typedef typename allocator_type::size_type          size_type;
-        
-        private:
-            allocator_type  _alloc;
-            pointer         _start;
-            pointer         _end;
-            pointer         _end_capacity;
-
-            /*
-            ** @brief Extend the actual capacity of the container
-            ** logarithmically of one with a base of two. 
-            ** Move (copy) values from the container inside and
-            ** deallocate previous allocation.
-            */
-            void extend(void)
-            {
-                pointer prev_start = _start;
-                pointer prev_end = _end;
-                size_type prev_size = this->size();
-                size_type prev_capacity = this->capacity();
-                double expos = log2(this->capacity());
-                int next_capacity = pow(2, ((expos == -INFINITY) ? 0 : expos + 1));
-                
-                _start = _alloc.allocate( next_capacity );
-                _end_capacity = _start + next_capacity;
-                _end = _start;
-                while (prev_start != prev_end)
-                {
-                    *_end = *prev_start;
-                    _end++;
-                    prev_start++;
-                }
-                _alloc.deallocate(prev_start - prev_size, prev_capacity);
-            }
-
-            /*
-            ** @brief Check if "n" is in the range of the container.
-            ** If "n" is out of range that's throw an std::out_of_range
-            ** exception.
-            **
-            ** @param n The position of the element to check.
-            */
-            void checkRange(const size_type& n) const
-            {
-                if (n >= this->size())
-                    throw (std::out_of_range("vector::checkRange: n (which is "
-                            + std::to_string(n) + ") >= this->size() (which is "
-                            + std::to_string(this->size()) + ")"));
-            }
-
+    {   
         public:
 
-            class iterator
-            {
-                /*
-                ** Default Constructor:
-                */
-                /** ________________________ WIP ________________________*/
-                iterator()
+            /*
+            ** The first template parameter (T)
+            */
+            typedef T                                           value_type;
 
-                /*
-                ** 
-                */
-            };
+            /*
+            ** The second template parameter (Alloc)
+            */
+            typedef Alloc                                       allocator_type;
 
+            /*
+            ** allocator_type::reference
+            ** A type provides a reference to an element stored in
+            ** a vector.
+            ** For the default allocator is a reference to value_type
+            ** (value_type&)
+            */
+            typedef typename allocator_type::reference          reference;
+
+            /*
+            ** allocator_type::const_reference
+            ** Type that give a reference to a const element stored.
+            ** Usefull to read and perform const operator.
+            ** A type const_reference can't be used to modify the value
+            ** of an element.
+            ** For the default allocator is a const reference to value_type
+            ** (const value_type&)
+            */
+            typedef typename allocator_type::const_reference    const_reference;
+            
+            /*
+            ** allocator_type::pointer
+            ** Type that give a pointer to an element stored.
+            ** A type pointer can be used to modify the value of
+            ** an element.
+            ** For the default allocator is a pointer to value_type
+            ** (value_type*)
+            */
+            typedef typename allocator_type::pointer            pointer;
+
+            /*
+            ** allocator_type::const_pointer
+            ** Type that give a const pointer to an element stored.
+            ** Can't be used to modify the value of an element.
+            ** An iterator is prefered to access to an element.
+            ** For the default allocator is a const pointer to value_type
+            ** (const value_type*)
+            */
+            typedef typename allocator_type::const_pointer      const_pointer;
+
+            /*
+            ** A random access iterator to value_type
+            ** That can read or modify any element stored.
+            ** Convertible to const_iterator;
+            */
+            /** ________________________ WIP ________________________
+             * (Need to be replace by own reverse iterator)
+            */
+            typedef ft::random_access_iterator<T>               iterator;
+
+            /*
+            ** A random access iterator to const value_type
+            ** That can read element stored.
+            */
+            /** ________________________ WIP ________________________
+             * (Need to be replace by own reverse iterator)
+            */
+            typedef ft::random_access_iterator<const T>            const_iterator;
+            
+            /*
+            ** ft::reverse_iterator<iterator>
+            ** That can read or modify any element in a reversed vector.
+            ** Used to iterate through the vector in reverse.
+            */
+            /** ________________________ WIP ________________________
+             * (Need to be replace by own reverse iterator)
+            */
+            typedef std::reverse_iterator<iterator>             reverse_iterator;
+
+            /*
+            ** ft::reverse_iterator<const_iterator>
+            ** That can read any element in a reversed the vector.
+            ** Can't be used to modify, used to iterate through the
+            ** the vector in reverse.
+            */
+            /** ________________________ WIP ________________________
+             * (Need to be replace by own reverse iterator)
+            */
+            typedef std::reverse_iterator<const_iterator>       const_reverse_iterator;
+
+            /*
+            ** A signed integral type:
+            ** Usually the same as ptrdiff_t.
+            ** Can represent the difference between iterators to the
+            ** element actually stored.
+            ** Can be described as te number of element between two pointers.
+            ** (Pointer to an element contains its address).
+            */
+            typedef typename allocator_type::difference_type    difference_type; 
+
+            /*
+            ** An unsigned integral type that can represent any
+            ** non-negative value of difference_type
+            ** Usually the same as size_t.
+            ** Is the number of elements in a vector.
+            */
+            typedef typename allocator_type::size_type          size_type;
+            
             // Constructors:
             
             /*
@@ -255,7 +194,7 @@ namespace ft
             // Iterators:
 
             /** ________________________ WIP ________________________*/
-            iterator begin();
+            iterator begin() { return (_start); };
 
             /** ________________________ WIP ________________________*/
             const_iterator begin() const;
@@ -341,10 +280,7 @@ namespace ft
             ** @param n Position of the element in the container.
             ** @return The specified element at "n" position.
             */
-            reference operator[] (size_type n)
-            {
-                return (*(_start + n));
-            }
+            reference operator[] (size_type n) { return (*(_start + n)); }
 
             /*
             ** @brief Returns a const reference to the element at
@@ -354,10 +290,7 @@ namespace ft
             ** @param n Position of the element in the container.
             ** @return The specified element at "n" position.
             */
-            const_reference operator[] (size_type n) const
-            {
-                return (*(_start + n));
-            }
+            const_reference operator[] (size_type n) const { return (*(_start + n)); }
             
             /*
             ** @brief Returns a reference to the element at
@@ -473,6 +406,54 @@ namespace ft
 
             /** ________________________ WIP ________________________*/
             void clear();
+
+        private:
+            allocator_type  _alloc;
+            pointer         _start;
+            pointer         _end;
+            pointer         _end_capacity;
+
+            /*
+            ** @brief Extend the actual capacity of the container
+            ** logarithmically of one with a base of two. 
+            ** Move (copy) values from the container inside and
+            ** deallocate previous allocation.
+            */
+            void extend(void)
+            {
+                pointer prev_start = _start;
+                pointer prev_end = _end;
+                size_type prev_size = this->size();
+                size_type prev_capacity = this->capacity();
+                double expos = log2(this->capacity());
+                int next_capacity = pow(2, ((expos == -INFINITY) ? 0 : expos + 1));
+                
+                _start = _alloc.allocate( next_capacity );
+                _end_capacity = _start + next_capacity;
+                _end = _start;
+                while (prev_start != prev_end)
+                {
+                    *_end = *prev_start;
+                    _end++;
+                    prev_start++;
+                }
+                _alloc.deallocate(prev_start - prev_size, prev_capacity);
+            }
+
+            /*
+            ** @brief Check if "n" is in the range of the container.
+            ** If "n" is out of range that's throw an std::out_of_range
+            ** exception.
+            **
+            ** @param n The position of the element to check.
+            */
+            void checkRange(const size_type& n) const
+            {
+                if (n >= this->size())
+                    throw (std::out_of_range("vector::checkRange: n (which is "
+                            + std::to_string(n) + ") >= this->size() (which is "
+                            + std::to_string(this->size()) + ")"));
+            }
     };
 
     // Non-member function overloads
