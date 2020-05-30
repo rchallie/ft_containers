@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/27 21:09:09 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/30 23:04:14 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 // LIBS ========================================================================
 # include <memory>
 # include <algorithm>
+# include <cstddef>
 # include <tgmath.h>
 # include "Utils.hpp"
 // =============================================================================
@@ -165,11 +166,25 @@ namespace ft
 
             /*
             ** Fill
-            ** Use insert / assign.
             */
             /** ________________________ WIP ________________________*/
             explicit vector (size_type n, const value_type& val = value_type(),
-                             const allocator_type& alloc = allocator_type());
+                 const allocator_type& alloc = allocator_type())
+            :
+                _alloc(alloc),
+                _start(nullptr),
+                _end(nullptr),
+                _end_capacity(nullptr)
+            {
+                _start = _alloc.allocate( n );
+                _end_capacity = _start + n;
+                _end = _start;
+                while (n--)
+                {
+                    *_end = val;
+                    _end++;
+                }
+            }
 
             /*
             ** Range
@@ -186,7 +201,7 @@ namespace ft
             vector (const vector&);
             
             /** ________________________ WIP ________________________*/
-            virtual ~vector() {};
+            virtual ~vector() { _alloc.deallocate(_start, _end_capacity - _start); };
             
             /** ________________________ WIP ________________________*/
             vector &operator=(const vector& op);
@@ -197,13 +212,13 @@ namespace ft
             iterator begin() { return (_start); };
 
             /** ________________________ WIP ________________________*/
-            const_iterator begin() const;
+            const_iterator begin() const { return (_start); }
 
             /** ________________________ WIP ________________________*/
-            iterator end();
+            iterator end() { return (_end); }
 
             /** ________________________ WIP ________________________*/
-            const_iterator end() const;
+            const_iterator end() const { return (_end); };
 
             /** ________________________ WIP ________________________*/
             reverse_iterator rbegin();
@@ -451,8 +466,8 @@ namespace ft
             {
                 if (n >= this->size())
                     throw (std::out_of_range("vector::checkRange: n (which is "
-                            + std::to_string(n) + ") >= this->size() (which is "
-                            + std::to_string(this->size()) + ")"));
+                            + ft::to_string(n) + ") >= this->size() (which is "
+                            + ft::to_string(this->size()) + ")"));
             }
     };
 

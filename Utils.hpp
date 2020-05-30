@@ -6,15 +6,75 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/27 22:44:48 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/05/30 23:11:23 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
+# include <cstddef>
+# include <limits>
+# include <sstream>
+
+#  define SIZE_MAX std::numeric_limits<size_t>::max()
+
+/*
+** @brief Type of the null pointer constant.
+** Permetted implicit conversions to null pointer ,
+** similary conversions for all type of contant null pointer.
+**
+** From : (Take a look)
+** https://www.amazon.com/dp/0201924889
+*/
+static const class nullptr_t
+{
+    public:
+        /*
+        ** @brief For conversion to any type
+        ** of null non-member pointer.
+        */
+        template<class T>
+        operator T*() const { return (0); }
+
+        /*
+        ** @brief For conversion to any type of null
+        ** member pointer.
+        */
+        template<class C, class T>
+        operator T C::*() const { return (0); }
+
+    private:
+        
+        /*
+        ** @brief It's imposible to get an address of
+        ** a nullptr.
+        */
+        void operator&() const;
+
+} nullptr = {};
+
 namespace ft
 {
+    /*
+    ** @brief Transfom "n" to std::string.
+    **
+    ** @param n the object to convert. (Sure for
+    ** classic number types).
+    ** @return Converted "n".
+    ** 
+    ** Take a look:
+    ** http://www.cplusplus.com/articles/D9j2Nwbp/
+    */
+    template <typename T>
+        std::string to_string(T n)
+        {
+            /* Stream used to convert */
+            std::ostringstream ss;
+            ss << n;
+            return (ss.str());
+        }
+
     /*
     ** @brief Empty class to identify the category of an
     ** "random access iterator". This type of iterator is the
