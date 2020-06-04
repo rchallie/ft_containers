@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/30 23:11:23 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/05 00:06:54 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 # include <cstddef>
 # include <limits>
 # include <sstream>
+# include <typeinfo>
 
-#  define SIZE_MAX std::numeric_limits<size_t>::max()
+#  define U_SIZE_MAX std::numeric_limits<size_t>::max()
 
 /*
 ** @brief Type of the null pointer constant.
@@ -27,7 +28,7 @@
 ** From : (Take a look)
 ** https://www.amazon.com/dp/0201924889
 */
-static const class nullptr_t
+class nullptr_t
 {
     public:
         /*
@@ -52,7 +53,7 @@ static const class nullptr_t
         */
         void operator&() const;
 
-} nullptr = {};
+} u_nullptr = {};
 
 namespace ft
 {
@@ -74,6 +75,118 @@ namespace ft
             ss << n;
             return (ss.str());
         }
+    
+    /*
+    ** @brief The type T is enabled as member type enable_if::type
+    ** if Cond is true. Otherwise, enable_if::type is not defined.
+    ** Usefull when a particular condition is not met, in this case
+    ** the member enable_if::type will ne be defined and attempting
+    ** to compile using to should fail. (If this is use in template
+    ** of a function, for exemple, like the type is not defined the 
+    ** compiler will not compile and use the function).
+    **
+    ** @template_param Cond A compile-time constant of type bool.
+    ** @template_param T A type.
+    */
+    template<bool Cond, class T = void> struct enable_if {};
+    template<class T> struct enable_if<true, T> { typedef T type; };
+
+    /*
+    ** All the next part is an adaptation of is_integral.
+    ** "is_integral" for this project in C++98 is a structure 
+    ** that contain if the type given to it is a type from this list :
+    **  - bool
+    **  - char
+    **  - char16_t
+    **  - char32_t
+    **  - wchar_t
+    **  - signed char
+    **  - short int
+    **  - int
+    **  - long int
+    **  - long long int
+    **  - unsigned char
+    **  - unsigned short int
+    **  - unsigned int
+    **  - unsigned long int
+    **  - unsigned long long int
+    */
+
+    /*
+    ** @brief The basic struct of is_integral has
+    ** has a boolean that contain true if the type is from.
+    ** the list, otherwise false.
+    */
+    template <bool is_integral>
+        struct is_integral_res { static const bool value = is_integral; };
+
+    /*
+    ** @brief default template of the structure is_integral_type.
+    ** If the type given in argument is from the list, the structure
+    ** will be overide by nexts, in according to it type.
+    ** If the type given is argument isn't in the list, 
+    ** stocked value will be false. So it's not a integral type.
+    */
+    template <typename>
+        struct is_integral_type : public is_integral_res<false> {};
+
+    /* @brief is_integral_type for bool. "value is true".*/
+    template <>
+        struct is_integral_type<bool> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for char. "value is true".*/
+    template <>
+        struct is_integral_type<char> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for signed char. "value is true".*/
+    template <>
+        struct is_integral_type<signed char> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for short int. "value is true".*/
+    template <>
+        struct is_integral_type<short int> : public is_integral_res<true> {};
+    
+    /* @brief is_integral_type for int. "value is true".*/
+    template <>
+        struct is_integral_type<int> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for long int. "value is true".*/
+    template <>
+        struct is_integral_type<long int> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for long long int. "value is true".*/
+    template <>
+        struct is_integral_type<long long int> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for unsigned char. "value is true".*/
+    template <>
+        struct is_integral_type<unsigned char> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for unsigned short int. "value is true".*/
+    template <>
+        struct is_integral_type<unsigned short int> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for unsigned int. "value is true".*/
+    template <>
+        struct is_integral_type<unsigned int> : public is_integral_res<true> {};
+
+    /* @brief is_integral_type for unsigned long int. "value is true".*/
+    template <>
+        struct is_integral_type<unsigned long int> : public is_integral_res<true> {};
+    
+    /* @brief is_integral_type for unsigned long long int. "value is true".*/
+    template <>
+        struct is_integral_type<unsigned long long int> : public is_integral_res<true> {};
+
+    /*
+    ** @brief Give a structure who contain is the
+    ** typename given in template is integral or not,
+    ** stocked in "value".
+    */
+    template <typename T>
+        struct is_integral : public is_integral_type<T> {};
+
+    /*  End of is_integral. */
 
     /*
     ** @brief Empty class to identify the category of an
@@ -193,6 +306,21 @@ namespace ft
         typedef ft::random_access_iterator_tag  iterator_category;
     };
 
+    template<class InputIterator>
+        typename ft::iterator_traits<InputIterator>::difference_type
+            distance (InputIterator first, InputIterator last)
+        {
+            typename ft::iterator_traits<InputIterator>::difference_type rtn = 0;
+            if (typeid(typename ft::iterator_traits<InputIterator>::iterator_category).name() == typeid(random_access_iterator_tag).name())
+                return (last - first);
+            while (first != last)
+            {
+                first++;
+                rtn++;
+            }
+            return (rtn);
+        }
+
     /*
     ** @brief Base class for iterator, not really usefull, but type
     ** defined can be use for iterator_traits. An iterator permeted to
@@ -251,7 +379,7 @@ namespace ft
                 */
                 random_access_iterator(void)
                 :
-                    _elem(nullptr)
+                    _elem(u_nullptr)
                 {}
 
                 /*
@@ -494,14 +622,6 @@ namespace ft
                 ** @return the reference.
                 */
                 reference operator[](difference_type n) { return (*(operator+(n))); }
-
-                /*
-                ** @brief Give the pointer to the element
-                ** pointed by the random access iterator.
-                **
-                ** @return the pointer.
-                */
-                pointer pointed(void) { return (_elem); }
 
             private:
                 /* Element pointed by the iterator. */
