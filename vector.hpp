@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/05/30 23:04:14 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/05 22:26:00 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ namespace ft
             /** ________________________ WIP ________________________
              * (Need to be replace by own reverse iterator)
             */
-            typedef ft::random_access_iterator<T>               iterator;
+            typedef ft::random_access_iterator<value_type>               iterator;
 
             /*
             ** A random access iterator to const value_type
@@ -103,7 +103,7 @@ namespace ft
             /** ________________________ WIP ________________________
              * (Need to be replace by own reverse iterator)
             */
-            typedef ft::random_access_iterator<const T>            const_iterator;
+            typedef ft::random_access_iterator<const value_type>            const_iterator;
             
             /*
             ** ft::reverse_iterator<iterator>
@@ -134,7 +134,7 @@ namespace ft
             ** Can be described as te number of element between two pointers.
             ** (Pointer to an element contains its address).
             */
-            typedef typename allocator_type::difference_type    difference_type; 
+            typedef typename ft::random_access_iterator<T>::difference_type    difference_type; 
 
             /*
             ** An unsigned integral type that can represent any
@@ -159,46 +159,90 @@ namespace ft
             explicit vector (const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc),
-                _start(nullptr),
-                _end(nullptr),
-                _end_capacity(nullptr)
+                _start(u_nullptr),
+                _end(u_nullptr),
+                _end_capacity(u_nullptr)
             {}
 
             /*
-            ** Fill
+            ** @brief Fill.
+            ** Constructs a container with "n" elements.
+            ** Each element is a copy of val.
+            **
+            ** @param n The number of elements.
+            ** @param val The element.
+            ** @param allocator_type Allocator object.
             */
-            /** ________________________ WIP ________________________*/
             explicit vector (size_type n, const value_type& val = value_type(),
                  const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc),
-                _start(nullptr),
-                _end(nullptr),
-                _end_capacity(nullptr)
+                _start(u_nullptr),
+                _end(u_nullptr),
+                _end_capacity(u_nullptr)
             {
                 _start = _alloc.allocate( n );
                 _end_capacity = _start + n;
                 _end = _start;
                 while (n--)
                 {
-                    *_end = val;
+                    _alloc.construct(_end, val);
                     _end++;
                 }
             }
 
             /*
-            ** Range
+            ** @brief Range.
+            ** Constructs a container with as many elements as the
+            ** range [first,last), with each element constructed from
+            ** its corresponding element in that range, in the same order.
+            ** (Adapted to counter the effect of :
+            ** vector(static_cast<size_type>(first), static_cast<value_type>(last), a))
+            **
+            ** @param first An iterator is the first value in x.
+            ** @param last An iterator is the last value in x.
             */
-            /** ________________________ WIP ________________________*/
             template <class InputIterator>
                     vector (InputIterator first, InputIterator last,
-                            const allocator_type& alloc = allocator_type());
+                            const allocator_type& alloc = allocator_type(),
+                            typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+            :
+                _alloc(alloc)
+            {
+                bool is_valid;
+                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                difference_type n = ft::distance(first, last);
+                _start = _alloc.allocate( n );
+                _end_capacity = _start + n;
+                _end = _start;
+                while (n--)
+                {
+                    _alloc.construct(_end, *first);
+                    _end++;
+                }
+            }
             
             /*
             ** Copy
             */
-            /** ________________________ WIP ________________________*/
-            vector (const vector&);
+            /** ________________________ WIP ________________________
+             * Need const iterator
+            */
+            vector (const vector& x);
+            // :
+            //     _alloc(x._alloc),
+            //     _start(u_nullptr),
+            //     _end(u_nullptr),
+            //     _end_capacity(u_nullptr)
+            // {
+            //     // _start = _alloc.allocate( x.capacity() );
+            //     // _end_capacity = _start + x.capacity();
+            //     // _end = _start;
+            //     iterator x_it;
+            //     for (x_it = x.begin(); x_it >= x.begin(); x_it--)
+            //         this->push_back(*x_it);
+            // }
             
             /** ________________________ WIP ________________________*/
             virtual ~vector() { _alloc.deallocate(_start, _end_capacity - _start); };
@@ -208,17 +252,63 @@ namespace ft
 
             // Iterators:
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Return an iterator pointing on the first element
+            ** in the container. If the container is empty, the
+            ** returned iterator value shall no be dereferenced.
+            ** The iterator is of type iterator (random access iterator
+            ** on value_type reference).
+            **
+            ** @return The iterator to the first element.
+            */
             iterator begin() { return (_start); };
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Return an iterator pointing on the first element
+            ** in the container. If the container is empty, the
+            ** returned iterator value shall no be dereferenced.
+            ** The iterator is of type const_iterator (random access
+            ** iterator on const value_type reference).
+            **
+            ** @return The iterator to the first element.
+            */
             const_iterator begin() const { return (_start); }
 
-            /** ________________________ WIP ________________________*/
-            iterator end() { return (_end); }
+            /*
+            ** @brief Return an iterator pointing on the past-the-end element
+            ** in the vector container. Past-the-end is the theorical element
+            ** following the last element in the container. If the container is
+            ** empty, return the same than begin.
+            ** The iterator is of type iterator (random access iterator
+            ** on value_type reference).
+            **
+            ** @return The iterator to the past-the-end element or begin if
+            ** the container is empty.
+            */
+            iterator end()
+            {
+                if (this->empty())
+                    return (this->begin());
+                return (_end);
+            }
 
-            /** ________________________ WIP ________________________*/
-            const_iterator end() const { return (_end); };
+            /*
+            ** @brief Return an iterator pointing on the past-the-end element
+            ** in the vector container. Past-the-end is the theorical element
+            ** following the last element in the container. If the container is
+            ** empty, return the same than begin.
+            ** The iterator is of type const_iterator (random access
+            ** iterator on const value_type reference).
+            **
+            ** @return The iterator to the past-the-end element or begin if
+            ** the container is empty.
+            */
+            const_iterator end() const
+            {
+                if (this->empty())
+                    return (this->begin());
+                return (_end);
+            };
 
             /** ________________________ WIP ________________________*/
             reverse_iterator rbegin();
@@ -257,7 +347,7 @@ namespace ft
             ** container can hold.
             ** (An unsigned integral type)
             */
-            size_type   max_size(void) const { return (SIZE_MAX / sizeof(T)); }
+            size_type   max_size(void) const { return (U_SIZE_MAX / sizeof(T)); }
 
             /** ________________________ WIP ________________________*/
             void        resize (size_type n, value_type val = value_type());
@@ -341,17 +431,39 @@ namespace ft
                 return ((*this)[n]);
             }
 
-            /** ________________________ WIP ________________________*/
-            reference front ();
+            /*
+            ** @brief Return a reference to the first element
+            ** of the container. Call this on an empty container
+            ** cause undefined behavior.
+            **
+            ** @return The reference.
+            */
+            reference front () { return ((*this)[0]); }
 
-            /** ________________________ WIP ________________________*/
-            const_reference front () const;
+            /*
+            ** @brief Return a const reference to the first element
+            ** of the container. Call this on an empty container
+            ** cause undefined behavior.
+            **
+            ** @return The const reference.
+            */
+            const_reference front () const { return ((*this)[0]); }
             
             /** ________________________ WIP ________________________*/
-            reference back ();
+            reference back ()
+            {
+                if (this->size() == 0)
+                    return (this->front());
+                return ((*this)[this->size() - 1]);
+            }
 
             /** ________________________ WIP ________________________*/
-            const_reference back () const;
+            const_reference back () const
+            {
+                if (this->size() == 0)
+                    return (this->front());
+                return ((*this)[this->size() - 1]);
+            }
 
             // Modifiers:
 
@@ -384,31 +496,76 @@ namespace ft
             {                
                 if (_end == _end_capacity)
                     this->extend();
-                *_end = val;
+                _alloc.construct(_end, val);
                 _end++;
             }
 
             /** ________________________ WIP ________________________*/
-            void pop_back();
+            void pop_back()
+            {
+                _alloc.destroy(&this->back());
+                if (this->size() > 0)
+                    _end--;
+            }
 
             /*
-            ** Single element
+            ** @brief Insert an element a the position. Can ecrease de size
+            ** of the container. This action force the container to
+            ** realocate all the elements that were after "postion"
+            ** to their new positions.
+            **
+            ** @param position The position where insert.
+            ** @param val The element to insert.
+            ** @return An iterator to the new element in the container.
             */
             /** ________________________ WIP ________________________*/
-            iterator insert (iterator position, const value_type& val);
+            iterator insert (iterator position, const value_type& val)
+            {
+                int pos_advance = &(*position) - _start;
+                if (_end == _end_capacity)
+                {
+                    this->extend();
+                    position = _start + pos_advance;
+                }
+                int end_len = _end - &(*position);
+                while (end_len--)
+                {
+                    *(_end + end_len) = *(position + end_len);
+                }
+                _end++;
+                *position = val;
+                return (position);
+            }
 
             /*
-            ** Fill
+            ** @brief Insert an element a "n" amount of time
+            ** before the specified position. Can ecrease de size
+            ** of the container. This action force the container to
+            ** realocate all the elements that were after "postion"
+            ** to their new positions.
+            **
+            ** @param position The position where insert.
+            ** @param n Amout of element to insert.
+            ** @param val The element to insert.
             */
             /** ________________________ WIP ________________________*/
-            void insert (iterator position, size_type n, const value_type& val);
+            void insert (iterator position, size_type n, const value_type& val)
+            {
+                if ((int)n < 0)
+                    throw (std::length_error("ft::insert (fill)"));
+                while (n--)
+                {
+                    position = this->insert(position, val);
+                    position++;
+                }
+            }
 
             /*
             ** Range:
             */
-            /** ________________________ WIP ________________________*/
-            template <class InputIterator>
-                void insert (iterator position, InputIterator first, InputIterator last);
+            // /** ________________________ WIP ________________________*/
+            // template <class InputIterator>
+            //     void insert (iterator position, InputIterator first, InputIterator last);
 
             /** ________________________ WIP ________________________*/
             iterator erase (iterator position);
@@ -448,7 +605,7 @@ namespace ft
                 _end = _start;
                 while (prev_start != prev_end)
                 {
-                    *_end = *prev_start;
+                    _alloc.construct(_end, *prev_start);
                     _end++;
                     prev_start++;
                 }

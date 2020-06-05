@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/05 00:06:54 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/05 23:03:07 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,11 @@ namespace ft
     ** has a boolean that contain true if the type is from.
     ** the list, otherwise false.
     */
-    template <bool is_integral>
-        struct is_integral_res { static const bool value = is_integral; };
+    template <bool is_integral, typename T>
+        struct is_integral_res {
+            typedef T type;
+            static const bool value = is_integral;
+            };
 
     /*
     ** @brief default template of the structure is_integral_type.
@@ -128,55 +131,55 @@ namespace ft
     ** stocked value will be false. So it's not a integral type.
     */
     template <typename>
-        struct is_integral_type : public is_integral_res<false> {};
+        struct is_integral_type : public is_integral_res<false, bool> {};
 
     /* @brief is_integral_type for bool. "value is true".*/
     template <>
-        struct is_integral_type<bool> : public is_integral_res<true> {};
+        struct is_integral_type<bool> : public is_integral_res<true, bool> {};
 
     /* @brief is_integral_type for char. "value is true".*/
     template <>
-        struct is_integral_type<char> : public is_integral_res<true> {};
+        struct is_integral_type<char> : public is_integral_res<true, char> {};
 
     /* @brief is_integral_type for signed char. "value is true".*/
     template <>
-        struct is_integral_type<signed char> : public is_integral_res<true> {};
+        struct is_integral_type<signed char> : public is_integral_res<true, signed char> {};
 
     /* @brief is_integral_type for short int. "value is true".*/
     template <>
-        struct is_integral_type<short int> : public is_integral_res<true> {};
+        struct is_integral_type<short int> : public is_integral_res<true, short int> {};
     
     /* @brief is_integral_type for int. "value is true".*/
     template <>
-        struct is_integral_type<int> : public is_integral_res<true> {};
+        struct is_integral_type<int> : public is_integral_res<true, int> {};
 
     /* @brief is_integral_type for long int. "value is true".*/
     template <>
-        struct is_integral_type<long int> : public is_integral_res<true> {};
+        struct is_integral_type<long int> : public is_integral_res<true, long int> {};
 
     /* @brief is_integral_type for long long int. "value is true".*/
     template <>
-        struct is_integral_type<long long int> : public is_integral_res<true> {};
+        struct is_integral_type<long long int> : public is_integral_res<true, long long int> {};
 
     /* @brief is_integral_type for unsigned char. "value is true".*/
     template <>
-        struct is_integral_type<unsigned char> : public is_integral_res<true> {};
+        struct is_integral_type<unsigned char> : public is_integral_res<true, unsigned char> {};
 
     /* @brief is_integral_type for unsigned short int. "value is true".*/
     template <>
-        struct is_integral_type<unsigned short int> : public is_integral_res<true> {};
+        struct is_integral_type<unsigned short int> : public is_integral_res<true, unsigned short int> {};
 
     /* @brief is_integral_type for unsigned int. "value is true".*/
     template <>
-        struct is_integral_type<unsigned int> : public is_integral_res<true> {};
+        struct is_integral_type<unsigned int> : public is_integral_res<true, unsigned int> {};
 
     /* @brief is_integral_type for unsigned long int. "value is true".*/
     template <>
-        struct is_integral_type<unsigned long int> : public is_integral_res<true> {};
+        struct is_integral_type<unsigned long int> : public is_integral_res<true, unsigned long int> {};
     
     /* @brief is_integral_type for unsigned long long int. "value is true".*/
     template <>
-        struct is_integral_type<unsigned long long int> : public is_integral_res<true> {};
+        struct is_integral_type<unsigned long long int> : public is_integral_res<true, unsigned long long int> {};
 
     /*
     ** @brief Give a structure who contain is the
@@ -184,7 +187,7 @@ namespace ft
     ** stocked in "value".
     */
     template <typename T>
-        struct is_integral : public is_integral_type<T> {};
+        struct is_integral : public is_integral_type<T> { };
 
     /*  End of is_integral. */
 
@@ -236,6 +239,63 @@ namespace ft
     ** http://www.cplusplus.com/reference/iterator/OutputIterator/
     */
     class output_iterator_tag { };
+
+    /*
+    ** @brief Validity of an iterator from is tag.
+    ** This is the base struct for all is_..._iterator_tag.
+    ** A boolean is defined by the template and saved in
+    ** structure. Type too.
+    */
+    template <bool is_valid, typename T>
+        struct valid_iterator_tag_res { typedef T type; const static bool value = is_valid; };
+    
+    /*
+    ** @brief Basic to check if the typename given
+    ** is an input_iterator. Based on valid_iterator_tag_res.
+    ** In this if the typename is not from the possible
+    ** input iterator form, validity is set to false.
+    */
+    template <typename T>
+        struct is_input_iterator_tagged : public valid_iterator_tag_res<false, T> { };
+
+    /* Check is_input_iterator_tagged from ft::random_access_iterator_tag */
+    template <>
+        struct is_input_iterator_tagged<ft::random_access_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::random_access_iterator_tag> { };
+
+    /* Check is_input_iterator_tagged from ft::bidirectional_iterator_tag */
+    template <>
+        struct is_input_iterator_tagged<ft::bidirectional_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::bidirectional_iterator_tag> { };
+
+    /* Check is_input_iterator_tagged from ft::forward_iterator_tag */
+    template <>
+        struct is_input_iterator_tagged<ft::forward_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::forward_iterator_tag> { };
+
+    /* Check is_input_iterator_tagged from ft::input_iterator_tag */
+    template <>
+        struct is_input_iterator_tagged<ft::input_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::input_iterator_tag> { };
+
+    /*
+    ** @Brief Invalid iterator Exception.
+    ** Based on std::exception. Called when
+    ** the iterator tested does not meet demand.
+    */
+    template <typename T>
+    class InvalidIteratorException : public std::exception
+    {
+        private:
+            std::string _msg;
+        
+        public :
+            InvalidIteratorException () throw() { _msg = "Is invalid iterator tag : " + std::string(typeid(T).name()); }
+            InvalidIteratorException (const InvalidIteratorException&) throw() {}
+            InvalidIteratorException& operator= (const InvalidIteratorException&) throw() {}
+            virtual ~InvalidIteratorException() throw() {}
+            virtual const char* what() const throw() { return (_msg.c_str()); }
+    };
 
     /*
     ** @brief Iterator traits class defining properties of
@@ -306,6 +366,15 @@ namespace ft
         typedef ft::random_access_iterator_tag  iterator_category;
     };
 
+    /*
+    ** @brief Give a difference_type defined in ft::iterator_traits
+    ** that's the difference of address in memory
+    ** between last and first iterator.
+    **
+    ** @param first The first iterator.
+    ** @param last The last iterator.
+    ** @return The difference.
+    */
     template<class InputIterator>
         typename ft::iterator_traits<InputIterator>::difference_type
             distance (InputIterator first, InputIterator last)
@@ -461,7 +530,7 @@ namespace ft
                 **
                 ** @return the lvalue (the pointer to the element).
                 */
-                pointer operator->(void) { return (_elem); }
+                pointer operator->(void) { return &(*this); }
 
                 /*
                 ** @brief Preincrement the iterator to point to the
@@ -642,8 +711,120 @@ namespace ft
     ft::random_access_iterator<T> operator+(
         typename ft::random_access_iterator<T>::difference_type n, typename ft::random_access_iterator<T>& rai)
         {
-            return (rai.pointed() + n);
+            return (&(*rai) + n);
         }
+
+    template <class Iterator>
+    class reverse_iterator
+    {
+        public:
+
+            typedef Iterator    iterator_type;
+            typedef typename ft::iterator_traits<Iterator>::iterator_category iterator_category;
+            typedef typename ft::iterator_traits<Iterator>::value_type      value_type;
+            typedef typename ft::iterator_traits<Iterator>::difference_type     difference_type;
+            typedef typename ft::iterator_traits<Iterator>::pointer     pointer;
+            typedef typename ft::iterator_traits<Iterator>::reference   reference;
+            
+            /*
+            ** @brief Default.
+            */
+            /** ________________________ WIP ________________________*/
+            reverse_iterator();
+
+            /*
+            ** @brief Initialization.
+            */
+            /** ________________________ WIP ________________________*/
+            explicit reverse_iterator (iterator_type it);
+
+            /*
+            ** @brief Copy.
+            */
+            /** ________________________ WIP ________________________*/
+            template <class Iter>
+                reverse_iterator (const reverse_iterator<Iter>& rev_it);
+
+            /** ________________________ WIP ________________________*/
+            iterator_type base() const;
+
+            /** ________________________ WIP ________________________*/
+            reference operator*() const;
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator operator+ (difference_type n) const;
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator& operator++();
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator operator++(int);
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator& operator+= (difference_type n);
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator operator- (difference_type n) const;
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator& operator--();
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator operator--(int);
+
+            /** ________________________ WIP ________________________*/
+            reverse_iterator& operator-= (difference_type n);
+
+            /** ________________________ WIP ________________________*/
+            pointer operator->() const { return &(*this); }
+
+            /** ________________________ WIP ________________________*/
+            reference operator[] (difference_type n) const;
+
+        private:
+    };
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        bool operator== (const reverse_iterator<Iterator>& lhs,
+                        const reverse_iterator<Iterator>& rhs);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        bool operator!= (const reverse_iterator<Iterator>& lhs,
+                        const reverse_iterator<Iterator>& rhs);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        bool operator<  (const reverse_iterator<Iterator>& lhs,
+                        const reverse_iterator<Iterator>& rhs);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        bool operator<= (const reverse_iterator<Iterator>& lhs,
+                        const reverse_iterator<Iterator>& rhs);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        bool operator>  (const reverse_iterator<Iterator>& lhs,
+                        const reverse_iterator<Iterator>& rhs);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        bool operator>= (const reverse_iterator<Iterator>& lhs,
+                        const reverse_iterator<Iterator>& rhs);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        reverse_iterator<Iterator> operator+ (
+            typename reverse_iterator<Iterator>::difference_type n,
+            const reverse_iterator<Iterator>& rev_it);
+
+    /** ________________________ WIP ________________________*/
+    template <class Iterator>
+        typename reverse_iterator<Iterator>::difference_type operator- (
+            const reverse_iterator<Iterator>& lhs,
+            const reverse_iterator<Iterator>& rhs);
 
 } /* End of namespace */
 
