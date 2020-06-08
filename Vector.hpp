@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector.hpp                                         :+:      :+:    :+:   */
+/*   Vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/08 21:27:53 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/08 21:44:38 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 namespace ft
 {
     template < class T, class Alloc = std::allocator<T> >
-    class vector
+    class Vector
     {   
         public:
 
@@ -49,7 +49,7 @@ namespace ft
             /*
             ** allocator_type::reference
             ** A type provides a reference to an element stored in
-            ** a vector.
+            ** a Vector.
             ** For the default allocator is a reference to value_type
             ** (value_type&)
             */
@@ -107,8 +107,8 @@ namespace ft
             
             /*
             ** ft::reverse_iterator<iterator>
-            ** That can read or modify any element in a reversed vector.
-            ** Used to iterate through the vector in reverse.
+            ** That can read or modify any element in a reversed Vector.
+            ** Used to iterate through the Vector in reverse.
             */
             /** ________________________ WIP ________________________
              * (Need to be replace by own reverse iterator)
@@ -117,9 +117,9 @@ namespace ft
 
             /*
             ** ft::reverse_iterator<const_iterator>
-            ** That can read any element in a reversed the vector.
+            ** That can read any element in a reversed the Vector.
             ** Can't be used to modify, used to iterate through the
-            ** the vector in reverse.
+            ** the Vector in reverse.
             */
             /** ________________________ WIP ________________________
              * (Need to be replace by own reverse iterator)
@@ -140,7 +140,7 @@ namespace ft
             ** An unsigned integral type that can represent any
             ** non-negative value of difference_type
             ** Usually the same as size_t.
-            ** Is the number of elements in a vector.
+            ** Is the number of elements in a Vector.
             */
             typedef typename allocator_type::size_type          size_type;
             
@@ -156,7 +156,7 @@ namespace ft
             ** If in template this second argument is not defined,
             ** std::allocator will be used.
             */
-            explicit vector (const allocator_type& alloc = allocator_type())
+            explicit Vector (const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc),
                 _start(u_nullptr),
@@ -173,7 +173,7 @@ namespace ft
             ** @param val The element.
             ** @param allocator_type Allocator object.
             */
-            explicit vector (size_type n, const value_type& val = value_type(),
+            explicit Vector (size_type n, const value_type& val = value_type(),
                  const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc),
@@ -197,13 +197,13 @@ namespace ft
             ** range [first,last), with each element constructed from
             ** its corresponding element in that range, in the same order.
             ** (Adapted to counter the effect of :
-            ** vector(static_cast<size_type>(first), static_cast<value_type>(last), a))
+            ** Vector(static_cast<size_type>(first), static_cast<value_type>(last), a))
             **
             ** @param first An iterator is the first value in x.
             ** @param last An iterator is the last value in x.
             */
             template <class InputIterator>
-                    vector (InputIterator first, InputIterator last,
+                    Vector (InputIterator first, InputIterator last,
                             const allocator_type& alloc = allocator_type(),
                             typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
             :
@@ -229,7 +229,7 @@ namespace ft
             /** ________________________ WIP ________________________
              * Need const iterator
             */
-            vector (const vector& x);
+            Vector (const Vector& x);
             // :
             //     _alloc(x._alloc),
             //     _start(u_nullptr),
@@ -245,10 +245,10 @@ namespace ft
             // }
             
             /** ________________________ WIP ________________________*/
-            virtual ~vector() { _alloc.deallocate(_start, _end_capacity - _start); };
+            virtual ~Vector() { _alloc.deallocate(_start, _end_capacity - _start); };
             
             /** ________________________ WIP ________________________*/
-            vector &operator=(const vector& op);
+            Vector &operator=(const Vector& op);
 
             // Iterators:
 
@@ -276,7 +276,7 @@ namespace ft
 
             /*
             ** @brief Return an iterator pointing on the past-the-end element
-            ** in the vector container. Past-the-end is the theorical element
+            ** in the Vector container. Past-the-end is the theorical element
             ** following the last element in the container. If the container is
             ** empty, return the same than begin.
             ** The iterator is of type iterator (random access iterator
@@ -294,7 +294,7 @@ namespace ft
 
             /*
             ** @brief Return an iterator pointing on the past-the-end element
-            ** in the vector container. Past-the-end is the theorical element
+            ** in the Vector container. Past-the-end is the theorical element
             ** following the last element in the container. If the container is
             ** empty, return the same than begin.
             ** The iterator is of type const_iterator (random access
@@ -329,10 +329,10 @@ namespace ft
             const_reverse_iterator rbegin() const { return (reverse_iterator(this->end())); }
 
             /** ________________________ WIP ________________________*/
-            reverse_iterator rend();
+            reverse_iterator rend() { return (reverse_iterator(this->begin())); }
 
             /** ________________________ WIP ________________________*/
-            const_reverse_iterator rend() const;
+            const_reverse_iterator rend() const { return (reverse_iterator(this->begin())); }
 
             // Capacity:
             
@@ -347,9 +347,9 @@ namespace ft
 
             /*
             ** @brief Returns the maximum potential number of elements the the
-            ** vector can hold.
+            ** Vector can hold.
             ** This size is due to known system or library limitations.
-            ** The vector is not garanteed to have this size, it can
+            ** The Vector is not garanteed to have this size, it can
             ** fail a allocation for exemple.
             ** 
             ** Documentation :
@@ -366,7 +366,7 @@ namespace ft
 
             /*
             ** @brief Return size of allocated storage capacity.
-            ** Not necessarily equal to vector size. Can be equal
+            ** Not necessarily equal to Vector size. Can be equal
             ** or greater, because extra space allocated by the container
             ** forecast allocation system.
             **
@@ -391,7 +391,7 @@ namespace ft
 
             /*
             ** @brief Returns a reference to the element at
-            ** position n in the vector container.
+            ** position n in the Vector container.
             ** If "n" is out of range that's causes undefined behavior.
             **
             ** @param n Position of the element in the container.
@@ -401,7 +401,7 @@ namespace ft
 
             /*
             ** @brief Returns a const reference to the element at
-            ** position n in the vector container.
+            ** position n in the Vector container.
             ** If "n" is out of range that's causes undefined behavior.
             **
             ** @param n Position of the element in the container.
@@ -411,7 +411,7 @@ namespace ft
             
             /*
             ** @brief Returns a reference to the element at
-            ** position n in the vector container.
+            ** position n in the Vector container.
             ** The main difference between this function and the
             ** operator "[]" is that the function throw an
             ** std::out_of_range exception if "n" is out of the range of
@@ -428,7 +428,7 @@ namespace ft
 
             /*
             ** @brief Returns a const reference to the element at
-            ** position n in the vector container.
+            ** position n in the Vector container.
             ** The main difference between this function and the
             ** operator "[]" is that the function throw an
             ** std::out_of_range exception if "n" is out of the range of
@@ -481,7 +481,7 @@ namespace ft
 
             /*
             ** Range (1)
-            ** @brief Assigns new contents to the vector, replacing its current
+            ** @brief Assigns new contents to the Vector, replacing its current
             ** contents, add modifying its size accordingly.
             ** New elements are contruct from each of the elements in tht
             ** range, between first and last, in the same order.
@@ -499,7 +499,7 @@ namespace ft
             void assign (size_type n, const value_type& val);
 
             /*
-            ** @brief Add new element at the end of the vector.
+            ** @brief Add new element at the end of the Vector.
             ** The content of "val" is copied (moved) to the new element.
             ** 
             ** @param val The value to be copied.
@@ -586,7 +586,7 @@ namespace ft
             iterator erase (iterator first, iterator last);
 
             /** ________________________ WIP ________________________*/
-            void swap (vector& x);
+            void swap (Vector& x);
 
             /** ________________________ WIP ________________________*/
             void clear();
@@ -634,7 +634,7 @@ namespace ft
             void checkRange(const size_type& n) const
             {
                 if (n >= this->size())
-                    throw (std::out_of_range("vector::checkRange: n (which is "
+                    throw (std::out_of_range("Vector::checkRange: n (which is "
                             + ft::to_string(n) + ") >= this->size() (which is "
                             + ft::to_string(this->size()) + ")"));
             }
@@ -643,7 +643,7 @@ namespace ft
     // Non-member function overloads
     
     /*
-    ** @brief Compare vector container to know
+    ** @brief Compare Vector container to know
     ** if they are equal. Start to check if the size
     ** is different.
     **
@@ -652,7 +652,7 @@ namespace ft
     ** @return true if they are equal, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator== (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+        bool operator== (const ft::Vector<T, Alloc>& lhs, const ft::Vector<T, Alloc>& rhs)
         {
             if (lhs.size() != rhs.size())
                 return (false);
@@ -664,35 +664,35 @@ namespace ft
     */ 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator!= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        bool operator!= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (!(lhs == rhs));
         }
     
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator<  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        bool operator<  (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (&lhs < &rhs);
         }
 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator<= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        bool operator<= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (!(lhs < rhs));
         }
 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator>  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        bool operator>  (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (rhs < lhs);
         }
 
     /** ________________________ WIP ________________________*/
     template <class T, class Alloc>
-        bool operator>= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+        bool operator>= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (!(lhs < rhs));
         }

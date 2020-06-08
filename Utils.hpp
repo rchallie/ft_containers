@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/08 21:22:37 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/08 21:50:30 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -530,7 +530,7 @@ namespace ft
                 **
                 ** @return the lvalue (the pointer to the element).
                 */
-                pointer operator->(void) { return &(*this); }
+                pointer operator->(void) { return &(this->operator*()); }
 
                 /*
                 ** @brief Preincrement the iterator to point to the
@@ -552,7 +552,7 @@ namespace ft
                 ** @return a random access iterator incremented (copy
                 ** of this).
                 */
-                random_access_iterator operator++(value_type)
+                random_access_iterator operator++(int)
                 {
                     random_access_iterator rtn(*this);
                     operator++();
@@ -579,7 +579,7 @@ namespace ft
                 ** @return a random access iterator decremented (copy
                 ** of this).
                 */
-                random_access_iterator operator--(value_type)
+                random_access_iterator operator--(int)
                 {
                     random_access_iterator rtn(*this);
                     operator--();
