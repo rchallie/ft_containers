@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/05 22:26:00 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/08 21:27:53 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ namespace ft
             /** ________________________ WIP ________________________
              * (Need to be replace by own reverse iterator)
             */
-            typedef std::reverse_iterator<iterator>             reverse_iterator;
+            typedef ft::reverse_iterator<iterator>             reverse_iterator;
 
             /*
             ** ft::reverse_iterator<const_iterator>
@@ -124,7 +124,7 @@ namespace ft
             /** ________________________ WIP ________________________
              * (Need to be replace by own reverse iterator)
             */
-            typedef std::reverse_iterator<const_iterator>       const_reverse_iterator;
+            typedef ft::reverse_iterator<const_iterator>       const_reverse_iterator;
 
             /*
             ** A signed integral type:
@@ -310,11 +310,23 @@ namespace ft
                 return (_end);
             };
 
-            /** ________________________ WIP ________________________*/
-            reverse_iterator rbegin();
+            /*
+            ** @brief Give a reverse iterator pointing to the last element
+            ** in the container (this->end() - 1).
+            ** This is a reversed random access iterator.
+            **
+            ** @return A reverse Iterator to the reverse beginning of the.
+            */
+            reverse_iterator rbegin() { return (reverse_iterator(this->end())); }
 
-            /** ________________________ WIP ________________________*/
-            const_reverse_iterator rbegin() const;
+            /*
+            ** @brief Give a const reverse iterator pointing to the last 
+            ** element in the container (this->end() - 1).
+            ** This is a constant reversed random access iterator.
+            **
+            ** @return A const reverse Iterator to the reverse beginning of the.
+            */
+            const_reverse_iterator rbegin() const { return (reverse_iterator(this->end())); }
 
             /** ________________________ WIP ________________________*/
             reverse_iterator rend();
@@ -438,7 +450,7 @@ namespace ft
             **
             ** @return The reference.
             */
-            reference front () { return ((*this)[0]); }
+            reference front () { return (*_start); }
 
             /*
             ** @brief Return a const reference to the first element
@@ -447,23 +459,23 @@ namespace ft
             **
             ** @return The const reference.
             */
-            const_reference front () const { return ((*this)[0]); }
+            const_reference front () const { return (*_start); }
             
-            /** ________________________ WIP ________________________*/
-            reference back ()
-            {
-                if (this->size() == 0)
-                    return (this->front());
-                return ((*this)[this->size() - 1]);
-            }
+            /*
+            ** @brief Return a reference to the last element in the container.
+            ** If the container is empty, occur undefined behavior.
+            **
+            ** @return The reference to the last element.
+            */
+            reference back () { return (*(_end - 1)); }
 
-            /** ________________________ WIP ________________________*/
-            const_reference back () const
-            {
-                if (this->size() == 0)
-                    return (this->front());
-                return ((*this)[this->size() - 1]);
-            }
+            /*
+            ** @brief Return a const reference to the last element in the container.
+            ** If the container is empty, occur undefined behavior.
+            **
+            ** @return The const reference to the last element.
+            */
+            const_reference back () const { return (*(_end - 1)); }
 
             // Modifiers:
 
