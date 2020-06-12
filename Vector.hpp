@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/12 20:45:53 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/12 21:19:14 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -558,7 +558,6 @@ namespace ft
             {                
                 if (_end == _end_capacity)
                 {
-                    // double expos = log2(this->capacity());
                     int next_capacity = (this->size() > 0) ? (int)(this->size() * 2) : 1;
                     this->reserve(next_capacity);
                 }
@@ -606,21 +605,20 @@ namespace ft
             {
                 if (n > this->max_size())
                     throw (std::length_error("vector::insert (fill)"));
+                size_type pos_len = &(*position) - _start;
                 if (size_type(_end_capacity - _end) >= n)
                 {
-                    size_type next_len = this->size() + n;
+                    for (size_type i = 0; i < this->size() - pos_len; i++)
+                        _alloc.construct(_end - i + (n - 1), *(_end - i - 1));
+                    _end += n;
                     while (n)
                     {
-                        _alloc.construct(_start + --next_len, *((position) + (n - 1)));
                         _alloc.construct(&(*position) + (n - 1), val);
-                        _end++;
                         n--;
                     }
                 }
                 else
                 {
-                    size_type pos_len = &(*position) - _start;
-
                     pointer new_start = pointer();
                     pointer new_end = pointer();
                     pointer new_end_capacity = pointer();
