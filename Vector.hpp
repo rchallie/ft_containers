@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/08 21:44:38 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/12 20:45:53 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,10 +328,22 @@ namespace ft
             */
             const_reverse_iterator rbegin() const { return (reverse_iterator(this->end())); }
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Give a reverse iterator point to the
+            ** theorical element preceding the first element
+            ** in the container.
+            **
+            ** @return the reverse iterator.
+            */
             reverse_iterator rend() { return (reverse_iterator(this->begin())); }
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Give a const reverse iterator point to the
+            ** theorical element preceding the first element
+            ** in the container. 
+            **
+            ** @return the const reverse iterator.
+            */
             const_reverse_iterator rend() const { return (reverse_iterator(this->begin())); }
 
             // Capacity:
@@ -362,7 +374,23 @@ namespace ft
             size_type   max_size(void) const { return (U_SIZE_MAX / sizeof(T)); }
 
             /** ________________________ WIP ________________________*/
-            void        resize (size_type n, value_type val = value_type());
+            void        resize (size_type n, value_type val = value_type())
+            {
+                if (n > this->max_size())
+                    throw (std::length_error("vector::resize"));
+                else if (n < this->size())
+                {
+                    while (this->size() > n)
+                    {
+                        --_end;
+                        _alloc.destroy(_end);
+                    }
+                }
+                else
+                {
+                    this->insert(this->end(), n - this->size(), val);
+                }
+            }
 
             /*
             ** @brief Return size of allocated storage capacity.
@@ -385,7 +413,29 @@ namespace ft
             bool        empty (void) const { return (size() == 0 ? true : false); }
 
             /** ________________________ WIP ________________________*/
-            void        reserve (size_type n);
+            void        reserve (size_type n)
+            {
+                if (n > this->max_size())
+                    throw (std::length_error("vector::reserve"));
+                else if (n > this->capacity())
+                {
+                    pointer prev_start = _start;
+                    pointer prev_end = _end;
+                    size_type prev_size = this->size();
+                    size_type prev_capacity = this->capacity();
+                    
+                    _start = _alloc.allocate( n );
+                    _end_capacity = _start + n;
+                    _end = _start;
+                    while (prev_start != prev_end)
+                    {
+                        _alloc.construct(_end, *prev_start);
+                        _end++;
+                        prev_start++;
+                    }
+                    _alloc.deallocate(prev_start - prev_size, prev_capacity);
+                }
+            }
 
             // Element access:
 
@@ -507,7 +557,11 @@ namespace ft
             void push_back (const value_type& val)
             {                
                 if (_end == _end_capacity)
-                    this->extend();
+                {
+                    // double expos = log2(this->capacity());
+                    int next_capacity = (this->size() > 0) ? (int)(this->size() * 2) : 1;
+                    this->reserve(next_capacity);
+                }
                 _alloc.construct(_end, val);
                 _end++;
             }
@@ -516,7 +570,7 @@ namespace ft
             void pop_back()
             {
                 _alloc.destroy(&this->back());
-                if (this->size() > 0)
+                if (_end != _start)
                     _end--;
             }
 
@@ -530,24 +584,12 @@ namespace ft
             ** @param val The element to insert.
             ** @return An iterator to the new element in the container.
             */
-            /** ________________________ WIP ________________________*/
-            iterator insert (iterator position, const value_type& val)
-            {
-                int pos_advance = &(*position) - _start;
-                if (_end == _end_capacity)
-                {
-                    this->extend();
-                    position = _start + pos_advance;
-                }
-                int end_len = _end - &(*position);
-                while (end_len--)
-                {
-                    *(_end + end_len) = *(position + end_len);
-                }
-                _end++;
-                *position = val;
-                return (position);
-            }
+            /** ________________________ WIP ________________________
+            */
+            // iterator insert (iterator position, const value_type& val)
+            // {
+
+            // }
 
             /*
             ** @brief Insert an element a "n" amount of time
@@ -560,15 +602,59 @@ namespace ft
             ** @param n Amout of element to insert.
             ** @param val The element to insert.
             */
-            /** ________________________ WIP ________________________*/
             void insert (iterator position, size_type n, const value_type& val)
             {
-                if ((int)n < 0)
-                    throw (std::length_error("ft::insert (fill)"));
-                while (n--)
+                if (n > this->max_size())
+                    throw (std::length_error("vector::insert (fill)"));
+                if (size_type(_end_capacity - _end) >= n)
                 {
-                    position = this->insert(position, val);
-                    position++;
+                    size_type next_len = this->size() + n;
+                    while (n)
+                    {
+                        _alloc.construct(_start + --next_len, *((position) + (n - 1)));
+                        _alloc.construct(&(*position) + (n - 1), val);
+                        _end++;
+                        n--;
+                    }
+                }
+                else
+                {
+                    size_type pos_len = &(*position) - _start;
+
+                    pointer new_start = pointer();
+                    pointer new_end = pointer();
+                    pointer new_end_capacity = pointer();
+                    
+                    int next_capacity = (this->capacity() > 0) ? (int)(this->size() * 2) : 1;
+                    new_start = _alloc.allocate(next_capacity);
+                    new_end_capacity = new_start + next_capacity;
+
+                    if (size_type(new_end_capacity - new_start) < this->size() + n)
+                    {
+                        if (new_start)
+                            _alloc.deallocate(new_start, new_start - new_end_capacity);
+                        next_capacity = this->size() + n;
+                        new_start = _alloc.allocate(next_capacity);
+                        new_end = new_start + this->size() + n;
+                        new_end_capacity = new_start + next_capacity;
+                    }
+
+                    new_end = new_start + this->size() + n;
+
+                    for (int i = 0; i < (&(*position) - _start); i++)
+                        _alloc.construct(new_start + i, *(_start + i));
+                    for (size_type k = 0; k < n; k++)
+                        _alloc.construct(new_start + pos_len + k, val);
+                    for (size_type j = 0; j < (this->size() - pos_len); j++)
+                        _alloc.construct(new_end - j - 1, *(_end - j - 1));
+
+                    for (size_type u = 0; u < this->size(); u++)
+                        _alloc.destroy(_start + u);
+                    _alloc.deallocate(_start, this->capacity());
+
+                    _start = new_start;
+                    _end = new_end;
+                    _end_capacity = new_end_capacity;
                 }
             }
 
@@ -596,33 +682,6 @@ namespace ft
             pointer         _start;
             pointer         _end;
             pointer         _end_capacity;
-
-            /*
-            ** @brief Extend the actual capacity of the container
-            ** logarithmically of one with a base of two. 
-            ** Move (copy) values from the container inside and
-            ** deallocate previous allocation.
-            */
-            void extend(void)
-            {
-                pointer prev_start = _start;
-                pointer prev_end = _end;
-                size_type prev_size = this->size();
-                size_type prev_capacity = this->capacity();
-                double expos = log2(this->capacity());
-                int next_capacity = pow(2, ((expos == -INFINITY) ? 0 : expos + 1));
-                
-                _start = _alloc.allocate( next_capacity );
-                _end_capacity = _start + next_capacity;
-                _end = _start;
-                while (prev_start != prev_end)
-                {
-                    _alloc.construct(_end, *prev_start);
-                    _end++;
-                    prev_start++;
-                }
-                _alloc.deallocate(prev_start - prev_size, prev_capacity);
-            }
 
             /*
             ** @brief Check if "n" is in the range of the container.
