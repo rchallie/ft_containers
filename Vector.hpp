@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/12 21:19:14 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/13 17:34:26 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,17 +91,11 @@ namespace ft
             ** That can read or modify any element stored.
             ** Convertible to const_iterator;
             */
-            /** ________________________ WIP ________________________
-             * (Need to be replace by own reverse iterator)
-            */
             typedef ft::random_access_iterator<value_type>               iterator;
 
             /*
             ** A random access iterator to const value_type
             ** That can read element stored.
-            */
-            /** ________________________ WIP ________________________
-             * (Need to be replace by own reverse iterator)
             */
             typedef ft::random_access_iterator<const value_type>            const_iterator;
             
@@ -110,9 +104,6 @@ namespace ft
             ** That can read or modify any element in a reversed Vector.
             ** Used to iterate through the Vector in reverse.
             */
-            /** ________________________ WIP ________________________
-             * (Need to be replace by own reverse iterator)
-            */
             typedef ft::reverse_iterator<iterator>             reverse_iterator;
 
             /*
@@ -120,9 +111,6 @@ namespace ft
             ** That can read any element in a reversed the Vector.
             ** Can't be used to modify, used to iterate through the
             ** the Vector in reverse.
-            */
-            /** ________________________ WIP ________________________
-             * (Need to be replace by own reverse iterator)
             */
             typedef ft::reverse_iterator<const_iterator>       const_reverse_iterator;
 
@@ -210,16 +198,24 @@ namespace ft
                 _alloc(alloc)
             {
                 bool is_valid;
+                if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                
                 if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
-                    throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
-                difference_type n = ft::distance(first, last);
-                _start = _alloc.allocate( n );
-                _end_capacity = _start + n;
-                _end = _start;
-                while (n--)
                 {
-                    _alloc.construct(_end, *first);
-                    _end++;
+                    std::cout << "CONPLEX" << std::endl;
+                }
+                else
+                {
+                    difference_type n = ft::distance(first, last);
+                    _start = _alloc.allocate( n );
+                    _end_capacity = _start + n;
+                    _end = _start;
+                    while (n--)
+                    {
+                        _alloc.construct(_end, *first);
+                        _end++;
+                    }
                 }
             }
             
@@ -245,7 +241,7 @@ namespace ft
             // }
             
             /** ________________________ WIP ________________________*/
-            virtual ~Vector() { _alloc.deallocate(_start, _end_capacity - _start); };
+            virtual ~Vector() { _alloc.deallocate(_start, this->capacity()); };
             
             /** ________________________ WIP ________________________*/
             Vector &operator=(const Vector& op);
@@ -387,9 +383,7 @@ namespace ft
                     }
                 }
                 else
-                {
                     this->insert(this->end(), n - this->size(), val);
-                }
             }
 
             /*
@@ -538,15 +532,43 @@ namespace ft
             **
             ** @param
             */
-            /** ________________________ WIP ________________________*/
-            template <class InputIterator>
-                void assign (InputIterator first, InputIterator last);
+            // /** ________________________ WIP ________________________*/
+            // template <class InputIterator>
+            //     void assign (InputIterator first, InputIterator last);
             
             /*
-            ** Fill
+            ** @brief Fill assign.
+            ** Clear the container, fill it with val "n" times.
+            ** According size to "n".
+            **
+            ** @param "n" the number of element.
+            ** @param "val" the value of element.
             */
-            /** ________________________ WIP ________________________*/
-            void assign (size_type n, const value_type& val);
+            void assign (size_type n, const value_type& val)
+            {
+                this->clear();
+                if (n == 0)
+                    return ;
+                if (size_type(_end_capacity  - _end) >= n)
+                {
+                    while (n)
+                    {
+                        _alloc.construct(_end++ , val);
+                        n--;
+                    }
+                }
+                else
+                {
+                    _start = _alloc.allocate( n );
+                    _end = _start;
+                    _end_capacity = _start + n;
+                    while (n)
+                    {
+                        _alloc.construct(_end++, val);
+                        n--;
+                    }
+                }
+            }
 
             /*
             ** @brief Add new element at the end of the Vector.
@@ -565,12 +587,15 @@ namespace ft
                 _end++;
             }
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Delete the last element of the container.
+            ** Reduce the size of the vector of one.
+            ** If the container is empty, cause undefined behavior.
+            */
             void pop_back()
             {
                 _alloc.destroy(&this->back());
-                if (_end != _start)
-                    _end--;
+                _end--;
             }
 
             /*
@@ -583,18 +608,50 @@ namespace ft
             ** @param val The element to insert.
             ** @return An iterator to the new element in the container.
             */
-            /** ________________________ WIP ________________________
-            */
-            // iterator insert (iterator position, const value_type& val)
-            // {
+            iterator insert (iterator position, const value_type& val)
+            {
+                size_type pos_len = &(*position) - _start;
+                if (size_type(_end_capacity - _end) >= this->size() + 1)
+                {
+                    for (size_type i = 0; i < pos_len; i++)
+                        _alloc.construct(_end - i, *(_end - i - 1));
+                    _end++;
+                    _alloc.construct(&(*position), val);
+                }
+                else
+                {
+                    pointer new_start = pointer();
+                    pointer new_end = pointer();
+                    pointer new_end_capacity = pointer();
 
-            // }
+                    int next_capacity = (this->size() * 2 > 0) ? this->size() * 2 : 1; 
+                    new_start = _alloc.allocate( next_capacity );
+                    new_end = new_start + this->size() + 1;
+                    new_end_capacity = new_start + next_capacity;
+
+                    for (size_type i = 0; i < pos_len; i++)
+                        _alloc.construct(new_start + i, *(_start + i));
+                    _alloc.construct(new_start + pos_len, val);
+                    for (size_type j = 0; j < this->size() - pos_len; j++)
+                        _alloc.construct(new_end - j - 1, *(_end - j - 1));
+
+                    for (size_type l = 0; l < this->size(); l++)
+                        _alloc.destroy(_start + l);
+                    if (_start)
+                        _alloc.deallocate(_start, this->capacity());
+                    
+                    _start = new_start;
+                    _end = new_end;
+                    _end_capacity = new_end_capacity;
+                }
+                return (iterator(_start + pos_len));
+            }
 
             /*
             ** @brief Insert an element a "n" amount of time
-            ** before the specified position. Can ecrease de size
+            ** before the specified position. Can ecrease de capacity
             ** of the container. This action force the container to
-            ** realocate all the elements that were after "postion"
+            ** realocate all the elements that were after "position"
             ** to their new positions.
             **
             ** @param position The position where insert.
@@ -603,6 +660,8 @@ namespace ft
             */
             void insert (iterator position, size_type n, const value_type& val)
             {
+                if (n == 0)
+                    return ;
                 if (n > this->max_size())
                     throw (std::length_error("vector::insert (fill)"));
                 size_type pos_len = &(*position) - _start;
@@ -657,11 +716,73 @@ namespace ft
             }
 
             /*
-            ** Range:
+            ** @brief Insert element in range from ["first" to
+            ** "last") at "position". Can increase the capacity of
+            ** the container. Throw if the iterator given is not valid.
+            ** Reallocate all elements after the dist between first and last.
+            **
+            ** @param position the position where insert.
+            ** @param first the first element in the range.
+            ** @param last the last element in the range.
             */
-            // /** ________________________ WIP ________________________*/
-            // template <class InputIterator>
-            //     void insert (iterator position, InputIterator first, InputIterator last);
+            template <class InputIterator>
+                void insert (iterator position, InputIterator first, InputIterator last,
+                typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+            {
+                bool is_valid;
+                if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                {
+                    std::cout << "CONPLEX" << std::endl;
+                }
+                else
+                {
+                    size_type dist = ft::distance(first, last);
+                    if (size_type(_end_capacity - _end) >= dist)
+                    {
+                        for(size_type i = 0; i < this->size() - (&(*position) - _start); i++)
+                            _alloc.construct(_end - i + (dist - 1), *(_end - i - 1));
+                        _end += dist;
+                        for (; &(*first) != &(*last); first++, position++)
+                            _alloc.construct(&(*position), *first);
+                    }
+                    else
+                    {
+                        pointer new_start = pointer();
+                        pointer new_end = pointer();
+                        pointer new_end_capacity = pointer();
+
+                        new_start = _alloc.allocate( this->size() * 2 );
+                        new_end = new_start + this->size() + dist;
+                        new_end_capacity = new_start + ( this->size() * 2 );
+
+                        if (size_type(new_end_capacity - new_start) < this->size() + dist)
+                        {
+                            if (new_start)
+                                _alloc.deallocate(new_start, new_end_capacity - new_start);
+                            new_start = _alloc.allocate (this->size() + dist);
+                            new_end = new_start + this->size() + dist;
+                            new_end_capacity = new_end;
+                        }
+
+                        for (int i = 0; i < &(*position) - _start; i++)
+                            _alloc.construct(new_start + i, *(_start + i));
+                        for (int j = 0; &(*first) != &(*last); first++, j++)
+                            _alloc.construct(new_start + (&(*position) - _start) + j, *first);
+                        for (size_type k = 0; k < this->size() - (&(*position) - _start); k++)
+                            _alloc.construct(new_start + (&(*position) - _start) + dist + k, *(_start + (&(*position) - _start) + k));
+
+                        for (size_type l = 0; l < this->size(); l++)
+                            _alloc.destroy(_start + l);
+                        _alloc.deallocate(_start, this->capacity());
+
+                        _start = new_start;
+                        _end = new_end;
+                        _end_capacity = new_end_capacity;
+                    }
+                }
+            }
 
             /** ________________________ WIP ________________________*/
             iterator erase (iterator position);
@@ -672,8 +793,19 @@ namespace ft
             /** ________________________ WIP ________________________*/
             void swap (Vector& x);
 
-            /** ________________________ WIP ________________________*/
-            void clear();
+            /*
+            ** @brief Removes (destroy) all elements from the
+            ** container. Final size is 0.
+            */
+            void clear()
+            {
+                size_type save_size = this->size();
+                for (size_type i = 0; i < save_size; i++)
+                {
+                    _end--;
+                    _alloc.destroy(_end);
+                }
+            }
 
         private:
             allocator_type  _alloc;
@@ -753,6 +885,9 @@ namespace ft
         {
             return (!(lhs < rhs));
         }
+    
+    template <class T, class Alloc>
+        void swap (Vector<T,Alloc>& x, Vector<T,Alloc>&y);
 }
 // =============================================================================
 

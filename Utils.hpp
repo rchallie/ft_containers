@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/08 21:50:30 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/12 22:07:51 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,6 +277,41 @@ namespace ft
     template <>
         struct is_input_iterator_tagged<ft::input_iterator_tag>
             : public valid_iterator_tag_res<true, ft::input_iterator_tag> { };
+
+
+    /*
+    ** @brief This will return a structure
+    ** that contain a boolean "value" true if the
+    ** iterator given is tagged with a ft iterator
+    ** tag, otherwise "value" is false.
+    */
+    template <typename T>
+        struct is_ft_iterator_tagged : public valid_iterator_tag_res<false, T> { };
+    
+    /* Check is_ft_iterator_tagged from ft::random_access_iterator_tag */
+    template <>
+        struct is_ft_iterator_tagged<ft::random_access_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::random_access_iterator_tag> { };
+
+    /* Check is_ft_iterator_tagged from ft::bidirectional_iterator_tag */
+    template <>
+        struct is_ft_iterator_tagged<ft::bidirectional_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::bidirectional_iterator_tag> { };
+
+    /* Check is_ft_iterator_tagged from ft::forward_iterator_tag */
+    template <>
+        struct is_ft_iterator_tagged<ft::forward_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::forward_iterator_tag> { };
+
+    /* Check is_ft_iterator_tagged from ft::input_iterator_tag */
+    template <>
+        struct is_ft_iterator_tagged<ft::input_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::input_iterator_tag> { };
+
+    /* Check is_ft_iterator_tagged from ft::output_iterator_tag */
+    template <>
+        struct is_ft_iterator_tagged<ft::output_iterator_tag>
+            : public valid_iterator_tag_res<true, ft::output_iterator_tag> { };
 
     /*
     ** @Brief Invalid iterator Exception.
