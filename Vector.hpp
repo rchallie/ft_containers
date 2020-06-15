@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/13 17:34:26 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/15 19:14:02 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -784,11 +784,54 @@ namespace ft
                 }
             }
 
-            /** ________________________ WIP ________________________*/
-            iterator erase (iterator position);
+            /*
+            ** @brief Remove element from the vector at "position".
+            ** Reduce the size of 1;
+            **
+            ** @param position the iterator pointing to the
+            ** element to remove.
+            ** @return a pointer to the element a "&(*position) + 1"; 
+            */
+            iterator erase (iterator position)
+            {
+                pointer p_pos = &(*position);
+                _alloc.destroy(&(*position));
+                if (&(*position) + 1 == _end)
+                    _alloc.destroy(&(*position));
+                else
+                {
+                    for (int i = 0; i < _end - &(*position); i++)
+                    {
+                        _alloc.construct(&(*position) + i, *(&(*position) + i + 1));
+                        _alloc.destroy(&(*position) + i + 1);
+                    }
+                }
+                _end -= 1;
+                return (iterator(p_pos));
+            }
 
-            /** ________________________ WIP ________________________*/
-            iterator erase (iterator first, iterator last);
+            /*
+            ** @brief Remove element from the vector a range of element.
+            ** Reduce the size by the number of element removed.
+            ** 
+            ** @param first the first element in the range.
+            ** @param last the last element in the range.
+            ** @return An iterator that point to the first element
+            ** after "last".
+            */
+            iterator erase (iterator first, iterator last)
+            {
+                pointer p_first = &(*first);
+                for (; &(*first) != &(*last); first++)
+                    _alloc.destroy(&(*first));
+                for (int i = 0; i < _end - &(*last); i++)
+                {
+                    _alloc.construct(p_first + i, *(&(*last) + i));
+                    _alloc.destroy(&(*last) + i);
+                }
+                _end -= (&(*last) - p_first);
+                return (iterator(p_first));
+            }
 
             /** ________________________ WIP ________________________*/
             void swap (Vector& x);
