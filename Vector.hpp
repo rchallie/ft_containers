@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/15 19:14:02 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/15 19:54:40 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -833,8 +833,32 @@ namespace ft
                 return (iterator(p_first));
             }
 
-            /** ________________________ WIP ________________________*/
-            void swap (Vector& x);
+            /*
+            ** @brief Exchanges the content with "x" content.
+            ** "x" is of same type. Elements of "x" are elements
+            ** of this container and elements of this are of "x".
+            ** All iterators, references, pointer on the swaped
+            ** objects stay valid.
+            **
+            ** @param x the vector to swap.
+            */
+            void swap (Vector& x)
+            {
+                if (x == *this)
+                    return;
+                
+                pointer save_start = x._start;
+                pointer save_end = x._end;
+                pointer save_end_capacity = x._end_capacity;
+
+                x._start = this->_start;
+                x._end = this->_end;
+                x._end_capacity = this->_end_capacity;
+
+                this->_start = save_start;
+                this->_end = save_end;
+                this->_end_capacity = save_end_capacity;
+            }
 
             /*
             ** @brief Removes (destroy) all elements from the
