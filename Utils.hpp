@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/16 10:08:45 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/16 18:42:01 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <typeinfo>
 
 #  define U_SIZE_MAX std::numeric_limits<size_t>::max()
+#  define U_SIZE_MAXU std::numeric_limits<unsigned long>::max()
 
 /*
 ** @brief Type of the null pointer constant.
@@ -1047,23 +1048,73 @@ namespace ft
             const reverse_iterator<Iterator>& lhs,
             const reverse_iterator<Iterator>& rhs) { return (lhs.base() - rhs.base()); }
 
+    /* Lexicographical comparison */
 
-    class bit_reference
-    {
+    /*
+    ** @brief Return true if the range [first1, last2) compare
+    ** lexicographically lest than the range [first2, last2).
+    **
+    ** @param first1, last1 the start and the end of the first range.
+    ** @param first2, last2 the start and the end of the second range.
+    ** @return true if the first range compares lexicographically less
+    ** than the second, false otherwise.
+    */
+    template <class InputIterator1, class InputIterator2>
+        bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+                                        InputIterator2 first2, InputIterator2 last2)
+        {
+            while (first1 != last1)
+            {
+                if (first2 == last2 || *first2 < *first1) return false;
+                else if (*first1 < *first2) return true;
+                ++first1;
+                ++first2;
+            }
+            return (first2 != last2);
+        }
 
-    };
+    /*
+    ** @brief Return true if the range [first1, last2) compare
+    ** lexicographically lest than the range [first2, last2).
+    ** The comparision is effectued by "comp".
+    **
+    ** @param first1, last1 the start and the end of the first range.
+    ** @param first2, last2 the start and the end of the second range.
+    ** @param comp the function that will compare.
+    ** @return true if the first range compares lexicographically less
+    ** than the second, false otherwise.
+    */
+    template <class InputIterator1, class InputIterator2, class Compare>
+        bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+                                        InputIterator2 first2, InputIterator2 last2,
+                                        Compare comp)
+        {
+            while (first1 != last1)
+            {
+                if (first2 == last2 || comp(*first2, *first1)) return false;
+                else if (comp(*first1, *first2)) return true;
+                ++first1;
+                ++first2;
+            }
+            return (first2 != last2);
+        }
 
-    template <typename T>
-    class bit_pointer
-    {
+    // class bit_reference
+    // {
 
-    };
+    // };
 
-    template <typename T>
-    class bit_iterator
-    {
+    // template <typename T>
+    // class bit_pointer
+    // {
 
-    };
+    // };
+
+    // template <typename T>
+    // class bit_iterator
+    // {
+
+    // };
     
 } /* End of namespace */
 

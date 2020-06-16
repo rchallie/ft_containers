@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/16 15:49:03 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/16 21:59:30 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -989,93 +989,146 @@ namespace ft
         {
             if (lhs.size() != rhs.size())
                 return (false);
-            return (&lhs == &rhs);
+            typename ft::Vector<T>::const_iterator first1 = lhs.begin();
+            typename ft::Vector<T>::const_iterator first2 = rhs.begin();
+            while (first1 != lhs.end())
+            {
+                if (first2 == rhs.end() || *first1 != *first2)
+                    return (false);
+                ++first1;
+                ++first2;
+            }
+            return (true);
         }
 
     /*
-    ** Need implement lexicographical_compare
-    */ 
-    /** ________________________ WIP ________________________*/
+    ** @brief Compare Vector container to know
+    ** if they are different. Equivalent to !(lsh == rhs).
+    **
+    ** @param lhs Vector to compare with "rhs".
+    ** @param rhs Vector for comparison of "lhs".
+    ** @return true if they are different, false otherwise.
+    */
     template <class T, class Alloc>
         bool operator!= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (!(lhs == rhs));
         }
     
-    /** ________________________ WIP ________________________*/
+    /*
+    ** @brief Compare Vector container to know
+    ** if "lhs" elements are lexicographicalement less than "rhs".
+    **
+    ** @param lhs Vector to compare with "rhs".
+    ** @param rhs Vector for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement less, false otherwise.
+    */
     template <class T, class Alloc>
         bool operator<  (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
-            return (&lhs < &rhs);
+            return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
         }
 
-    /** ________________________ WIP ________________________*/
+    /*
+    ** @brief Compare Vector container to know
+    ** if "lhs" elements are lexicographicalement less or equal than "rhs".
+    **
+    ** @param lhs Vector to compare with "rhs".
+    ** @param rhs Vector for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement less or equal, false otherwise.
+    */
     template <class T, class Alloc>
         bool operator<= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
-            return (!(lhs < rhs));
+            return (!(rhs < lhs));
         }
 
-    /** ________________________ WIP ________________________*/
+    /*
+    ** @brief Compare Vector container to know
+    ** if "lhs" elements are lexicographicalement superior than "rhs".
+    **
+    ** @param lhs Vector to compare with "rhs".
+    ** @param rhs Vector for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement superior, false otherwise.
+    */
     template <class T, class Alloc>
         bool operator>  (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (rhs < lhs);
         }
 
-    /** ________________________ WIP ________________________*/
+    /*
+    ** @brief Compare Vector container to know
+    ** if "lhs" elements are lexicographicalement superior or equal than "rhs".
+    **
+    ** @param lhs Vector to compare with "rhs".
+    ** @param rhs Vector for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement superior or equal, false otherwise.
+    */
     template <class T, class Alloc>
         bool operator>= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
         {
             return (!(lhs < rhs));
         }
     
+    /*
+    ** @brief Overload of swap (vector).
+    ** The contents of container are swaped.
+    **
+    ** @param x, y the containers to swap.
+    */
     template <class T, class Alloc>
-        void swap (Vector<T,Alloc>& x, Vector<T,Alloc>&y);
+        void swap (Vector<T,Alloc>& x, Vector<T,Alloc>&y)
+        {
+            x.swap(y);
+        }
 
     // Template specializations:
-    template <class Alloc>
-    class Vector<bool, Alloc>
-    {
-        public:
+    // template <class Alloc>
+    // class Vector<bool, Alloc>
+    // {
+    //     public:
             
-            /* The first template parameter */
-            typedef bool        value_type;
+    //         /* The first template parameter */
+    //         typedef bool        value_type;
 
-            /* The second template parameter */
-            typedef Alloc       allocator_type;
+    //         /* The second template parameter */
+    //         typedef Alloc       allocator_type;
 
-            /* A specific member class */
-            typedef ft::bit_reference reference;
+    //         /* A specific member class */
+    //         typedef ft::bit_reference reference;
 
-            /* A bool */
-            typedef bool        const_reference;
+    //         /* A bool */
+    //         typedef bool        const_reference;
 
-            /* A type that simulates pointer behavior */
-            typedef ft::bit_pointer<value_type> pointer;
+    //         /* A type that simulates pointer behavior */
+    //         typedef ft::bit_pointer<value_type> pointer;
 
-            /* A type that simulate pointer to const behavior */
-            typedef ft::bit_pointer<const value_type> const_pointer;
+    //         /* A type that simulate pointer to const behavior */
+    //         typedef ft::bit_pointer<const value_type> const_pointer;
 
-            /* A type that simulate random access iterator behavior */
-            typedef ft::bit_iterator<value_type>    iterator;
+    //         /* A type that simulate random access iterator behavior */
+    //         typedef ft::bit_iterator<value_type>    iterator;
 
-            /* A type that simulates random access iterator to cont behavior */
-            typedef ft::bit_iterator<const value_type> const_iterator;
+    //         /* A type that simulates random access iterator to cont behavior */
+    //         typedef ft::bit_iterator<const value_type> const_iterator;
 
-            /* Reverse iterator */
-            typedef ft::reverse_iterator<iterator> reverse_iterator;
+    //         /* Reverse iterator */
+    //         typedef ft::reverse_iterator<iterator> reverse_iterator;
 
-            /* Const reverse iterator */
-            typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+    //         /* Const reverse iterator */
+    //         typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
-            /* A signed integral type */
-            typedef ptrdiff_t     difference_type;
+    //         /* A signed integral type */
+    //         typedef ptrdiff_t     difference_type;
 
-            /* An unsigned itegral type */
-            typedef size_t          size_type;
+    //         /* An unsigned itegral type */
+    //         typedef size_t          size_type;
+
+    //         explicit Vector (const allocator_type& alloc = allocator_type());
+        
             
-    };
+    // };
 
 }
 
