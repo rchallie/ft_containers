@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/12 22:07:51 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/16 10:08:45 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ namespace ft
 
     /*
     ** @brief The basic struct of is_integral has
-    ** has a boolean that contain true if the type is from.
+    ** has a boolean ("value") that contain true if the type is from.
     ** the list, otherwise false.
     */
     template <bool is_integral, typename T>
@@ -1047,6 +1047,24 @@ namespace ft
             const reverse_iterator<Iterator>& lhs,
             const reverse_iterator<Iterator>& rhs) { return (lhs.base() - rhs.base()); }
 
+
+    class bit_reference
+    {
+
+    };
+
+    template <typename T>
+    class bit_pointer
+    {
+
+    };
+
+    template <typename T>
+    class bit_iterator
+    {
+
+    };
+    
 } /* End of namespace */
 
 # endif

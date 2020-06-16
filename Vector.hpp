@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/15 19:54:40 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/16 15:49:03 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ namespace ft
             ** Can be described as te number of element between two pointers.
             ** (Pointer to an element contains its address).
             */
-            typedef typename ft::random_access_iterator<T>::difference_type    difference_type; 
+            typedef typename ft::iterator_traits<iterator>::difference_type    difference_type; 
 
             /*
             ** An unsigned integral type that can represent any
@@ -220,31 +220,50 @@ namespace ft
             }
             
             /*
-            ** Copy
+            ** @brief Copy.
+            ** Construct a vector, initializing its contents
+            ** with a copy of each element of "x" elements in 
+            ** the same order. Use a copy of "x" allocator.
+            **
+            ** @param "x" the Vector container to copy.
             */
-            /** ________________________ WIP ________________________
-             * Need const iterator
-            */
-            Vector (const Vector& x);
-            // :
-            //     _alloc(x._alloc),
-            //     _start(u_nullptr),
-            //     _end(u_nullptr),
-            //     _end_capacity(u_nullptr)
-            // {
-            //     // _start = _alloc.allocate( x.capacity() );
-            //     // _end_capacity = _start + x.capacity();
-            //     // _end = _start;
-            //     iterator x_it;
-            //     for (x_it = x.begin(); x_it >= x.begin(); x_it--)
-            //         this->push_back(*x_it);
-            // }
+            Vector (const Vector& x)
+            :
+                _alloc(x._alloc),
+                _start(u_nullptr),
+                _end(u_nullptr),
+                _end_capacity(u_nullptr)
+            {
+                this->insert(this->begin(), x.begin(), x.end());
+            }
             
-            /** ________________________ WIP ________________________*/
-            virtual ~Vector() { _alloc.deallocate(_start, this->capacity()); };
-            
-            /** ________________________ WIP ________________________*/
-            Vector &operator=(const Vector& op);
+            /*
+            ** @brief Destroy the container object.
+            ** Destroy all elements in the container and deallocate
+            ** the container capacity.
+            */ 
+            virtual ~Vector()
+            {
+                this->clear();
+                _alloc.deallocate(_start, this->capacity());
+            }
+                        
+            /*
+            ** @brief Assigns contents from "x" to the container.
+            ** Replace content of this and according size.
+            ** All elements before the call are destroyed.
+            **
+            ** @param x the container which we inspire.
+            ** @return *this.
+            */ 
+            Vector &operator=(const Vector& x)
+            {
+                if (x == *this)
+                    return (*this);
+                this->clear();
+                this->insert(this->end(), x.begin(), x.end());
+                return (*this);
+            }
 
             // Iterators:
 
@@ -369,7 +388,16 @@ namespace ft
             */
             size_type   max_size(void) const { return (U_SIZE_MAX / sizeof(T)); }
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Resizes the container so that it contain "n"
+            ** element. If "n" is smaller than the actual size
+            ** the container is reduced to "n". If it is greater,
+            ** val is inserting at the end and according capacity
+            ** to allocation calcul system.
+            **
+            ** @param n the new size of the container.
+            ** @param val the element to set.
+            */
             void        resize (size_type n, value_type val = value_type())
             {
                 if (n > this->max_size())
@@ -406,7 +434,14 @@ namespace ft
             */
             bool        empty (void) const { return (size() == 0 ? true : false); }
 
-            /** ________________________ WIP ________________________*/
+            /*
+            ** @brief Request that the vector capacity be at least
+            ** enougth to contain "n" element.
+            ** If n is greater that the actual capacity a reallocation
+            ** can be happen, otherwise nothing happen.
+            **
+            ** @param n the capacity asked.
+            */
             void        reserve (size_type n)
             {
                 if (n > this->max_size())
@@ -530,11 +565,50 @@ namespace ft
             ** New elements are contruct from each of the elements in tht
             ** range, between first and last, in the same order.
             **
-            ** @param
+            ** @param first the first element in the range.
+            ** @param last the last element in the range.
             */
-            // /** ________________________ WIP ________________________*/
-            // template <class InputIterator>
-            //     void assign (InputIterator first, InputIterator last);
+            template <class InputIterator>
+                void assign (InputIterator first, InputIterator last,
+                typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+                {
+                    bool is_valid;
+                    if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value))
+                        throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                    this->clear();
+                    if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value))
+                    {
+                        std::cout << "COMPLEX" << std::endl;
+                    }
+                    else
+                    {
+                        size_type dist = ft::distance(first, last);
+                        if (size_type(_end_capacity - _start) >= dist)
+                        {
+                            for(; &(*first) != &(*last); first++, _end++)
+                                _alloc.construct(_end, *first);
+                        }
+                        else
+                        {
+                            pointer new_start = pointer();
+                            pointer new_end = pointer();
+                            pointer new_end_capacity = pointer();
+
+                            new_start = _alloc.allocate(dist);
+                            new_end = new_start;
+                            new_end_capacity = new_start + dist;
+
+                            for(; &(*first) != &(*last); first++, new_end++)
+                                _alloc.construct(new_end, *first);
+                            
+                            _alloc.deallocate(_start, this->capacity());
+
+                            _start = new_start;
+                            _end = new_end;
+                            _end_capacity = new_end_capacity;
+                        }
+                    }
+                }
             
             /*
             ** @brief Fill assign.
@@ -549,7 +623,7 @@ namespace ft
                 this->clear();
                 if (n == 0)
                     return ;
-                if (size_type(_end_capacity  - _end) >= n)
+                if (size_type(_end_capacity - _start) >= n)
                 {
                     while (n)
                     {
@@ -850,14 +924,17 @@ namespace ft
                 pointer save_start = x._start;
                 pointer save_end = x._end;
                 pointer save_end_capacity = x._end_capacity;
+                allocator_type save_alloc = x._alloc;
 
                 x._start = this->_start;
                 x._end = this->_end;
                 x._end_capacity = this->_end_capacity;
+                x._alloc = this->_alloc;
 
                 this->_start = save_start;
                 this->_end = save_end;
                 this->_end_capacity = save_end_capacity;
+                this->_alloc = save_alloc;
             }
 
             /*
@@ -955,7 +1032,53 @@ namespace ft
     
     template <class T, class Alloc>
         void swap (Vector<T,Alloc>& x, Vector<T,Alloc>&y);
+
+    // Template specializations:
+    template <class Alloc>
+    class Vector<bool, Alloc>
+    {
+        public:
+            
+            /* The first template parameter */
+            typedef bool        value_type;
+
+            /* The second template parameter */
+            typedef Alloc       allocator_type;
+
+            /* A specific member class */
+            typedef ft::bit_reference reference;
+
+            /* A bool */
+            typedef bool        const_reference;
+
+            /* A type that simulates pointer behavior */
+            typedef ft::bit_pointer<value_type> pointer;
+
+            /* A type that simulate pointer to const behavior */
+            typedef ft::bit_pointer<const value_type> const_pointer;
+
+            /* A type that simulate random access iterator behavior */
+            typedef ft::bit_iterator<value_type>    iterator;
+
+            /* A type that simulates random access iterator to cont behavior */
+            typedef ft::bit_iterator<const value_type> const_iterator;
+
+            /* Reverse iterator */
+            typedef ft::reverse_iterator<iterator> reverse_iterator;
+
+            /* Const reverse iterator */
+            typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+
+            /* A signed integral type */
+            typedef ptrdiff_t     difference_type;
+
+            /* An unsigned itegral type */
+            typedef size_t          size_type;
+            
+    };
+
 }
+
 // =============================================================================
 
 #endif
