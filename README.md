@@ -3,4 +3,3 @@ Remind todo :
 
  - [ ] Vector
 	 - [ ] Complex iteration
-	 - [ ] Boolean vector
