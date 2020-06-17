@@ -1,0 +1,11 @@
+MAP:
+- Un container qui stock des elements en assicoant une clé et un element (key value , mapped value),
+    suivant un order spécific.
+- La "key value" est générallement pour le tri et donnée une identité unique pour chaque elements.
+- Les "values" peuvent être de types différents mais groupé par le type de membre : value_type qui est un
+    type pair :
+            typedef pair<const Key, T> value_type
+- Les éléments sont trié selon un critère de classement spécifié par l'objet de comparaison
+    (type Compare).
+- Les élements sont accessible directement grâce à la clé correspondante en utilisant un operator "[]"
+- Est généralement inplémentées sous formes d'arbres de recherche binaires.

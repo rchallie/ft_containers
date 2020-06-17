@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/16 18:42:01 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/17 22:43:17 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <typeinfo>
 
 #  define U_SIZE_MAX std::numeric_limits<size_t>::max()
-#  define U_SIZE_MAXU std::numeric_limits<unsigned long>::max()
 
 /*
 ** @brief Type of the null pointer constant.
@@ -29,7 +28,7 @@
 ** From : (Take a look)
 ** https://www.amazon.com/dp/0201924889
 */
-class nullptr_t
+static class nullptr_t
 {
     public:
         /*
@@ -75,6 +74,209 @@ namespace ft
             std::ostringstream ss;
             ss << n;
             return (ss.str());
+        }
+    
+    /*
+    ** Base class for standard binary function objects.
+    ** (Doc = http://www.cplusplus.com/reference/functional/binary_function/?kw=binary_function)
+    ** It have no operator "()" like functin objects, 
+    ** it is up to the class deriving from it to define it.
+    ** It just has 3 public data memebers that are typedefs of the
+    ** template parameters.
+    ** (the operator "()", permet to use a class with the same syntax
+    ** as a function call).
+    */
+    template <class Arg1, class Arg2, class Result>
+        struct binary_function
+        {
+            /* The first argument type */
+            typedef Arg1 first_argument_type;
+
+            /* The second arguement type */
+            typedef Arg2 second_argument_type;
+
+            /* The result type */
+            typedef Result result_type;
+        };
+    
+    /*
+    ** A binary function object class who will return
+    ** whether the first arguement compares less than the second.
+    ** (using "<" operator).
+    */
+    template <class T>
+        struct less : binary_function<T, T, bool>
+        {
+            bool operator() (const T& x, const T& y) const { return (x < y); }
+        };
+
+    /*
+    ** Couple a pair of values, which may be of different types
+    ** (T1 and T2)
+    */
+    template <class T1, class T2>
+        struct pair
+        {
+            public :
+
+                // Member types :
+
+                /* The first template argument type */
+                typedef T1 first_type;
+
+                /* The second template argument type */
+                typedef T2 second_type;
+
+                // Member variables :
+
+                /* The first value in the pair */
+                T1 first;
+
+                /* The second value in the pair */
+                T2 second;
+
+                /*
+                ** @brief Default.
+                ** Construct a pair object with its element
+                ** value-initialized.
+                */
+                pair()
+                :
+                    first(),
+                    second()
+                {}
+
+                /*
+                ** @brief Copy.
+                ** The pair is initialized with the content
+                ** of "pr". The "pr" first is passed to this
+                ** first, same for second of each.
+                **
+                ** @param pr the pair to copy.
+                */
+                template<class U, class V>
+                    pair (const pair<U, V>& pr)
+                    :
+                        first(pr.first),
+                        second(pr.second)
+                    {}
+
+                /*
+                ** @brief Initialization.
+                ** Member "first" is constructed with a.
+                ** Member "second" is constructed with b.
+                **
+                ** @param a to member first.
+                ** @param b to member second.
+                */
+                pair (const first_type& a, const second_type& b)
+                :
+                    first(a),
+                    second(b)
+                {}
+
+                /*
+                ** @brief Assigns "pr" member (first, second) to this.
+                **
+                ** @param pr the pair object to copy.
+                */
+                pair& operator= (const pair& pr)
+                {
+                    first = pr.first;
+                    second = pr.second;
+                    return (*this);
+                }
+        };
+    
+    /*
+    ** @brief Equal comparison between two pair object.
+    **
+    ** @param lhs Base of comparison.
+    ** @param rhs To compare with "lsh".
+    ** @return True if the condition is hold, otherwise false.
+    */
+    template <class T1, class T2>
+        bool operator== (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+        {
+            return (lhs.first == rhs.first && lhs.second == rhs.second);
+        }
+
+    /*
+    ** @brief Difference comparison between two pair object.
+    **
+    ** @param lhs Base of comparison.
+    ** @param rhs To compare with "lsh".
+    ** @return True if the condition is hold, otherwise false.
+    */
+    template <class T1, class T2>
+        bool operator!= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+        {
+            return !(lhs == rhs);
+        }
+    
+    /*
+    ** @brief Inferior comparison between two pair object.
+    **
+    ** @param lhs Base of comparison.
+    ** @param rhs To compare with "lsh".
+    ** @return True if the condition is hold, otherwise false.
+    */
+    template <class T1, class T2>
+        bool operator<  (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+        {
+            return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
+        }
+
+    /*
+    ** @brief Inferior or equal comparison between two pair object.
+    **
+    ** @param lhs Base of comparison.
+    ** @param rhs To compare with "lsh".
+    ** @return True if the condition is hold, otherwise false.
+    */
+    template <class T1, class T2>
+        bool operator<= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+        {
+            return !(rhs < lhs);
+        }
+
+    /*
+    ** @brief Superior comparison between two pair object.
+    **
+    ** @param lhs Base of comparison.
+    ** @param rhs To compare with "lsh".
+    ** @return True if the condition is hold, otherwise false.
+    */
+    template <class T1, class T2>
+        bool operator>  (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+        {
+            return (rhs < lhs);
+        }
+
+    /*
+    ** @brief Superior or equal comparison between two pair object.
+    **
+    ** @param lhs Base of comparison.
+    ** @param rhs To compare with "lsh".
+    ** @return True if the condition is hold, otherwise false.
+    */
+    template <class T1, class T2>
+        bool operator>= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+        {
+            return !(lhs < rhs);
+        }
+    
+    /*
+    ** @bref Construct a pair object with
+    ** "x" and "y".
+    **
+    ** @param x, y elements. (cna have different types).
+    ** @return the pair object.
+    */
+    template <class T1, class T2>
+        ft::pair<T1,T2> make_pair(T1 x, T2 y)
+        {
+            return (ft::pair<T1, T2>(x, y));
         }
     
     /*
@@ -452,6 +654,29 @@ namespace ft
                 typedef Category    iterator_category;
         };
 
+    template <class T>
+        class bidirectional_iterator : ft::iterator<ft::bidirectional_iterator_tag, T>
+        {  
+            /* Category of the iterator. */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category     iterator_category;
+            
+            /* Type of elements pointed. */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type            value_type;
+            
+            /* Type to represent the difference between two iterators. */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type       difference_type;
+            
+            /* Type to represent a pointer to an element pointed */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer               pointer;
+            
+            /* Type to represent a reference to an element pointed */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference             reference;
+            
+            private:
+                /* Element pointed by the iterator. */
+                pointer _elem;
+        };
+
     /*
     ** @brief Random-access iterators allow to access elements at an
     ** arbitrary offset position relative to the element they point
@@ -532,16 +757,6 @@ namespace ft
                 /* Destructor: */
                 virtual ~random_access_iterator() {}
 
-                /*
-                ** @brief Comparation for equivalence of equality.
-                **
-                ** @param rhs the const reference to the random access
-                ** iterator to compare.
-                ** @return true if the element pointed by the iretator is the
-                ** same than "rhs", otherwise false.
-                */
-                bool operator==(const random_access_iterator& rhs) { return (rhs._elem == _elem); }
-            
                 /*
                 ** @brief Comparation for equivalence of inequality.
                 **
@@ -728,9 +943,9 @@ namespace ft
                 */
                 reference operator[](difference_type n) { return (*(operator+(n))); }
 
-            private:
-                /* Element pointed by the iterator. */
-                pointer _elem;
+                private:
+                    /* Element pointed by the iterator. */
+                    pointer _elem;
         };
 
     /*
@@ -960,7 +1175,7 @@ namespace ft
     **
     ** @param lhs Base of comparison.
     ** @param rhs To compare with "lsh".
-    ** @return True if the condition is hols, otherwise false.
+    ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
         bool operator== (const reverse_iterator<Iterator>& lhs,
@@ -971,7 +1186,7 @@ namespace ft
     **
     ** @param lhs Base of comparison.
     ** @param rhs To compare with "lsh".
-    ** @return True if the condition is hols, otherwise false.
+    ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
         bool operator!= (const reverse_iterator<Iterator>& lhs,
@@ -982,7 +1197,7 @@ namespace ft
     **
     ** @param lhs Base of comparison.
     ** @param rhs To compare with "lsh".
-    ** @return True if the condition is hols, otherwise false.
+    ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
         bool operator<  (const reverse_iterator<Iterator>& lhs,
@@ -993,7 +1208,7 @@ namespace ft
     **
     ** @param lhs Base of comparison.
     ** @param rhs To compare with "lsh".
-    ** @return True if the condition is hols, otherwise false.
+    ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
         bool operator<= (const reverse_iterator<Iterator>& lhs,
@@ -1004,7 +1219,7 @@ namespace ft
     **
     ** @param lhs Base of comparison.
     ** @param rhs To compare with "lsh".
-    ** @return True if the condition is hols, otherwise false.
+    ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
         bool operator>  (const reverse_iterator<Iterator>& lhs,
@@ -1015,7 +1230,7 @@ namespace ft
     **
     ** @param lhs Base of comparison.
     ** @param rhs To compare with "lsh".
-    ** @return True if the condition is hols, otherwise false.
+    ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
         bool operator>= (const reverse_iterator<Iterator>& lhs,
@@ -1098,23 +1313,6 @@ namespace ft
             }
             return (first2 != last2);
         }
-
-    // class bit_reference
-    // {
-
-    // };
-
-    // template <typename T>
-    // class bit_pointer
-    // {
-
-    // };
-
-    // template <typename T>
-    // class bit_iterator
-    // {
-
-    // };
     
 } /* End of namespace */
 

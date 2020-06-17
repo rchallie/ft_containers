@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/16 21:59:30 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/17 19:26:55 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 // =============================================================================
 
 // CLASS DEFINITIONS ===========================================================
+
 namespace ft
 {
     template < class T, class Alloc = std::allocator<T> >
@@ -323,7 +324,7 @@ namespace ft
                 if (this->empty())
                     return (this->begin());
                 return (_end);
-            };
+            }
 
             /*
             ** @brief Give a reverse iterator pointing to the last element
@@ -1082,54 +1083,6 @@ namespace ft
         {
             x.swap(y);
         }
-
-    // Template specializations:
-    // template <class Alloc>
-    // class Vector<bool, Alloc>
-    // {
-    //     public:
-            
-    //         /* The first template parameter */
-    //         typedef bool        value_type;
-
-    //         /* The second template parameter */
-    //         typedef Alloc       allocator_type;
-
-    //         /* A specific member class */
-    //         typedef ft::bit_reference reference;
-
-    //         /* A bool */
-    //         typedef bool        const_reference;
-
-    //         /* A type that simulates pointer behavior */
-    //         typedef ft::bit_pointer<value_type> pointer;
-
-    //         /* A type that simulate pointer to const behavior */
-    //         typedef ft::bit_pointer<const value_type> const_pointer;
-
-    //         /* A type that simulate random access iterator behavior */
-    //         typedef ft::bit_iterator<value_type>    iterator;
-
-    //         /* A type that simulates random access iterator to cont behavior */
-    //         typedef ft::bit_iterator<const value_type> const_iterator;
-
-    //         /* Reverse iterator */
-    //         typedef ft::reverse_iterator<iterator> reverse_iterator;
-
-    //         /* Const reverse iterator */
-    //         typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-
-    //         /* A signed integral type */
-    //         typedef ptrdiff_t     difference_type;
-
-    //         /* An unsigned itegral type */
-    //         typedef size_t          size_type;
-
-    //         explicit Vector (const allocator_type& alloc = allocator_type());
-        
-            
-    // };
-
 }
 
 // =============================================================================

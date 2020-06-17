@@ -34,4 +34,4 @@ VECTEUR:
 
 - Le conteneur Vecteur est très utile pour la facilité à laquelle on peut accéder aux éléments qu'il contient. Et est
   très éfficace quand il s'agit d'ajouté/supprimé des éléments à la fin de la liste, mais pas forcement quand il faut insérer ou
-  supprimé des éléments entre son début et sa fin. 
+  supprimé des éléments entre son début et sa fin.
