@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/17 22:43:17 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/24 22:34:19 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -758,6 +758,16 @@ namespace ft
                 virtual ~random_access_iterator() {}
 
                 /*
+                ** @brief Comparation for equivalence of equality.
+                **
+                ** @param rhs the const reference to the random access
+                ** iterator to compare.
+                ** @return true if the element pointed by the iretator is 
+                ** the same than "rhs", otherwise false.
+                */
+                bool operator==(const random_access_iterator& rhs) { return (rhs._elem == _elem); }
+
+                /*
                 ** @brief Comparation for equivalence of inequality.
                 **
                 ** @param rhs the const reference to the random access
@@ -1314,6 +1324,781 @@ namespace ft
             return (first2 != last2);
         }
     
+    // Node :
+
+    template <typename T>
+    struct Node
+    {
+        public :
+
+            /* First template argument, the type of stocked value */
+            typedef T   value_type;
+
+            value_type value;
+            Node* left;
+            Node* right;
+
+            /*
+            ** @brief Default.
+            ** Create a Node with default initisialized value.
+            ** Left and right branch pointer to a "u_nullptr" (t_nullptr).
+            */
+            Node ()
+            :
+                value(),
+                left(u_nullptr),
+                right(u_nullptr)
+            {}
+            
+            /*
+            ** @brief Value.
+            ** Create a Node with value defined by a copy of "val".
+            ** Left and right branch pointer to a "u_nullptr" (t_nullptr).
+            **
+            ** @param val the value to copy.
+            */
+            Node (const value_type& val)
+            :
+                value(val),
+                left(u_nullptr),
+                right(u_nullptr)
+            {}
+
+            /*
+            ** @brief Copy.
+            ** Create a Node that a copy of "nd".
+            ** The value is initalized by a copy of "nd" value.
+            ** Left and right branch point to the same than "nb" branches.
+            **
+            ** @param nd the Node to copy.
+            */
+            Node (const Node& nd)
+            :
+                value(nd.value),
+                left(nd.left),
+                right(nd.right)
+            {}
+
+            virtual ~Node() {}
+
+            /*
+            ** @brief Equal operator.
+            ** Create a Node that a copy of "nd".
+            ** The value is initalized by a copy of "nd" value.
+            ** Left and right branch point to the same than "nb" branches.
+            **
+            ** @param nd the Node to copy.
+            ** @return *this.
+            */
+            Node &operator=(const Node& nd)
+            {
+                if (nd == *this)
+                    return (*this);
+                
+                this->value = nd.value;
+                this->left = nd.left;
+                this->right = nd.right;
+                
+                return (*this);
+            }
+
+            /*
+            ** @brief Compare two node to know
+            ** if they contains the same value.
+            **
+            ** @param nd the node to compare.
+            ** @return true if the value are the same
+            ** otherwise no.
+            */
+            bool operator==(const Node& nd)
+            {
+                if (value == nd.value)
+                    return (true);
+                return (false);
+            }
+    };
+
+    // Binary Search Tree :
+
+    /*
+    ** Iterator class for binary search tree.
+    ** This is a bidirectional iterator.
+    */
+    template <typename T>
+    class BST_iterator : ft::iterator<ft::bidirectional_iterator_tag, T>
+    {
+        public:
+
+            /* The iterator category */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category iterator_category;
+
+            /* The value_type pointed by the iterator (BST)*/
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type    value_type;
+
+            /* The difference type */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type   difference_type;
+
+            /* The pointer to the value */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer   pointer;
+
+            /* The reference to the value */
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference reference;
+    
+            //Node
+
+            /* A Binary search tree contain node that contain a type of value */ 
+            typedef typename value_type::value_type     bst_value_type;
+
+            /* A binary search tree contain node, that a pointer type to a node */
+            typedef typename value_type::node_pointer   bst_node_pointer;
+            
+            /*
+            ** @brief Default.
+            ** Create an iterator that pointing to inisialized 
+            ** binary search tree.
+            */
+            BST_iterator()
+            :
+                _bst(),
+                _elem()
+            {}
+
+            /*
+            ** @brief Create an iterator
+            ** from "bst" that has a binary search tree.
+            **
+            ** @param bst the binary search tree that will be iterate.
+            */
+            BST_iterator(const value_type bst)
+            :
+                _bst(bst),
+                _elem(bst->get_lower_node())
+            {}
+
+            /*
+            ** @brief Copy constructor.
+            ** Create a new Binary search tree iterator to be 
+            ** a copy of another.
+            **
+            ** @param bst_it the binary search tree to be inpired by.
+            */
+            BST_iterator(const BST_iterator& bst_it)
+            :
+                _bst(bst_it._bst),
+                _elem(bst_it._elem)
+            {}
+
+            // Added for subject
+            virtual ~BST_iterator() { }
+
+            /*
+            ** @brief Assignement operator.
+            ** Create an iterator that will iterate the same than
+            ** "bst_it".
+            **
+            ** @param bst_it the binary search tree to be inpired by.
+            ** @return a reference to this.
+            */
+            BST_iterator &operator=(const BST_iterator& bst_it)
+            {
+                if (bst_it == *this)
+                    return (*this);
+                this->_bst = &bst_it._bst;
+                this->_elem = bst_it._elem;
+                return (*this);
+            }
+
+            /*
+            ** @brief Strictment equal operator.
+            ** Return a boolean that contain if this iterator
+            ** and other one contain to equal binary search tree.
+            **
+            ** @param bst_it the other binaray search tree iterator.
+            ** @return true if the two iterator iterate on two equal
+            ** tree, otherwise false.
+            */
+            bool operator==(const BST_iterator& bst_it)
+            { return (_bst == bst_it._bst); }
+
+            /*
+            ** @brief Different operator.
+            ** Return a boolean that contain if this iterator
+            ** and other one contain are two different binary search tree.
+            **
+            ** @param bst_it the other binaray search tree iterator.
+            ** @return true if the two iterator iterate on two different
+            ** tree, otherwise false.
+            */
+            bool operator!=(const BST_iterator& bst_it)
+            { return (_bst != bst_it._bst); }
+
+            /*
+            ** @brief Give a reference to the value that contain
+            ** the binary search tree (value on a node) at the iterator
+            ** position.
+            **
+            ** @return the const reference.
+            */
+            bst_value_type& operator*() const
+            { return (_elem->value); }
+
+            /*
+            ** @brief Give a pointer to the value that contain
+            ** the binary search tree (value on a node) at the iterator
+            ** position.
+            **
+            ** @return the const pointer.
+            */
+            bst_value_type* operator->() const
+            { return (&_elem->value); }
+
+            /*
+            ** @brief Increment the iterator to the next value
+            ** after the value in the tree at iterator position.
+            **
+            ** @return a reference to this.
+            */
+            BST_iterator& operator++(void)
+            {
+                _elem = _bst.next(_elem);
+                return (*this);
+            }
+
+            /*
+            ** @brief Post increment the iterator to the next value
+            ** after the value in the tree at iterator position.
+            **
+            ** @return this before the incrementation.
+            */
+            BST_iterator operator++(int)
+            {
+                BST_iterator tmp(*this);
+                operator++();
+                return (tmp);
+            }
+
+            /*
+            ** @brief Decrement the iterator to the previous value
+            ** before the value in the tree at iterator position.
+            **
+            ** @return a reference to this.
+            */
+            BST_iterator& operator--(void)
+            {
+                _elem = _bst.prev(_elem);
+                return (*this);
+            }
+            /*
+            ** @brief Post decrement the iterator to the previous value
+            ** before the value in the tree at iterator position.
+            **
+            ** @return this before the incrementation.
+            */
+            BST_iterator operator--(int)
+            {
+                BST_iterator tmp(*this);
+                operator--();
+                return (tmp);
+            }
+
+        private:
+
+            value_type _bst;
+            bst_node_pointer _elem;
+    };
+    
+    /*
+    ** Iterator class for const binary search tree.
+    ** The difference between this class and normal binary search tree iterator
+    ** is that the binary search tree used by this iterator is const, the value
+    ** pointed by the tree are const, and the given pointer are const.
+    ** This is a bidirectional iterator.
+    ** Refere to BST_iterator.
+    */
+    template <typename T>
+    class BST_const_iterator : ft::iterator<ft::bidirectional_iterator_tag, T>
+    {
+        public:
+
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category iterator_category;
+
+            typedef const typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type    value_type;
+
+            typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type   difference_type;
+
+            typedef const typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer   pointer;
+
+            typedef const typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference reference;
+    
+            //Node
+            typedef const typename value_type::value_type     bst_value_type;
+
+            typedef const typename value_type::node_pointer   bst_node_pointer;
+            
+            BST_const_iterator()
+            :
+                _elem()
+            {}
+
+            BST_const_iterator(const value_type bst)
+            :
+                _bst(bst),
+                _elem(bst->get_lower_node())
+            {}
+
+            // Added for subject
+            virtual ~BST_const_iterator() { }
+
+            BST_const_iterator &operator=(const BST_const_iterator& bst_it)
+            {
+                if (bst_it == *this)
+                    return (*this);
+                this->_bst = &bst_it._bst;
+                this->_elem = bst_it._elem;
+                return (*this);
+            }
+
+            bool operator==(const BST_const_iterator& bst_it)
+            { return (_bst == bst_it._bst); }
+
+            bool operator!=(const BST_const_iterator& bst_it)
+            { return (_bst != bst_it._bst); }
+
+            const bst_value_type& operator*() const
+            { return (_elem->value); }
+
+            bst_node_pointer operator->() const
+            { return (&_elem->value); }
+
+            const BST_const_iterator& operator++(void)
+            {
+                _elem = _bst.next(_elem);
+                return (*this);
+            }
+
+            BST_const_iterator operator++(int)
+            {
+                BST_const_iterator tmp(*this);
+                operator++();
+                return (tmp);
+            }
+
+            BST_const_iterator& operator--(void)
+            {
+                _elem = _bst.prev(_elem);
+                return (*this);
+            }
+
+            BST_const_iterator operator--(int)
+            {
+                BST_const_iterator tmp(*this);
+                operator--();
+                return (tmp);
+            }
+
+        private:
+
+            value_type _bst;
+            bst_node_pointer _elem;
+    };
+    
+    /*
+    ** Binary Search Tree:
+    ** Classement method of nodes values in tree. If a node value is
+    ** superior to the a node, it's classed at right, otherwise at left
+    ** if it's lower. Like :
+    **
+    **                  42
+    **                 /  \
+    **               15    58
+    **              /  \
+    **             2    26    
+    */
+    template <typename T, class Node = ft::Node<T>,
+        class Type_Alloc = std::allocator<T>, class Node_Alloc = std::allocator<Node>,
+        class Compare = ft::less<T> >
+    class Binary_search_tree
+    {
+        public :
+
+            /* Self type */
+            typedef Binary_search_tree  self;
+
+            /* A reference to the self type */
+            typedef self&   self_reference;
+            
+            /* The first template argument */
+            typedef T   value_type;
+
+            /* The second template argument */
+            typedef Node    node_type;
+
+            typedef node_type*  node_pointer;
+
+            /* The third template argument */
+            typedef Type_Alloc       value_allocator_type;
+
+            /* The fourth template argument */
+            typedef Node_Alloc       node_allocator_type;
+
+            /* The fifth template argument */
+            typedef Compare     value_compare;
+
+            /* Iterator of the binary search tree */
+            typedef BST_iterator<self> iterator;
+
+            /* Iterator pointing to a const self. Everything in this is
+                const, the BST, the node, the value pointed by the node */
+            typedef BST_const_iterator<const self> const_iterator;
+
+            /*
+            ** @brief Default constructor.
+            ** Create a binary search tree, pointing to a
+            ** null_ptr.
+            */
+            Binary_search_tree ()
+            :
+                _root(u_nullptr)
+            {}
+
+            /*
+            ** @brief From value constructor.
+            ** Create a binary search tree that will
+            ** point to an object of type from value_type.
+            **
+            ** @param val the value to point (copy).
+            */
+            Binary_search_tree (const value_type& val)
+            :
+                _root(_BST_new_node(val))
+            {}
+
+            /*
+            ** @brief From node constructor.
+            ** Create a binary search tree that will point
+            ** to an object from a node. That will create a copy
+            ** from the node.
+            **
+            ** @param root the node containing the value to point.
+            */
+            Binary_search_tree (const node_type& root)
+            :
+                _root(_BST_new_node(root.value, root.left, root.right))
+            {}
+
+            /*
+            ** @brief Copy constructor.
+            ** Create an binary search tree from another by copying it.
+            **
+            ** @param bst the binary search tree to copy.
+            */
+            Binary_search_tree (const Binary_search_tree& bst)
+            :
+                _root(bst._root),
+                _alloc_node(bst._alloc_node)
+            {}
+
+            /* Destructor */
+            virtual ~Binary_search_tree()
+            { }
+
+            /*
+            ** @brief Assignement operator.
+            ** Assign values of this to "bst" values.
+            ** 
+            ** @param bst the binary search tree to inspire.
+            ** @return a reference to this. 
+            */
+            self_reference operator=(const Binary_search_tree& bst)
+            {
+                if (bst == *this)
+                    return (*this);
+
+                this->_alloc_node = bst._alloc_node;
+                this->_root = bst._root;
+
+                return (*this);
+            }
+            
+            /*
+            ** @brief Insert value on the tree.
+            **
+            ** @param val the value to insert.
+            */
+            void insert(const value_type& val)
+            { this->_root = _BST_insert(val, this->_root); }
+
+            /*
+            ** @brief Search the value on the tree
+            ** and give a pointer to the node containing
+            ** the value.
+            **
+            ** @param val the value to search.
+            ** @return a pointer to the node that containing
+            ** the value. If the value doesn't exist, that return
+            ** a u_nullptr. 
+            */
+            node_pointer search(const value_type& val)
+            { return (_BST_search(val, this->_root)); }
+
+            /*
+            ** @brief Remove the value from the tree.
+            **
+            ** @param val the value to remove.
+            */
+            void remove(const value_type& val)
+            { _BST_remove_node(val, _root); }
+
+            /*
+            ** @brief Give a pointer to the node that 
+            ** is the root of the tree.
+            **
+            ** @return the pointer.
+            */
+            node_pointer get_root_node(void)
+            { return (this->_root); }
+
+            /*
+            ** @brief Get the lowest value of the tree.
+            **
+            ** @return a pointer to the node that contain the
+            ** lowest value.
+            */
+            node_pointer get_lower_node(void) const
+            { return (_BST_get_lower_node(this->_root)); }
+
+            /*
+            ** @brief Get the higher value of the tree.
+            **
+            ** @return a pointer to the node that contain the
+            ** highest value.
+            */
+            node_pointer get_higher_node(void) const
+            { return (_BST_get_higher_node(this->_root)); }
+
+            /*
+            ** @brief Get the node that contain the next value
+            ** after that of "find_after".
+            **
+            ** @param find_after a pointer to a node
+            ** that contain the value of reference to find the next.
+            ** @return a pointer to the node that contain the next value.
+            */
+            node_pointer next(node_pointer find_after)
+            { return (_BST_next(this->_root, find_after)); }
+
+            /*
+            ** @brief Get the node that contain the previous value
+            ** after that of "find_after".
+            **
+            ** @param find_after a pointer to a node
+            ** that contain the value of reference to find the previous.
+            ** @return a pointer to the node that contain the previous value.
+            */
+            node_pointer prev(node_pointer find_before)
+            { return (_BST_prev(this->_root, find_before)); }
+
+            /*
+            ** @brief Strictment equal operator.
+            ** Return a bool to know if two bst contains the sames
+            ** values.
+            **
+            ** @param bst the tree to compare.
+            ** @return true if the trees are the same, otherwise no.
+            */
+            bool operator==(const ft::Binary_search_tree<T>& bst)
+            { return (_BST_operator_strict_equal(this->_root, bst._root)); }
+
+        private:
+
+            node_pointer _root;
+            node_allocator_type _alloc_node;
+            value_compare comp;
+
+            /* Refere to insert() */
+            node_pointer _BST_insert(const value_type& val, node_pointer root)
+            {
+                if (root == u_nullptr)
+                    return (_BST_new_node(val));
+                else if (comp(val, root->value))
+                    root->left = _BST_insert(val, root->left);
+                else
+                    root->right = _BST_insert(val, root->right);
+                return (root);
+            }
+
+            /* Refere to search() */
+            node_pointer _BST_search(const value_type& val, node_pointer root)
+            {
+                if (root == u_nullptr || root->value == val)
+                    return (root);
+                else if (comp(val, root->value))
+                    return (_BST_search(val, root->left));
+                else
+                    return (_BST_search(val, root->right));
+            }
+
+            /*
+            ** @brief Create a new node for the tree.
+            ** This node contain "val".
+            **
+            ** @param the value that the node will contain.
+            ** @param left, right the node that the new node will
+            ** point at left/right.
+            ** @return a pointer to the new node.
+            */
+            node_pointer _BST_new_node(const value_type& val,
+                node_pointer left = u_nullptr, node_pointer right = u_nullptr)
+            {
+                node_pointer nd;
+                nd = _alloc_node.allocate( 1 );
+                nd->value = val;
+                nd->left = left;
+                nd->right = right;
+                return (nd);
+            }
+
+            /* Refere to remove() */
+            node_pointer _BST_remove_node(const value_type& val, node_pointer root)
+            {
+                if (root == u_nullptr)
+                    return (root);
+                
+                if (comp(val, root->value))
+                    root->left = _BST_remove_node(val, root->left);
+                else if (!(comp(val, root->value)) && val != root->value)
+                    root->right = _BST_remove_node(val, root->right);
+                else
+                {
+                    if (root->left == u_nullptr)
+                    {
+                        node_pointer tmp = root->right;
+                        _alloc_node.deallocate(root, 1);
+                        return (tmp);
+                    }
+                    else if (root->right == u_nullptr)
+                    {
+                        node_pointer tmp = root->left;
+                        _alloc_node.deallocate(root, 1);
+                        return (tmp);
+                    }
+
+                    node_pointer tmp = root->right;
+
+                    for (; tmp != u_nullptr && tmp->left != u_nullptr; tmp = tmp->left);
+                    
+                    root->value = tmp->value;
+
+                    _BST_remove_node(tmp->value, root->right);
+                }
+
+                return (root);
+            }
+
+            /* Refere to get_lower_node() */
+            node_pointer _BST_get_lower_node(node_pointer root) const
+            {
+                while (root != u_nullptr && root->left != u_nullptr)
+                    root = root->left;
+                return (root);
+            }
+
+            /* Refere to get_higher_node() */
+            node_pointer _BST_get_higher_node(node_pointer root) const
+            {
+                while (root != u_nullptr && root->right != u_nullptr)
+                    root = root->right;
+                return (root);
+            }
+
+            /* Refere to next() */
+            node_pointer _BST_next(node_pointer root, node_pointer after)
+            {
+                if (after->right != u_nullptr)
+                    return (_BST_get_lower_node(after->right));
+                
+                node_pointer rtn = u_nullptr;
+
+                while (root != u_nullptr)
+                {
+                    if (after->value < root->value)
+                    {
+                        rtn = root;
+                        root = root->left;
+                    }
+                    else if (after->value > root->value)
+                        root = root->right;
+                    else
+                        break;
+                }
+
+                return (rtn);
+            }
+
+            /* Refere to previous() */
+            node_pointer _BST_prev(node_pointer root, node_pointer before)
+            {
+                if (before->left != u_nullptr)
+                    return (_BST_get_higher_node(before->left));
+                
+                node_pointer rtn = u_nullptr;
+
+                while (root != u_nullptr)
+                {
+                    if (before->value < root->value)
+                        root = root->left;
+                    else if (before->value > root->value)
+                    {
+                        rtn = root;
+                        root = root->right;
+                    }
+                    else
+                        break;
+                }
+                return (rtn);
+            }
+
+            /* Refere to operator==() */
+            bool _BST_operator_strict_equal(node_pointer root, node_pointer root2)
+            {
+                if (root == u_nullptr && root2 == u_nullptr)
+                    return (true);
+                else if ((root == u_nullptr && root2 != u_nullptr)
+                    || (root != u_nullptr && root2 == u_nullptr))
+                    return (false);
+
+                if (root->value != root2->value)
+                    return (false);
+                
+                if (((root->left != u_nullptr && root2->left == u_nullptr)
+                    || (root->left == u_nullptr && root2->left != u_nullptr))
+                    || ((root->right != u_nullptr && root2->right == u_nullptr)
+                    || (root->right == u_nullptr && root2->right != u_nullptr)))
+                        return (false);
+
+                if (root->left != u_nullptr && root->left != u_nullptr)
+                    if (_BST_operator_strict_equal(root->left, root2->left) == false)
+                        return (false);
+                if (root->right != u_nullptr && root->right != u_nullptr)
+                    if (_BST_operator_strict_equal(root->right, root2->right) == false)
+                        return (false);
+                return (true);
+            }
+    };
+
+    /*
+    ** @brief An overload operator to check
+    ** if to binary search tree has the same values.
+    **
+    ** @param lhs, rhs the binary search tree to compare.
+    ** @return true if the trees are the sames, otherwise false.
+    */
+    template<typename T>
+    bool operator==(ft::Binary_search_tree<T> lhs, ft::Binary_search_tree<T> rhs)
+    {
+        return (lhs.operator==(rhs));
+    }
+
 } /* End of namespace */
 
 # endif

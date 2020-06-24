@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/17 15:44:08 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/17 22:55:46 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/23 23:00:46 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 */
 
 /* TODO Tomorrow :
-    - Binary Search Tree
+    - Node
+    - Binary Search Tree for pair
     - Bidirectional iterator
     */
    
@@ -91,9 +92,14 @@ namespace ft
                 typedef typename allocator_type::const_pointer const_pointer;
 
                 /* A bidirectional iterator to value_type */
-                // typedef 
+                typedef typename ft::Binary_search_tree<value_type>::iterator iterator;
 
+                /* A bidirectional iterator to const value_type */
+                typedef typename ft::Binary_search_tree<const value_type>::const_iterator const_iterator;
 
+            private:
+
+                ft::Binary_search_tree<value_type> _bst;
         };
 
 }
