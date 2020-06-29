@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/17 15:44:08 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/29 20:24:45 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/06/29 23:22:09 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ namespace ft
                 /* Function class to compare elements */
                 class value_compare : ft::binary_function<value_type, value_type, bool>
                 {
+                    friend class map;
+                    
                     protected:
                         Compare comp;
                         value_compare (Compare c) : comp(c) {}
@@ -116,14 +118,14 @@ namespace ft
                 explicit Map (const key_compare& comp = key_compare(),
                                 const allocator_type& alloc = allocator_type())
                     :
-                        _comp(comp),
+                        _key_comp(comp),
                         _alloc(alloc),
                         _bst()
                     {}
                     
                 // template <class InputIterator>
                 //     Map (InputIterator first, InputIterator last,
-                //         const key_compare& comp = key_compare(),
+                //         const key_keyare& comp = key_compare(),
                 //         const allocator_type& alloc = allocator_type());
 
                 /*
@@ -137,7 +139,7 @@ namespace ft
                 */
                 Map (const Map& x)
                 :
-                    _comp(x._comp),
+                    _key_comp(x._comp),
                     _alloc(x._alloc),
                     _bst(x._bst)
                 {}
@@ -152,16 +154,16 @@ namespace ft
                 // Iterators :
                 
                 iterator begin()
-                { return iterator(_bst.get_lower_node()); }
+                { return iterator(_bst.get_root_node(), _bst.get_lower_node()); }
 
                 const_iterator begin() const
-                { return const_iterator(_bst.get_lower_node()); }
+                { return const_iterator(_bst.get_root_node(), _bst.get_lower_node()); }
 
                 iterator end()
-                { return (iterator(_bst.get_header_node())); }
+                { return (iterator(_bst.get_root_node(), u_nullptr)); }
 
                 const_iterator end() const
-                { return (const_iterator(_bst.get_header_node())); }
+                { return (const_iterator(_bst.get_root_node(), u_nullptr)); }
 
                 // reverse_iterator rbegin();
 
@@ -214,7 +216,7 @@ namespace ft
                     bool exist = (_bst.search(val) == u_nullptr) ? true : false;
                     _bst.insert(val);
                     node_pointer node = _bst.search(val);
-                    return (ft::make_pair(iterator(node), exist));
+                    return (ft::make_pair(iterator(_bst.get_root_node(), node), exist));
                 }
 
                 iterator insert (iterator position, const value_type& val);
@@ -234,7 +236,11 @@ namespace ft
 
                 // Observers:
 
-                key_compare key_comp() const;
+                /*
+                ** @brief Return a copy of of the comparison object
+                */
+                key_compare key_comp() const
+                { return (key_compare()); }
 
                 value_compare value_comp() const;
 
@@ -245,26 +251,43 @@ namespace ft
                 ** that have like key "k".
                 **
                 ** @param k the key to find.
-                ** @return the pair object that contain 
+                ** @return an iterator pointing to the pair object that
+                ** have like key "k". 
                 */
                 iterator find (const key_type& k)
                 {
-                    // ft::Node<value_type>* root = _bst.get_lower_node();   
-                    // value_compare comp = key_compare;
-                    // ft::pair<key_type, value_type> tmp = ft::make_pair(k, mapped_type());
-                    
-                    // while (root)
-                    // {
-                    //     if (comp(root->value, tmp) == false && comp (tmp, root->value) == false)
-                    //         return (root);
-                    //     root = _bst.next(root);
-                    // }
-                    // return (this->end());
+                    const_iterator it = this->begin();
+
+                    std::cout << "TEST\n";
+                    for (; it != this->end(); it++)
+                    {
+                        std::cout << "TESTPREIN\n";
+
+                        if (_key_comp(it->first, k) == false && _key_comp(k, it->first) == false)
+                            return (it);
+                        std::cout << "TESTPOSTIN\n";
+
+                    }
+                    std::cout << "TEST2\n";
+                    return (this->end());
                 }
 
+                /*
+                ** @brief Search in the container to find the pair
+                ** that have like key "k".
+                **
+                ** @param k the key to find.
+                ** @return an const iterator pointing to the pair object that
+                ** have like key "k". 
+                */
                 const_iterator find (const key_type& k) const
                 {
-ç
+                    const_iterator it = this->begin();
+
+                    for (; it != this->end(); it++)
+                        if (_key_comp(it->first, k) == false && _key_comp(k, it->first) == false)
+                            return (it);
+                    return (this->end());
                 }
 
                 size_type count (const key_type& k) const;
@@ -287,7 +310,7 @@ namespace ft
                 
                 typedef typename bst::node_pointer node_pointer;
 
-                key_compare _comp;
+                key_compare _key_comp;
                 allocator_type _alloc;
                 bst _bst;
         };
