@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/29 23:20:17 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/04 18:49:33 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ namespace ft
     ** @bref Construct a pair object with
     ** "x" and "y".
     **
-    ** @param x, y elements. (cna have different types).
+    ** @param x, y elements. (can have different types).
     ** @return the pair object.
     */
     template <class T1, class T2>
@@ -685,7 +685,7 @@ namespace ft
     ** to. This is the most complete iterators. All pointer types
     ** are also valid random-access-iterators.
     */
-    template <class T>
+    template <typename T, typename T_pointer, typename T_reference>
         class random_access_iterator : ft::iterator<ft::random_access_iterator_tag, T>
         {
             public:
@@ -700,10 +700,10 @@ namespace ft
                 typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type       difference_type;
                 
                 /* Type to represent a pointer to an element pointed */
-                typedef typename ft::iterator<ft::random_access_iterator_tag, T>::pointer               pointer;
+                typedef T_pointer               pointer;
                 
                 /* Type to represent a reference to an element pointed */
-                typedef typename ft::iterator<ft::random_access_iterator_tag, T>::reference             reference;
+                typedef T_reference             reference;
                 
                 /*
                 ** @brief Default construtor:
@@ -760,24 +760,13 @@ namespace ft
                 virtual ~random_access_iterator() {}
 
                 /*
-                ** @brief Comparation for equivalence of equality.
+                ** @brief Give a pointer to the
+                ** element where the iterator point.
                 **
-                ** @param rhs the const reference to the random access
-                ** iterator to compare.
-                ** @return true if the element pointed by the iretator is 
-                ** the same than "rhs", otherwise false.
+                ** @return the iterator.
                 */
-                bool operator==(const random_access_iterator& rhs) { return (rhs._elem == _elem); }
-
-                /*
-                ** @brief Comparation for equivalence of inequality.
-                **
-                ** @param rhs the const reference to the random access
-                ** iterator to compare.
-                ** @return true if the element pointed by the iretator is not 
-                ** the same than "rhs", otherwise false.
-                */
-                bool operator!=(const random_access_iterator& rhs) { return (rhs._elem != _elem); }
+                pointer base() const
+                { return (this->_elem); }
 
                 /*
                 ** @brief Give a reference to the rvalue pointed by the 
@@ -857,7 +846,7 @@ namespace ft
                 ** @return the random access iterator.
                 */
                 random_access_iterator operator+(difference_type n) const { return (_elem + n); }
-                
+
                 /*
                 ** @brief Give a random access iterator where the
                 ** element is pointed at this - "n" in memory.
@@ -866,56 +855,6 @@ namespace ft
                 ** @return the random access iterator.
                 */
                 random_access_iterator operator-(difference_type n) const { return (_elem - n); }
-
-                /*
-                ** @brief Give the difference between the address
-                ** of iterators.
-                **
-                ** @param n the random access iterator with whom 
-                ** to make a difference.
-                ** @return The difference.
-                */
-                difference_type operator-(const random_access_iterator& n) { return (_elem - n._elem); }
-
-                /*
-                ** @brief Check if the pointer of this random access iterator
-                ** is lower than "rhs" in the memory.
-                **
-                ** @param rhs the random access iterator with who check.
-                ** @return true if the pointer of this random access iterator
-                ** if lower than "rhs", otherwise false;
-                */
-                bool operator<(const random_access_iterator& rhs) { return (_elem < rhs._elem); }
-                
-                /*
-                ** @brief Check if the pointer of this random access iterator
-                ** is upper than "rhs" in the memory.
-                **
-                ** @param rhs the random access iterator with who check.
-                ** @return true if the pointer of this random access iterator
-                ** if upper than "rhs", otherwise false;
-                */
-                bool operator>(const random_access_iterator& rhs) { return (!(operator<(rhs))); }
-
-                /*
-                ** @brief Check if the pointer of this random access iterator
-                ** is lower or equal than "rhs" in the memory.
-                **
-                ** @param rhs the random access iterator with who check.
-                ** @return true if the pointer of this random access iterator
-                ** if lower or equal than "rhs", otherwise false;
-                */
-                bool operator<=(const random_access_iterator& ths) { return (_elem <= ths._elem); }
-
-                /*
-                ** @brief Check if the pointer of this random access iterator
-                ** is upper or equal than "rhs" in the memory.
-                **
-                ** @param rhs the random access iterator with who check.
-                ** @return true if the pointer of this random access iterator
-                ** if upper or equal than "rhs", otherwise false;
-                */
-                bool operator>=(const random_access_iterator& rhs) { return (!(operator<=(rhs))); }
 
                 /*
                 ** @brief Give a reference to this random access iterator
@@ -961,21 +900,210 @@ namespace ft
         };
 
     /*
-    ** @brief Overload of addition between
-    ** and diffrence type defined in random access
-    ** iterator and a random access iterator.
+    ** @brief Check if the pointer of "lhs"
+    ** is equal than "rhs" in the memory.
     **
-    ** @param n the difference type.
-    ** @param rai the random access iterator.
-    ** @return the addition of the pointer of the iterator 
-    ** plus the difference type, in memory.
+    ** @param lhs the random access iterator to compare.
+    ** @param rhs the random access iterator with who check.
+    ** @return true if the pointer of lhs
+    ** if equal than "rhs", otherwise false.
     */
-    template<typename T>
-    ft::random_access_iterator<T> operator+(
-        typename ft::random_access_iterator<T>::difference_type n, typename ft::random_access_iterator<T>& rai)
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator==(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() == rhs.base());
+    }
+
+    /* For iterator == const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator==(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() == rhs.base());
+    }
+
+    /*
+    ** @brief Check if the pointer of "lhs"
+    ** is different than "rhs" in the memory.
+    **
+    ** @param lhs the random access iterator to compare.
+    ** @param rhs the random access iterator with who check.
+    ** @return true if the pointer of lhs
+    ** if different than "rhs", otherwise false.
+    */
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator!=(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() != rhs.base());
+    }
+
+    /* For iterator != const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator!=(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() != rhs.base());
+    }
+
+    /*
+    ** @brief Check if the pointer of "lhs"
+    ** is lower than "rhs" in the memory.
+    **
+    ** @param lhs the random access iterator to compare.
+    ** @param rhs the random access iterator with who check.
+    ** @return true if the pointer of lhs
+    ** if lower than "rhs", otherwise false.
+    */
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator<(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() < rhs.base());
+    }
+
+    /* For iterator < const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator<(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() < rhs.base());
+    }
+
+    /*
+    ** @brief Check if the pointer of "lhs"
+    ** is upper than "rhs" in the memory.
+    **
+    ** @param lhs the random access iterator to compare.
+    ** @param rhs the random access iterator with who check.
+    ** @return true if the pointer of lhs
+    ** if upper than "rhs", otherwise false.
+    */
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator>(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() > rhs.base());
+    }
+
+    /* For iterator > const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator>(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() > rhs.base());
+    }
+
+    /*
+    ** @brief Check if the pointer of "lhs"
+    ** is lower or equal than "rhs" in the memory.
+    **
+    ** @param lhs the random access iterator to compare.
+    ** @param rhs the random access iterator with who check.
+    ** @return true if the pointer of lhs
+    ** if lower or equal than "rhs", otherwise false.
+    */
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator<=(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() <= rhs.base());
+    }
+
+    /* For iterator <= const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator<=(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() <= rhs.base());
+    }
+
+    /*
+    ** @brief Check if the pointer of "lhs"
+    ** is upper or equal than "rhs" in the memory.
+    **
+    ** @param lhs the random access iterator to compare.
+    ** @param rhs the random access iterator with who check.
+    ** @return true if the pointer of lhs
+    ** if upper or equal than "rhs", otherwise false.
+    */
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator>=(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() >= rhs.base());
+    }
+
+    /* For iterator >= const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator>=(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() >= rhs.base());
+    }
+
+    /*
+    ** @brief Give a random access iterator pointing to
+    ** "rai" plus "n".
+    **
+    ** @param n The number of location away the element pointed 
+    ** by rai.
+    ** @param rai The random access iterator.
+    ** @return A random access iterator pointing to n element
+    ** after rai pointed element.
+    */
+    template<typename T, typename T_pointer, typename T_reference>
+    ft::random_access_iterator<T, T_pointer, T_reference> operator+(
+        typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type n,
+        typename ft::random_access_iterator<T, T_pointer, T_reference>& rai)
         {
             return (&(*rai) + n);
         }
+
+    /*
+    ** @brief Give the difference between the address
+    ** of two random access iterators.
+    **
+    ** @param lhs,rhs the two random access iterator with whom 
+    ** to make a difference.
+    ** @return The difference.
+    */
+    template <typename T, typename T_pointer, typename T_reference>
+    typename ft::random_access_iterator<T, T_pointer, T_reference>::difference_type
+    operator-(const ft::random_access_iterator<T, T_pointer, T_reference> lhs,
+              const ft::random_access_iterator<T, T_pointer, T_reference> rhs)
+    {
+        return (lhs.base() - rhs.base());
+    }
+
+    /* For iterator - const_iterator */
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+             typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::random_access_iterator<T_L, T_pointer_L, T_pointer_R>::difference_type
+    operator-(const ft::random_access_iterator<T_L, T_pointer_L, T_reference_L> lhs,
+              const ft::random_access_iterator<T_R, T_pointer_R, T_reference_R> rhs)
+    {
+        return (lhs.base() - rhs.base());
+    }
 
     template <class Iterator>
     class reverse_iterator
@@ -1005,7 +1133,10 @@ namespace ft
             ** Construct a reverse iterator object.
             ** This will points to no object.
             */
-            reverse_iterator() : _elem() {}
+            reverse_iterator()
+            :
+                _elem()
+            {}
 
             /*
             ** @brief Initialization.
@@ -1017,7 +1148,10 @@ namespace ft
             **
             ** @param it The iterator to replicate.
             */
-            explicit reverse_iterator (iterator_type it) : _elem(it) {}
+            explicit reverse_iterator (iterator_type it)
+            :
+                _elem(it)
+            {}
 
             /*
             ** @brief Copy.
@@ -1027,7 +1161,10 @@ namespace ft
             ** @param rev_it original reverse iterator.
             */
             template <class Iter>
-                reverse_iterator (const reverse_iterator<Iter>& rev_it) : _elem(rev_it.base()) {}
+                reverse_iterator (const reverse_iterator<Iter>& rev_it)
+                :
+                    _elem(rev_it.base())
+                {}
 
             /* Added to follow subject obligation */
             virtual ~reverse_iterator() {}
@@ -1041,7 +1178,8 @@ namespace ft
             **
             ** @return A copy of the base iterator.
             */
-            iterator_type base() const { return (_elem); }
+            iterator_type base() const
+            { return (_elem); }
 
             /*
             ** @brief Return a reference to the element pointed
@@ -1193,6 +1331,11 @@ namespace ft
         bool operator== (const reverse_iterator<Iterator>& lhs,
                         const reverse_iterator<Iterator>& rhs) { return (lhs.base() == rhs.base()); }
 
+    /* For reverser_iterator == const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator== (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() == rhs.base()); }
+
     /*
     ** @brief Different comparison between two reverse iterator.
     **
@@ -1203,6 +1346,11 @@ namespace ft
     template <class Iterator>
         bool operator!= (const reverse_iterator<Iterator>& lhs,
                         const reverse_iterator<Iterator>& rhs) { return (lhs.base() != rhs.base()); }
+
+    /* For reverser_iterator != const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator!= (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() != rhs.base()); }
 
     /*
     ** @brief Inferior comparison between two reverse iterator.
@@ -1215,6 +1363,11 @@ namespace ft
         bool operator<  (const reverse_iterator<Iterator>& lhs,
                         const reverse_iterator<Iterator>& rhs) { return (lhs.base() > rhs.base()); }
 
+    /* For reverser_iterator < const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator< (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() > rhs.base()); }
+
     /*
     ** @brief Inferior or equal comparison between two reverse iterator.
     **
@@ -1226,6 +1379,11 @@ namespace ft
         bool operator<= (const reverse_iterator<Iterator>& lhs,
                         const reverse_iterator<Iterator>& rhs) { return (lhs.base() >= rhs.base()); }
 
+    /* For reverser_iterator <= const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator<= (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() >= rhs.base()); }
+
     /*
     ** @brief Superior comparison between two reverse iterator.
     **
@@ -1234,9 +1392,13 @@ namespace ft
     ** @return True if the condition is hold, otherwise false.
     */
     template <class Iterator>
-        bool operator>  (const reverse_iterator<Iterator>& lhs,
+        bool operator> (const reverse_iterator<Iterator>& lhs,
                         const reverse_iterator<Iterator>& rhs) { return (lhs.base() < rhs.bash()); }
 
+    /* For reverser_iterator > const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator> (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() < rhs.base()); }
     /*
     ** @brief Superior or equal comparison between two reverse iterator.
     **
@@ -1247,6 +1409,11 @@ namespace ft
     template <class Iterator>
         bool operator>= (const reverse_iterator<Iterator>& lhs,
                         const reverse_iterator<Iterator>& rhs) { return (lhs.base() <= rhs.base()); }
+
+    /* For reverser_iterator >= const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator>= (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() <= rhs.base()); }
 
     /*
     ** @brief Give a reverse iterator pointing to
@@ -1274,6 +1441,11 @@ namespace ft
         typename reverse_iterator<Iterator>::difference_type operator- (
             const reverse_iterator<Iterator>& lhs,
             const reverse_iterator<Iterator>& rhs) { return (lhs.base() - rhs.base()); }
+
+    /* For reverser_iterator - const_reverse_iterator */
+    template <class Iterator_L, class Iterator_R>
+        bool operator- (const reverse_iterator<Iterator_L>& lhs,
+                        const reverse_iterator<Iterator_R>& rhs) { return (lhs.base() - rhs.base()); }
 
     /* Lexicographical comparison */
 
@@ -1509,7 +1681,7 @@ namespace ft
             */
             BST_iterator &operator=(const BST_iterator& bst_it)
             {
-                if (bst_it == *this)
+                if (*this == bst_it)
                     return (*this);
                 this->_node = bst_it._node;
                 this->_root = bst_it._root;
@@ -1585,11 +1757,21 @@ namespace ft
                     pointer root = this->_node;
                     pointer next_node = u_nullptr;
 
+                    std::cout << "PLOP\n";
+                    std::cout << "this->node = " << this->_node->value.second << std::endl;
                     while (root->parent != u_nullptr)
+                    {
+                        std::cout << "Parent = " << root->parent << std::endl;
+                        std::cout << "Parent val = " << root->parent->value.second << std::endl;
                         root = root->parent;
+                    }
 
+                    std::cout << "pef\n";
                     while (root != u_nullptr)
                     {
+                        std::cout << "this->_value_value = " << this->_node->value.first << std::endl;
+                        std::cout << "root value         = " << root->value.first << std::endl;
+                        std::cout << "*****************\n";
                         if (this->_node->value < root->value)
                         {
                             next_node = root;
@@ -1600,7 +1782,13 @@ namespace ft
                         else
                             break;
                     }
+                    if (next_node == u_nullptr && root != u_nullptr && root != this->_node)
+                        next_node = root;
+                    std::cout << "pouf\n";
                     this->_node = next_node;
+                    std::cout << "pem\n";
+                    if (this->_node != u_nullptr)
+                        std::cout << "FINAL NODE = " << this->_node->value.first << std::endl;
                 }
                 return (*this);
             }
@@ -1642,6 +1830,8 @@ namespace ft
                 {
                     pointer root = this->_node;
                     pointer next_node = u_nullptr;
+
+                    std::cout << "-- = " << root->value.second << std::endl;
 
                     while (root->parent != u_nullptr)
                         root = root->parent;
@@ -1767,6 +1957,8 @@ namespace ft
                 return (*this);
             }
 
+            operator BST_iterator<T> () { return (BST_iterator<T>(this->_root, this->_node)); }
+
             /*
             ** @brief Strictment equal operator.
             ** Return a boolean that contains : if this iterator
@@ -1864,7 +2056,7 @@ namespace ft
             */
             BST_const_iterator operator++(int)
             {
-                BST_const_iterator tmp(*this);
+                BST_const_iterator tmp = *this;
                 operator++();
                 return (tmp);
             }
@@ -1988,7 +2180,8 @@ namespace ft
             */
             Binary_search_tree ()
             :
-                _root(u_nullptr)
+                _root(u_nullptr),
+                comp(value_compare())
             {}
 
             /*
@@ -2000,7 +2193,8 @@ namespace ft
             */
             Binary_search_tree (const value_type& val)
             :
-                _root(_BST_new_node(val))
+                _root(_BST_new_node(val)),
+                comp(value_compare())
             {}
 
             /*
@@ -2013,12 +2207,14 @@ namespace ft
             */
             Binary_search_tree (const node_type& root)
             :
-                _root(_BST_new_node(root.value, root.left, root.right))
+                _root(_BST_new_node(root.value, root.left, root.right)),
+                comp(value_compare())
             {}
 
             Binary_search_tree ( node_pointer const root)
             :
-                _root(root)
+                _root(root),
+                comp(value_compare())
             {}
 
             /*
@@ -2030,7 +2226,8 @@ namespace ft
             Binary_search_tree (const Binary_search_tree& bst)
             :
                 _root(bst._root),
-                _alloc_node(bst._alloc_node)
+                _alloc_node(bst._alloc_node),
+                comp(bst.comp)
             {}
 
             /* Destructor */
@@ -2051,7 +2248,7 @@ namespace ft
 
                 this->_alloc_node = bst._alloc_node;
                 this->_root = bst._root;
-
+                this->comp = comp;
                 return (*this);
             }
             
@@ -2061,9 +2258,7 @@ namespace ft
             ** @param val the value to insert.
             */
             node_pointer insert(const value_type& val)
-            {
-                return (this->_root = _BST_insert(val, this->_root));
-            }
+            { return (this->_root = _BST_insert(val, this->_root)); }
 
             /*
             ** @brief Search the value on the tree
@@ -2083,8 +2278,8 @@ namespace ft
             **
             ** @param val the value to remove.
             */
-            void remove(const value_type& val)
-            { _BST_remove_node(val, _root); }
+            void remove(const value_type& val) 
+            { this->_root = _BST_remove_node(val, _root); std::cout << "END REMOVE\n"; }
 
             /*
             ** @brief Give a pointer to the node that 
@@ -2092,7 +2287,7 @@ namespace ft
             **
             ** @return the pointer.
             */
-            node_pointer get_root_node(void)
+            node_pointer get_root_node(void) const
             { return (this->_root); }
 
             /*
@@ -2157,6 +2352,8 @@ namespace ft
             node_pointer _root;
             node_allocator_type _alloc_node;
             value_compare comp;
+            
+            /* Utiliser une stack pour stocker les address des nodes pour plus tard les dealloc*/
 
             /* Refere to insert() */
             node_pointer _BST_insert(const value_type& val, node_pointer root,
@@ -2174,7 +2371,7 @@ namespace ft
             /* Refere to search() */
             node_pointer _BST_search(const value_type& val, node_pointer root)
             {
-                if (root == u_nullptr || root->value == val)
+                if (root == u_nullptr || (comp(root->value, val) == false && comp(val, root->value) == false))
                     return (root);
                 else if (comp(val, root->value))
                     return (_BST_search(val, root->left));
@@ -2203,37 +2400,72 @@ namespace ft
             /* Refere to remove() */
             node_pointer _BST_remove_node(const value_type& val, node_pointer root)
             {
+                std::cout << "RM1\n";
                 if (root == u_nullptr)
                     return (root);
+                std::cout << "RM2\n";
                 
                 if (comp(val, root->value))
+                {
+                    std::cout << "RM left\n";
                     root->left = _BST_remove_node(val, root->left);
+                    std::cout << "ROOT = " << root << std::endl;
+                    if (root->left != u_nullptr)
+                        std::cout << "root = " << root << " | " << "root left parent = " << root->left->parent << std::endl;
+                    if (root->left != u_nullptr)
+                    root->left->parent = root;
+                    if (root->left != u_nullptr)
+                        std::cout << "(2) root = " << root << " | " << "root left parent = " << root->left->parent << std::endl;
+                    std::cout << "RM left2\n";
+                }
                 else if (!(comp(val, root->value)) && val != root->value)
+                {
+                    std::cout << "RM right\n";
                     root->right = _BST_remove_node(val, root->right);
+                    if (root->right != u_nullptr)
+                        root->right->parent = root;
+                    std::cout << "root = " << root << " | " << "root right parent = " << root->right->parent << std::endl;
+                    std::cout << "root->right = " << root->right->value.second << std::endl;
+                    std::cout << "RM right2\n";
+                }
                 else
                 {
+                    std::cout << "RM3\n";
+
                     if (root->left == u_nullptr)
                     {
+                        std::cout << "RM4\n";
+
                         node_pointer tmp = root->right;
-                        _alloc_node.deallocate(root, 1);
+
+                        // _alloc_node.destroy(root);
+                        // _alloc_node.deallocate(root, 1);
+                        std::cout << "RM5\n";
                         return (tmp);
                     }
                     else if (root->right == u_nullptr)
                     {
                         node_pointer tmp = root->left;
-                        _alloc_node.deallocate(root, 1);
+                        // _alloc_node.destroy(root);
+                        // _alloc_node.deallocate(root, 1);
                         return (tmp);
                     }
 
                     node_pointer tmp = root->right;
 
                     for (; tmp != u_nullptr && tmp->left != u_nullptr; tmp = tmp->left);
-                    
+
+                    /*
+                    ** Stocker les addresses des nodes dans un tableau
+                    ** tout destroy/dealloc quand on quitte. 
+                    */
+
+                        // A remplace par une nouvelle node, à la même address mais avec la nouvelle valuer.
+                        // penser a repasser la key de map en const
                     root->value = tmp->value;
-
-                    _BST_remove_node(tmp->value, root->right);
+                    root->right = _BST_remove_node(tmp->value, root->right);
                 }
-
+                std::cout << "RM end\n";
                 return (root);
             }
 
@@ -2353,6 +2585,242 @@ namespace ft
         return (lhs.operator==(rhs));
     }
 
+    template<typename T, typename T_pointer, typename T_reference>
+    class Deque_Iterator : public ft::iterator<ft::random_access_iterator_tag, T>
+    {
+        public:
+            /* Category of the iterator. */
+            typedef typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category     iterator_category;
+            
+            /* Type of elements pointed. */
+            typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type            value_type;
+            
+            /* Type to represent the difference between two iterators. */
+            typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type       difference_type;
+            
+            /* Type to represent a pointer to an element pointed */
+            typedef T_pointer                                                                       pointer;
+            
+            /* Type to represent a reference to an element pointed */
+            typedef T_reference                                                                     reference;
+
+            typedef T**       map_pointer;
+            
+            Deque_Iterator()
+            :
+                _map(),
+                _elem(),
+                _start_cur_block(),
+                _end_cur_block()
+            {}
+
+            Deque_Iterator(T* elem, map_pointer map)
+            :
+                _map(map),
+                _elem(elem),
+                _start_cur_block(*map),
+                _end_cur_block(*map + _deque_block_size(sizeof(value_type)))
+            {}
+
+            Deque_Iterator(const Deque_Iterator& di)
+            :
+                _map(di._map),
+                _elem(di._elem),
+                _start_cur_block(di._start_cur_block),
+                _end_cur_block(di._end_cur_block)
+            {}
+
+            Deque_Iterator& operator=(const Deque_Iterator& di)
+            {
+                this->_map = di._map;
+                this->_elem = di._elem;
+                this->_start_cur_block = di._start_cur_block;
+                this->_end_cur_block = di._end_cur_block;
+                return (*this);
+            }
+
+            ~Deque_Iterator() {}
+
+            operator Deque_Iterator<T, const T*, const T&> () const { return Deque_Iterator<T, const T*, const T&>(this->_elem, this->_map); }
+
+            bool operator==(const Deque_Iterator& di) const
+            { return (this->_elem == di._elem); }
+
+            bool operator!=(const Deque_Iterator& di) const
+            { return (this->_elem != di._elem); }
+
+            reference operator*()
+            { return (*this->_elem); }
+
+            pointer operator->()
+            { return (this->_elem); }
+
+            Deque_Iterator& operator++(void)
+            {
+                this->_elem++;
+                if (this->_elem == this->_end_cur_block)
+                {
+                    this->_map++;
+                    this->_start_cur_block = *this->_map;
+                    this->_end_cur_block = this->_start_cur_block + _deque_block_size(sizeof(value_type));
+                    this->_elem = this->_start_cur_block;
+                }
+                return (*this);
+            }
+
+            Deque_Iterator operator++(int)
+            {
+                Deque_Iterator tmp(*this);
+                operator++();
+                return (tmp);
+            }
+
+            Deque_Iterator& operator--(void)
+            {
+                if (this->_elem == this->_start_cur_block)
+                {
+                    this->_map--;
+                    this->_start_cur_block = *this->_map;
+                    this->_end_cur_block = this->_start_cur_block + _deque_block_size(sizeof(value_type));
+                    this->_elem = this->_end_cur_block;
+                }
+                this->_elem--;
+                return (*this);
+            }
+
+            Deque_Iterator operator--(int)
+            {
+                Deque_Iterator tmp(*this);
+                operator--();
+                return (tmp);
+            }
+
+            Deque_Iterator operator+(difference_type n) const
+            {
+                Deque_Iterator tmp(*this);
+                while (n--)
+                {
+                    tmp._elem++;
+                    if (tmp._elem == tmp._end_cur_block)
+                    {
+                        tmp._map++;
+                        tmp._start_cur_block = *tmp._map;
+                        tmp._end_cur_block = tmp._start_cur_block + tmp._deque_block_size(sizeof(value_type));
+                        tmp._elem = tmp._start_cur_block;
+                    }
+                }
+                return (tmp);
+            }
+
+            Deque_Iterator operator-(difference_type n) const
+            {
+                Deque_Iterator tmp(*this);
+                while (n--)
+                {
+                    if (tmp._elem == tmp._start_cur_block)
+                    {
+                        tmp._map--;
+                        tmp._start_cur_block = *tmp._map;
+                        tmp._end_cur_block = tmp._start_cur_block + tmp._deque_block_size(sizeof(value_type));
+                        tmp._elem = tmp._end_cur_block;
+                    }
+                    tmp._elem--;
+                }
+                return (tmp);
+            }
+
+            bool operator<(const Deque_Iterator& di)
+            {
+                if (this->_map == di._map)
+                    return (this->_elem < di._elem);
+                return (this->_map < di._map);
+            }
+
+            bool operator>(const Deque_Iterator& di)
+            {
+                if (this->_map == di._map)
+                    return (this->_elem > di._elem);
+                return (this->_map > di._map);
+            }
+
+            bool operator<=(const Deque_Iterator &di)
+            {
+                if (this->_map == di._map)
+                    return (this->_elem <= di._elem);
+                return (this->_map <= di._map);
+            }
+
+            bool operator>=(const Deque_Iterator &di)
+            {
+                if (this->_map == di._map)
+                    return (this->_elem >= di._elem);
+                return (this->_map >= di._map);
+            }
+
+            Deque_Iterator& operator+=(difference_type n)
+            {
+                while (n--)
+                    operator++();
+                return (*this);
+            }
+
+            Deque_Iterator& operator-=(difference_type n)
+            {
+                while (n--)
+                    operator--();
+                return (*this);
+            }
+
+            reference operator[](difference_type n)
+            {
+                return (*((*this) + n));
+            }
+
+            map_pointer _map;
+            pointer _elem;
+            pointer _start_cur_block;
+            pointer _end_cur_block;
+
+            size_t _deque_block_size(size_t size) const
+            { return ((size < 512) ? size_t(512 / sizeof(value_type)) : size_t(1)); }
+    };
+
+    template<typename T, typename T_pointer, typename T_reference>
+    ft::Deque_Iterator<T, T_pointer, T_reference> operator+(
+        typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type n,
+        const ft::Deque_Iterator<T, T_pointer, T_reference>& di)
+    {
+        return (di + n);
+    }
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator-(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        /* nbr block between the two iterator blocks * nbr of element in one block
+        + (difference between this iterator element - start of is block)
+        + (iterator, with which to make a difference, end block - it element) */
+        return (typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type(
+            ((lhs._map - rhs._map - 1)
+            * lhs._deque_block_size(sizeof(T)))
+            + (lhs._elem - lhs._start_cur_block) + (rhs._end_cur_block - rhs._elem)));
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator-(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        /* nbr block between the two iterator blocks * nbr of element in one block
+        + (difference between this iterator element - start of is block)
+        + (iterator, with which to make a difference, end block - it element) */
+        return (typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_R>::difference_type(
+            ((lhs._map - rhs._map - 1)
+            * lhs._deque_block_size(sizeof(T_L)))
+            + (lhs._elem - lhs._start_cur_block) + (rhs._end_cur_block - rhs._elem))); 
+    }
 
 } /* End of namespace */
 

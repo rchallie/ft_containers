@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/17 19:26:55 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/04 18:02:52 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,13 @@ namespace ft
             ** That can read or modify any element stored.
             ** Convertible to const_iterator;
             */
-            typedef ft::random_access_iterator<value_type>               iterator;
+            typedef ft::random_access_iterator<value_type, value_type*, value_type&>               iterator;
 
             /*
             ** A random access iterator to const value_type
             ** That can read element stored.
             */
-            typedef ft::random_access_iterator<const value_type>            const_iterator;
+            typedef ft::random_access_iterator<value_type, const value_type*, const value_type&>            const_iterator;
             
             /*
             ** ft::reverse_iterator<iterator>

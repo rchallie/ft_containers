@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/17 15:44:08 by excalibur         #+#    #+#             */
-/*   Updated: 2020/06/29 23:22:09 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/01 09:29:54 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ namespace ft
                 typedef T       mapped_type;
 
                 /* The map value type */
-                typedef ft::pair<const key_type, mapped_type> value_type;
+                typedef ft::pair<key_type, mapped_type> value_type;
 
                 /* The third template parameter (Compare) */
                 typedef Compare     key_compare;
@@ -153,15 +153,47 @@ namespace ft
 
                 // Iterators :
                 
+                /*
+                ** @brief Return an iterator that pointing to the
+                ** first element in the container. If the container is
+                ** empty, the iterator value can't be dereferenced.
+                **
+                ** @return the iterator.
+                */
                 iterator begin()
                 { return iterator(_bst.get_root_node(), _bst.get_lower_node()); }
 
+                /*
+                ** @brief Return an const iterator that pointing to the
+                ** first element in the container. If the container is
+                ** empty, the const iterator value can't be dereferenced.
+                **
+                ** @return the const iterator.
+                */
                 const_iterator begin() const
                 { return const_iterator(_bst.get_root_node(), _bst.get_lower_node()); }
 
+                /*
+                ** @brief Return an iterator that pointing to the element
+                ** that is concidered to be the last element in the container.
+                ** This iterator really pointing to a value that can't be
+                ** dereferenced, it is most often used like comparison with
+                ** begin().
+                **
+                ** @return the iterator.
+                */
                 iterator end()
                 { return (iterator(_bst.get_root_node(), u_nullptr)); }
 
+                /*
+                ** @brief Return an const iterator that pointing to the element
+                ** that is concidered to be the last element in the container.
+                ** This const iterator really pointing to a value that can't be
+                ** dereferenced, it is most often used like comparison with
+                ** begin().
+                **
+                ** @return the const iterator.
+                */
                 const_iterator end() const
                 { return (const_iterator(_bst.get_root_node(), u_nullptr)); }
 
@@ -207,16 +239,28 @@ namespace ft
 
                 // Element access:
 
-                mapped_type& operator[] (const key_type& k);
+                /*
+                ** @brief If "k" match with the key of an
+                ** element in the container, this will return 
+                ** the mapped value from this element. If "k" doesn't
+                ** match, this will insert a new element with "k" like
+                ** key and a mapped value initialized.
+                **
+                ** @param k the key.
+                ** @return an reference to the mapped value.
+                */
+                mapped_type& operator[] (const key_type& k)
+                { return ((*((this->insert(ft::make_pair(k,mapped_type()))).first)).second); }
 
                 // Modifiers:
 
                 ft::pair<iterator, bool> insert (const value_type& val)
                 {
-                    bool exist = (_bst.search(val) == u_nullptr) ? true : false;
+                    bool exist = (this->find(val.first) == this->end()) ? true : false;
+                    if (exist == false)
+                        return (ft::make_pair(this->find(val.first), exist));
                     _bst.insert(val);
-                    node_pointer node = _bst.search(val);
-                    return (ft::make_pair(iterator(_bst.get_root_node(), node), exist));
+                    return (ft::make_pair(iterator(_bst.get_root_node(), _bst.search(val)), exist));
                 }
 
                 iterator insert (iterator position, const value_type& val);
@@ -224,11 +268,40 @@ namespace ft
                 template <class InputIterator>
                     void insert (InputIterator first, InputIterator last);
 
-                void erase (iterator position);
+                /*
+                ** @brief Remove the element in the container at the iterator
+                ** position. Reduce the size of the container.
+                **
+                ** @param position the iterator pointing to the element to remove.
+                */
+                void erase (iterator position)
+                { _bst.remove((*position)); }
 
-                size_type erase (const key_type& k);
+                /*
+                ** @brief Remove the element in the container that has like key
+                ** "k". Reduce the size of the container.
+                **
+                ** @param k the key.
+                ** @return The number of element removed, 0 if no element have "k"
+                ** like key, 1 otherwise.
+                */
+                size_type erase (const key_type& k)
+                {
+                    const_iterator it = this->find(k);
 
-                void erase (iterator first, iterator last);
+                    if (it == this->end())
+                        return (0);
+                    _bst.remove((*it));
+                    return (1);
+                }
+
+                void erase (iterator first, iterator last)
+                {
+                    while (first != last)
+                    {
+                        this->erase(*first++);
+                    }
+                }
 
                 void swap (Map& x);
 
@@ -237,12 +310,20 @@ namespace ft
                 // Observers:
 
                 /*
-                ** @brief Return a copy of of the comparison object
+                ** @brief Return a copy of the key comparison object.
+                **
+                ** @param the key comparison object.
                 */
                 key_compare key_comp() const
                 { return (key_compare()); }
 
-                value_compare value_comp() const;
+                /*
+                ** @brief Return a copy of the value comparison object.
+                **
+                ** @param the value comparison object.
+                */
+                value_compare value_comp() const
+                { return (value_compare()); }
 
                 // Operations:
 
@@ -258,17 +339,9 @@ namespace ft
                 {
                     const_iterator it = this->begin();
 
-                    std::cout << "TEST\n";
                     for (; it != this->end(); it++)
-                    {
-                        std::cout << "TESTPREIN\n";
-
                         if (_key_comp(it->first, k) == false && _key_comp(k, it->first) == false)
                             return (it);
-                        std::cout << "TESTPOSTIN\n";
-
-                    }
-                    std::cout << "TEST2\n";
                     return (this->end());
                 }
 
@@ -290,19 +363,115 @@ namespace ft
                     return (this->end());
                 }
 
-                size_type count (const key_type& k) const;
+                /*
+                ** @brief Search in the container the number of
+                ** element that contain "k" like key. Like all element in
+                ** the container are unique he can return only 1 if it exist
+                ** 0 otherwise.
+                **
+                ** @param k the key.
+                ** @return the number of elements.
+                */
+                size_type count (const key_type& k) const
+                { return ((this->find(k) != this->end()) ? 1 : 0); }
 
-                iterator lower_bound (const key_type& k);
+                /*
+                ** @brief Return a iterator pointing to the first element
+                ** in the container who have a key that is not
+                ** concidered to go before "k". If an element have "k"
+                ** like key, give an iterator to it.
+                **
+                ** @param k the key.
+                ** @return the iterator.
+                */
+                iterator lower_bound (const key_type& k)
+                {
+                    const_iterator it = this->begin();
 
-                const_iterator lower_bound (const key_type& k) const;
+                    for(; it != this->end(); it++)
+                        if (_key_comp(it->first, k) == false)
+                            return (it);
+                    return (this->end());
+                }
 
-                iterator upper_bound (const key_type& k);
+                /*
+                ** @brief Return a const iterator pointing to the first element
+                ** in the container who have a key that is not
+                ** concidered to go before "k". If an element have "k"
+                ** like key, give an const iterator to it.
+                **
+                ** @param k the key.
+                ** @return the iterator.
+                */
+                const_iterator lower_bound (const key_type& k) const
+                {
+                    const_iterator it = this->begin();
 
-                const_iterator upper_bound (const key_type& k) const;
+                    for(; it != this->end(); it++)
+                        if (_key_comp(it->first, k) == false)
+                            return (it);
+                    return (this->end());
+                }
 
-                ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const;
+                /*
+                ** @brief return an iterator pointing to the next element
+                ** whose key is concidered to go after "k".
+                **
+                ** @param k the key.
+                ** @return the iterator.
+                */
+                iterator upper_bound (const key_type& k)
+                {
+                    const_iterator it = this->begin();
 
-                ft::pair<iterator, iterator> equal_range (const key_type& k);
+                    for (; it != this->end(); it++)
+                        if (_key_comp(it->first, k) == false && it->first != k)
+                            return (it);
+                    return (this->end());
+                }
+                
+                /*
+                ** @brief return an const iterator pointing to the next element
+                ** whose key is concidered to go after "k".
+                **
+                ** @param k the key.
+                ** @return the const iterator.
+                */
+                const_iterator upper_bound (const key_type& k) const
+                {
+                    const_iterator it = this->begin();
+
+                    for (; it != this->end(); it++)
+                        if (_key_comp(it->first, k) == false && it->first != k)
+                            return (it);
+                    return (this->end());
+                }
+
+                /*
+                ** @brief Return all the element that have "k" like key.
+                ** Like all element in map are unique, that give a pair
+                ** that contain two const iterator. The first iterator
+                ** pointing to the lower bound of "k" and the second pointing
+                ** to the upper bound of "k".
+                **
+                ** @param k the key.
+                ** @return the pair containing the two const iterator.
+                */
+                ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const
+                { return (ft::make_pair(this->lower_bound(k), this->upper_bound(k))); }
+
+                /*
+                ** @brief Return all the element that have "k" like key.
+                ** Like all element in map are unique, that give a pair
+                ** that contain two iterator. The first iterator
+                ** pointing to the lower bound of "k" and the second pointing
+                ** to the upper bound of "k".
+                **
+                ** @param k the key.
+                ** @return the pair containing the two iterator.
+                */
+                ft::pair<iterator, iterator> equal_range (const key_type& k)
+                { return (ft::make_pair(this->lower_bound(k), this->upper_bound(k))); }
                 
             private:
 
