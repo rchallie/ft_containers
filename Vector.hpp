@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/07/04 18:02:52 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/07 22:41:51 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,21 +202,14 @@ namespace ft
                 if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
                     throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
                 
-                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                difference_type n = ft::distance(first, last);
+                _start = _alloc.allocate( n );
+                _end_capacity = _start + n;
+                _end = _start;
+                while (n--)
                 {
-                    std::cout << "CONPLEX" << std::endl;
-                }
-                else
-                {
-                    difference_type n = ft::distance(first, last);
-                    _start = _alloc.allocate( n );
-                    _end_capacity = _start + n;
-                    _end = _start;
-                    while (n--)
-                    {
-                        _alloc.construct(_end, *first);
-                        _end++;
-                    }
+                    _alloc.construct(_end, *first);
+                    _end++;
                 }
             }
             
@@ -577,37 +570,30 @@ namespace ft
                     if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value))
                         throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
                     this->clear();
-                    if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value))
+                    size_type dist = ft::distance(first, last);
+                    if (size_type(_end_capacity - _start) >= dist)
                     {
-                        std::cout << "COMPLEX" << std::endl;
+                        for(; &(*first) != &(*last); first++, _end++)
+                            _alloc.construct(_end, *first);
                     }
                     else
                     {
-                        size_type dist = ft::distance(first, last);
-                        if (size_type(_end_capacity - _start) >= dist)
-                        {
-                            for(; &(*first) != &(*last); first++, _end++)
-                                _alloc.construct(_end, *first);
-                        }
-                        else
-                        {
-                            pointer new_start = pointer();
-                            pointer new_end = pointer();
-                            pointer new_end_capacity = pointer();
+                        pointer new_start = pointer();
+                        pointer new_end = pointer();
+                        pointer new_end_capacity = pointer();
 
-                            new_start = _alloc.allocate(dist);
-                            new_end = new_start;
-                            new_end_capacity = new_start + dist;
+                        new_start = _alloc.allocate(dist);
+                        new_end = new_start;
+                        new_end_capacity = new_start + dist;
 
-                            for(; &(*first) != &(*last); first++, new_end++)
-                                _alloc.construct(new_end, *first);
-                            
-                            _alloc.deallocate(_start, this->capacity());
+                        for(; &(*first) != &(*last); first++, new_end++)
+                            _alloc.construct(new_end, *first);
+                        
+                        _alloc.deallocate(_start, this->capacity());
 
-                            _start = new_start;
-                            _end = new_end;
-                            _end_capacity = new_end_capacity;
-                        }
+                        _start = new_start;
+                        _end = new_end;
+                        _end_capacity = new_end_capacity;
                     }
                 }
             
@@ -807,55 +793,49 @@ namespace ft
                 bool is_valid;
                 if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
                     throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
-                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                
+                size_type dist = ft::distance(first, last);
+                if (size_type(_end_capacity - _end) >= dist)
                 {
-                    std::cout << "CONPLEX" << std::endl;
+                    for(size_type i = 0; i < this->size() - (&(*position) - _start); i++)
+                        _alloc.construct(_end - i + (dist - 1), *(_end - i - 1));
+                    _end += dist;
+                    for (; &(*first) != &(*last); first++, position++)
+                        _alloc.construct(&(*position), *first);
                 }
                 else
                 {
-                    size_type dist = ft::distance(first, last);
-                    if (size_type(_end_capacity - _end) >= dist)
-                    {
-                        for(size_type i = 0; i < this->size() - (&(*position) - _start); i++)
-                            _alloc.construct(_end - i + (dist - 1), *(_end - i - 1));
-                        _end += dist;
-                        for (; &(*first) != &(*last); first++, position++)
-                            _alloc.construct(&(*position), *first);
-                    }
-                    else
-                    {
-                        pointer new_start = pointer();
-                        pointer new_end = pointer();
-                        pointer new_end_capacity = pointer();
+                    pointer new_start = pointer();
+                    pointer new_end = pointer();
+                    pointer new_end_capacity = pointer();
 
-                        new_start = _alloc.allocate( this->size() * 2 );
+                    new_start = _alloc.allocate( this->size() * 2 );
+                    new_end = new_start + this->size() + dist;
+                    new_end_capacity = new_start + ( this->size() * 2 );
+
+                    if (size_type(new_end_capacity - new_start) < this->size() + dist)
+                    {
+                        if (new_start)
+                            _alloc.deallocate(new_start, new_end_capacity - new_start);
+                        new_start = _alloc.allocate (this->size() + dist);
                         new_end = new_start + this->size() + dist;
-                        new_end_capacity = new_start + ( this->size() * 2 );
-
-                        if (size_type(new_end_capacity - new_start) < this->size() + dist)
-                        {
-                            if (new_start)
-                                _alloc.deallocate(new_start, new_end_capacity - new_start);
-                            new_start = _alloc.allocate (this->size() + dist);
-                            new_end = new_start + this->size() + dist;
-                            new_end_capacity = new_end;
-                        }
-
-                        for (int i = 0; i < &(*position) - _start; i++)
-                            _alloc.construct(new_start + i, *(_start + i));
-                        for (int j = 0; &(*first) != &(*last); first++, j++)
-                            _alloc.construct(new_start + (&(*position) - _start) + j, *first);
-                        for (size_type k = 0; k < this->size() - (&(*position) - _start); k++)
-                            _alloc.construct(new_start + (&(*position) - _start) + dist + k, *(_start + (&(*position) - _start) + k));
-
-                        for (size_type l = 0; l < this->size(); l++)
-                            _alloc.destroy(_start + l);
-                        _alloc.deallocate(_start, this->capacity());
-
-                        _start = new_start;
-                        _end = new_end;
-                        _end_capacity = new_end_capacity;
+                        new_end_capacity = new_end;
                     }
+
+                    for (int i = 0; i < &(*position) - _start; i++)
+                        _alloc.construct(new_start + i, *(_start + i));
+                    for (int j = 0; &(*first) != &(*last); first++, j++)
+                        _alloc.construct(new_start + (&(*position) - _start) + j, *first);
+                    for (size_type k = 0; k < this->size() - (&(*position) - _start); k++)
+                        _alloc.construct(new_start + (&(*position) - _start) + dist + k, *(_start + (&(*position) - _start) + k));
+
+                    for (size_type l = 0; l < this->size(); l++)
+                        _alloc.destroy(_start + l);
+                    _alloc.deallocate(_start, this->capacity());
+
+                    _start = new_start;
+                    _end = new_end;
+                    _end_capacity = new_end_capacity;
                 }
             }
 

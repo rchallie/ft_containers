@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/07/04 18:49:33 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/07 22:36:31 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2641,14 +2641,6 @@ namespace ft
 
             ~Deque_Iterator() {}
 
-            operator Deque_Iterator<T, const T*, const T&> () const { return Deque_Iterator<T, const T*, const T&>(this->_elem, this->_map); }
-
-            bool operator==(const Deque_Iterator& di) const
-            { return (this->_elem == di._elem); }
-
-            bool operator!=(const Deque_Iterator& di) const
-            { return (this->_elem != di._elem); }
-
             reference operator*()
             { return (*this->_elem); }
 
@@ -2729,34 +2721,6 @@ namespace ft
                 return (tmp);
             }
 
-            bool operator<(const Deque_Iterator& di)
-            {
-                if (this->_map == di._map)
-                    return (this->_elem < di._elem);
-                return (this->_map < di._map);
-            }
-
-            bool operator>(const Deque_Iterator& di)
-            {
-                if (this->_map == di._map)
-                    return (this->_elem > di._elem);
-                return (this->_map > di._map);
-            }
-
-            bool operator<=(const Deque_Iterator &di)
-            {
-                if (this->_map == di._map)
-                    return (this->_elem <= di._elem);
-                return (this->_map <= di._map);
-            }
-
-            bool operator>=(const Deque_Iterator &di)
-            {
-                if (this->_map == di._map)
-                    return (this->_elem >= di._elem);
-                return (this->_map >= di._map);
-            }
-
             Deque_Iterator& operator+=(difference_type n)
             {
                 while (n--)
@@ -2783,7 +2747,43 @@ namespace ft
 
             size_t _deque_block_size(size_t size) const
             { return ((size < 512) ? size_t(512 / sizeof(value_type)) : size_t(1)); }
+            
+            operator Deque_Iterator<T, const T*, const T&> () const { return Deque_Iterator<T, const T*, const T&>(this->_elem, this->_map); }
     };
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator==(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        return (lhs._elem == rhs._elem);
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator==(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        return (lhs._elem == rhs._elem);
+    }
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator!=(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        return (lhs._elem != rhs._elem);
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator!=(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        return (lhs._elem != rhs._elem);
+    }
 
     template<typename T, typename T_pointer, typename T_reference>
     ft::Deque_Iterator<T, T_pointer, T_reference> operator+(
@@ -2820,6 +2820,90 @@ namespace ft
             ((lhs._map - rhs._map - 1)
             * lhs._deque_block_size(sizeof(T_L)))
             + (lhs._elem - lhs._start_cur_block) + (rhs._end_cur_block - rhs._elem))); 
+    }
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator<(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem < rhs._elem);
+        return (lhs._map < rhs._map);
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator<(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem < rhs._elem);
+        return (lhs._map < rhs._map);
+    }
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator>(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem > rhs._elem);
+        return (lhs._map > rhs._map);
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator>(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem > rhs._elem);
+        return (lhs._map > rhs._map);
+    }
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator<=(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem <= rhs._elem);
+        return (lhs._map <= rhs._map);
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator<=(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem <= rhs._elem);
+        return (lhs._map <= rhs._map);
+    }
+
+    template<typename T, typename T_pointer, typename T_reference>
+    typename ft::Deque_Iterator<T, T_pointer, T_reference>::difference_type
+    operator>=(const ft::Deque_Iterator<T, T_pointer, T_reference>& lhs,
+              const ft::Deque_Iterator<T, T_pointer, T_reference>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem >= rhs._elem);
+        return (lhs._map >= rhs._map);
+    }
+
+    template<typename T_L, typename T_pointer_L, typename T_reference_L,
+            typename T_R, typename T_pointer_R, typename T_reference_R>
+    typename ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>::difference_type
+    operator>=(const ft::Deque_Iterator<T_L, T_pointer_L, T_reference_L>& lhs,
+              const ft::Deque_Iterator<T_R, T_pointer_R, T_reference_R>& rhs)
+    {
+        if (lhs._map == rhs._map)
+            return (lhs._elem >= rhs._elem);
+        return (lhs._map >= rhs._map);
     }
 
 } /* End of namespace */
