@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by excalibur         #+#    #+#             */
-/*   Updated: 2020/07/07 22:36:31 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/08 20:00:45 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2649,12 +2649,12 @@ namespace ft
 
             Deque_Iterator& operator++(void)
             {
-                this->_elem++;
+                ++this->_elem;
                 if (this->_elem == this->_end_cur_block)
                 {
                     this->_map++;
                     this->_start_cur_block = *this->_map;
-                    this->_end_cur_block = this->_start_cur_block + _deque_block_size(sizeof(value_type));
+                    this->_end_cur_block = this->_start_cur_block + difference_type(_deque_block_size(sizeof(value_type)));
                     this->_elem = this->_start_cur_block;
                 }
                 return (*this);

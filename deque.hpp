@@ -6,7 +6,7 @@
 /*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 11:01:04 by excalibur         #+#    #+#             */
-/*   Updated: 2020/07/08 00:01:59 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/07/09 11:27:40 by excalibur        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,16 @@ namespace ft
 
             deque (const deque& x);
 
-            ~deque() {}
+            ~deque() {
+
+                map_pointer map_start = this->_data_start._map;
+                map_pointer map_end = this->_data_end._map;
+
+                while (map_start != map_end + 1)
+                    _alloc.deallocate(*(map_start++), _deque_block_size(sizeof(value_type)));
+                
+                _map_alloc.deallocate(this->_map_start, this->_map_end - this->_map_start);
+            }
 
             deque& operator= (const deque& x);
 
@@ -185,7 +194,22 @@ namespace ft
             size_type max_size() const
             { return (U_SIZE_MAX / sizeof(T)); }
 
-            void resize(size_type n, value_type val = value_type());
+            void resize(size_type n, value_type val = value_type())
+            {
+                if (this->max_size() - this->size() < n)
+                    throw (std::length_error("deque::resize"));
+                if (n > this->size())
+                {
+                    n -= this->size();
+                    while (n--)
+                        this->push_back(val); // Change to insert
+                }
+                else
+                {
+                    while (this->size() > n)
+                        this->pop_back(); // Change to erase
+                }
+            }
 
             /*
             ** @brief Return an boolean that is "true" if the
@@ -303,11 +327,10 @@ namespace ft
                     if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value))
                         throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>());
                     
-                    for (iterator it = this->_data_start; it != this->_data_end; it++)
-                        _alloc.destroy(&(*it));
+                    this->clear();
                     this->_data_end = this->_data_start;
                     while (first != last)
-                        this->push_back(*first++);
+                        this->push_back(*first++); // Change to insert
                 }
 
             /*
@@ -321,11 +344,10 @@ namespace ft
             */
             void assign (size_type n, const value_type& val)
             {
-                for (iterator it = this->_data_start; it != this->_data_end; it++)
-                    _alloc.destroy(&(*it));
+                this->clear();
                 this->_data_end = this->_data_start;
                 while (n--)
-                    this->push_back(val);
+                    this->push_back(val); // Change to insert
             }
 
             /*
@@ -337,7 +359,8 @@ namespace ft
             void push_back (const value_type& val)
             {
                 _alloc.construct(this->_data_end._elem, val);
-                if ((this->_data_end + 1)._map - this->_data_start._map == this->_map_end - this->_map_start - 1)
+                if (this->_data_end._elem == this->_data_end._end_cur_block - 1
+                    && ((this->_data_end._map + 1) - this->_data_start._map == this->_map_end - this->_map_start - 1))
                     _deque_realloc_map_back(1);
                 this->_data_end++;
                 if (*(this->_data_end._map) == 0)
@@ -357,7 +380,8 @@ namespace ft
             */
             void push_front (const value_type& val)
             {
-                if (this->_data_end._map - (this->_data_start - 1)._map == this->_map_end - this->_map_start)
+                if (this->_data_start._elem == this->_data_start._start_cur_block
+                    && (this->_data_end._map - (this->_data_start._map - 1) == this->_map_end - this->_map_start))
                         _deque_realloc_map_front(1);
                 this->_data_start--;
                 if (*(this->_data_start._map) == 0)
@@ -377,8 +401,22 @@ namespace ft
             */
             void pop_back()
             {
-                this->_data_end--;
-                _alloc.destroy(&(*this->_data_end));
+                if (this->_data_end._elem != this->_data_end._start_cur_block)
+                {
+                    this->_data_end--;
+                    _alloc.destroy(&(*this->_data_end));
+                }
+                else
+                {
+                    _alloc.deallocate(*(this->_data_end._map), _deque_block_size(sizeof(value_type)));
+                    _map_alloc.destroy(this->_data_end._map);
+                    _map_alloc.construct(this->_data_end._map, 0);
+                    this->_data_end._map = this->_data_end._map - 1;
+                    this->_data_end._start_cur_block = *this->_data_end._map;
+                    this->_data_end._end_cur_block = this->_data_end._start_cur_block + _deque_block_size(sizeof(value_type));
+                    this->_data_end._elem = this->_data_end._end_cur_block - 1;
+                    _alloc.destroy(&(*this->_data_end));
+                }
             }
 
             /*
@@ -388,8 +426,19 @@ namespace ft
             */
             void pop_front()
             {
-                _alloc.destroy(&(*this->_data_start));
-                this->_data_start++;
+                if (this->_data_start._elem != this->_data_start._end_cur_block - 1)
+                {
+                    _alloc.destroy(&(*this->_data_start));
+                    this->_data_start++;
+                }
+                else
+                {
+                    _alloc.destroy(&(*this->_data_start));
+                    this->_data_start++;
+                    _alloc.deallocate(*(this->_data_start._map - 1), _deque_block_size(sizeof(value_type)));
+                    _map_alloc.destroy(this->_data_start._map - 1);
+                    _map_alloc.construct(this->_data_start._map - 1, 0);
+                }
             }
 
             // iterator insert (iterator position, const value_type& val);
@@ -405,7 +454,11 @@ namespace ft
 
             void swap (deque& x);
 
-            void clear();
+            void clear()
+            {
+                while (this->_data_end != this->_data_start)
+                    this->pop_back();
+            }
 
         private:
 
@@ -463,6 +516,9 @@ namespace ft
                 this->_map_start = this->_map_alloc.allocate(map_size);
                 this->_map_end = this->_map_start + map_size;
 
+                _map_alloc.construct(this->_map_start, 0);
+                _map_alloc.construct(this->_map_end - 1, 0);
+
                 for (int i = 0; i < (this->_map_end - 1) - (this->_map_start + 1); i++)
                     _map_alloc.construct(this->_map_start + i + 1, _deque_create_block());
 
@@ -479,32 +535,36 @@ namespace ft
             {
                 size_type previous_map_size = (this->_map_end - this->_map_start);
                 size_type next_map_size = previous_map_size + n;
-                map_pointer new_map_start = this->_map_alloc.allocate(next_map_size + 1);
+                map_pointer new_map_start = this->_map_alloc.allocate(next_map_size);
                 map_pointer new_map_end = new_map_start + next_map_size;
 
-                for (int i = 0; i < this->_map_end - this->_map_start; i++)
+                for (size_type i = 0; i < previous_map_size; i++)
                 {
                     _map_alloc.construct(new_map_start + i, *(this->_map_start + i));
                     _map_alloc.destroy(this->_map_start + i);
                 }
+                _map_alloc.construct(new_map_end - 1, 0);
 
                 _map_alloc.deallocate(this->_map_start, this->_map_end - this->_map_start);
 
                 this->_map_start = new_map_start;
                 this->_map_end = new_map_end;
 
+                std::cout << "========================\n";
+                    
                 this->_data_start._map = this->_map_start + 1;
                 this->_data_end._map = this->_map_start + previous_map_size - 1;
-                
                 return (this->_map_start);
             }
-
+            
             map_pointer _deque_realloc_map_front(size_type n)
             {
                 size_type previous_map_size = (this->_map_end - this->_map_start);
                 size_type next_map_size = previous_map_size + n;
                 map_pointer new_map_start = this->_map_alloc.allocate(next_map_size + 1);
                 map_pointer new_map_end = new_map_start + next_map_size;
+
+                _map_alloc.construct(new_map_start, 0);
 
                 for (int i = 0; i < this->_map_end - this->_map_start; i++)
                 {
@@ -517,9 +577,6 @@ namespace ft
                 this->_map_start = new_map_start;
                 this->_map_end = new_map_end;
                 
-                for (int i = 0; i < this->_map_end - this->_map_start; i++)
-                    std::cout << "NEW = " << *(this->_map_start + i) << std::endl;
-
                 this->_data_start._map = this->_map_start + 1;
                 this->_data_end._map = this->_map_start + previous_map_size;
 
