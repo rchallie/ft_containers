@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                         :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
+/*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/07/07 22:41:51 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/11/28 16:58:05 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@
 # include <algorithm>
 # include <cstddef>
 # include <tgmath.h>
-# include "Utils.hpp"
+# include "./utils/utils.hpp"
+# include "./utils/random_access_iterator.hpp"
+
 // =============================================================================
 
 // CLASS DEFINITIONS ===========================================================
@@ -33,7 +35,7 @@
 namespace ft
 {
     template < class T, class Alloc = std::allocator<T> >
-    class Vector
+    class vector
     {   
         public:
 
@@ -50,7 +52,7 @@ namespace ft
             /*
             ** allocator_type::reference
             ** A type provides a reference to an element stored in
-            ** a Vector.
+            ** a vector.
             ** For the default allocator is a reference to value_type
             ** (value_type&)
             */
@@ -92,26 +94,26 @@ namespace ft
             ** That can read or modify any element stored.
             ** Convertible to const_iterator;
             */
-            typedef ft::random_access_iterator<value_type, value_type*, value_type&>               iterator;
+            typedef ft::random_access_iterator<value_type>               iterator;
 
             /*
             ** A random access iterator to const value_type
             ** That can read element stored.
             */
-            typedef ft::random_access_iterator<value_type, const value_type*, const value_type&>            const_iterator;
+            typedef ft::random_access_iterator<value_type>            const_iterator;
             
             /*
             ** ft::reverse_iterator<iterator>
-            ** That can read or modify any element in a reversed Vector.
-            ** Used to iterate through the Vector in reverse.
+            ** That can read or modify any element in a reversed vector.
+            ** Used to iterate through the vector in reverse.
             */
             typedef ft::reverse_iterator<iterator>             reverse_iterator;
 
             /*
             ** ft::reverse_iterator<const_iterator>
-            ** That can read any element in a reversed the Vector.
+            ** That can read any element in a reversed the vector.
             ** Can't be used to modify, used to iterate through the
-            ** the Vector in reverse.
+            ** the vector in reverse.
             */
             typedef ft::reverse_iterator<const_iterator>       const_reverse_iterator;
 
@@ -129,7 +131,7 @@ namespace ft
             ** An unsigned integral type that can represent any
             ** non-negative value of difference_type
             ** Usually the same as size_t.
-            ** Is the number of elements in a Vector.
+            ** Is the number of elements in a vector.
             */
             typedef typename allocator_type::size_type          size_type;
             
@@ -145,7 +147,7 @@ namespace ft
             ** If in template this second argument is not defined,
             ** std::allocator will be used.
             */
-            explicit Vector (const allocator_type& alloc = allocator_type())
+            explicit vector (const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc),
                 _start(u_nullptr),
@@ -162,7 +164,7 @@ namespace ft
             ** @param val The element.
             ** @param allocator_type Allocator object.
             */
-            explicit Vector (size_type n, const value_type& val = value_type(),
+            explicit vector (size_type n, const value_type& val = value_type(),
                  const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc),
@@ -186,13 +188,13 @@ namespace ft
             ** range [first,last), with each element constructed from
             ** its corresponding element in that range, in the same order.
             ** (Adapted to counter the effect of :
-            ** Vector(static_cast<size_type>(first), static_cast<value_type>(last), a))
+            ** vector(static_cast<size_type>(first), static_cast<value_type>(last), a))
             **
             ** @param first An iterator is the first value in x.
             ** @param last An iterator is the last value in x.
             */
             template <class InputIterator>
-                    Vector (InputIterator first, InputIterator last,
+                    vector (InputIterator first, InputIterator last,
                             const allocator_type& alloc = allocator_type(),
                             typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
             :
@@ -208,7 +210,7 @@ namespace ft
                 _end = _start;
                 while (n--)
                 {
-                    _alloc.construct(_end, *first);
+                    _alloc.construct(_end, *first++);
                     _end++;
                 }
             }
@@ -219,9 +221,9 @@ namespace ft
             ** with a copy of each element of "x" elements in 
             ** the same order. Use a copy of "x" allocator.
             **
-            ** @param "x" the Vector container to copy.
+            ** @param "x" the vector container to copy.
             */
-            Vector (const Vector& x)
+            vector (const vector& x)
             :
                 _alloc(x._alloc),
                 _start(u_nullptr),
@@ -236,7 +238,7 @@ namespace ft
             ** Destroy all elements in the container and deallocate
             ** the container capacity.
             */ 
-            virtual ~Vector()
+            virtual ~vector()
             {
                 this->clear();
                 _alloc.deallocate(_start, this->capacity());
@@ -250,7 +252,7 @@ namespace ft
             ** @param x the container which we inspire.
             ** @return *this.
             */ 
-            Vector &operator=(const Vector& x)
+            vector &operator=(const vector& x)
             {
                 if (x == *this)
                     return (*this);
@@ -285,7 +287,7 @@ namespace ft
 
             /*
             ** @brief Return an iterator pointing on the past-the-end element
-            ** in the Vector container. Past-the-end is the theorical element
+            ** in the vector container. Past-the-end is the theorical element
             ** following the last element in the container. If the container is
             ** empty, return the same than begin.
             ** The iterator is of type iterator (random access iterator
@@ -303,7 +305,7 @@ namespace ft
 
             /*
             ** @brief Return an iterator pointing on the past-the-end element
-            ** in the Vector container. Past-the-end is the theorical element
+            ** in the vector container. Past-the-end is the theorical element
             ** following the last element in the container. If the container is
             ** empty, return the same than begin.
             ** The iterator is of type const_iterator (random access
@@ -368,9 +370,9 @@ namespace ft
 
             /*
             ** @brief Returns the maximum potential number of elements the the
-            ** Vector can hold.
+            ** vector can hold.
             ** This size is due to known system or library limitations.
-            ** The Vector is not garanteed to have this size, it can
+            ** The vector is not garanteed to have this size, it can
             ** fail a allocation for exemple.
             ** 
             ** Documentation :
@@ -380,7 +382,7 @@ namespace ft
             ** container can hold.
             ** (An unsigned integral type)
             */
-            size_type   max_size(void) const { return (U_SIZE_MAX / sizeof(T)); }
+            size_type   max_size(void) const { return allocator_type().max_size(); }
 
             /*
             ** @brief Resizes the container so that it contain "n"
@@ -410,7 +412,7 @@ namespace ft
 
             /*
             ** @brief Return size of allocated storage capacity.
-            ** Not necessarily equal to Vector size. Can be equal
+            ** Not necessarily equal to vector size. Can be equal
             ** or greater, because extra space allocated by the container
             ** forecast allocation system.
             **
@@ -464,7 +466,7 @@ namespace ft
 
             /*
             ** @brief Returns a reference to the element at
-            ** position n in the Vector container.
+            ** position n in the vector container.
             ** If "n" is out of range that's causes undefined behavior.
             **
             ** @param n Position of the element in the container.
@@ -474,7 +476,7 @@ namespace ft
 
             /*
             ** @brief Returns a const reference to the element at
-            ** position n in the Vector container.
+            ** position n in the vector container.
             ** If "n" is out of range that's causes undefined behavior.
             **
             ** @param n Position of the element in the container.
@@ -484,7 +486,7 @@ namespace ft
             
             /*
             ** @brief Returns a reference to the element at
-            ** position n in the Vector container.
+            ** position n in the vector container.
             ** The main difference between this function and the
             ** operator "[]" is that the function throw an
             ** std::out_of_range exception if "n" is out of the range of
@@ -501,7 +503,7 @@ namespace ft
 
             /*
             ** @brief Returns a const reference to the element at
-            ** position n in the Vector container.
+            ** position n in the vector container.
             ** The main difference between this function and the
             ** operator "[]" is that the function throw an
             ** std::out_of_range exception if "n" is out of the range of
@@ -554,7 +556,7 @@ namespace ft
 
             /*
             ** Range (1)
-            ** @brief Assigns new contents to the Vector, replacing its current
+            ** @brief Assigns new contents to the vector, replacing its current
             ** contents, add modifying its size accordingly.
             ** New elements are contruct from each of the elements in tht
             ** range, between first and last, in the same order.
@@ -632,7 +634,7 @@ namespace ft
             }
 
             /*
-            ** @brief Add new element at the end of the Vector.
+            ** @brief Add new element at the end of the vector.
             ** The content of "val" is copied (moved) to the new element.
             ** 
             ** @param val The value to be copied.
@@ -897,7 +899,7 @@ namespace ft
             **
             ** @param x the vector to swap.
             */
-            void swap (Vector& x)
+            void swap (vector& x)
             {
                 if (x == *this)
                     return;
@@ -948,7 +950,7 @@ namespace ft
             void checkRange(const size_type& n) const
             {
                 if (n >= this->size())
-                    throw (std::out_of_range("Vector::checkRange: n (which is "
+                    throw (std::out_of_range("vector::checkRange: n (which is "
                             + ft::to_string(n) + ") >= this->size() (which is "
                             + ft::to_string(this->size()) + ")"));
             }
@@ -957,21 +959,21 @@ namespace ft
     // Non-member function overloads
     
     /*
-    ** @brief Compare Vector container to know
+    ** @brief Compare vector container to know
     ** if they are equal. Start to check if the size
     ** is different.
     **
-    ** @param lhs Vector to compare with "rhs".
-    ** @param rhs Vector for comparison of "lhs".
+    ** @param lhs vector to compare with "rhs".
+    ** @param rhs vector for comparison of "lhs".
     ** @return true if they are equal, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator== (const ft::Vector<T, Alloc>& lhs, const ft::Vector<T, Alloc>& rhs)
+        bool operator== (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
         {
             if (lhs.size() != rhs.size())
                 return (false);
-            typename ft::Vector<T>::const_iterator first1 = lhs.begin();
-            typename ft::Vector<T>::const_iterator first2 = rhs.begin();
+            typename ft::vector<T>::const_iterator first1 = lhs.begin();
+            typename ft::vector<T>::const_iterator first2 = rhs.begin();
             while (first1 != lhs.end())
             {
                 if (first2 == rhs.end() || *first1 != *first2)
@@ -983,71 +985,71 @@ namespace ft
         }
 
     /*
-    ** @brief Compare Vector container to know
+    ** @brief Compare vector container to know
     ** if they are different. Equivalent to !(lsh == rhs).
     **
-    ** @param lhs Vector to compare with "rhs".
-    ** @param rhs Vector for comparison of "lhs".
+    ** @param lhs vector to compare with "rhs".
+    ** @param rhs vector for comparison of "lhs".
     ** @return true if they are different, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator!= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
+        bool operator!= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
         {
             return (!(lhs == rhs));
         }
     
     /*
-    ** @brief Compare Vector container to know
+    ** @brief Compare vector container to know
     ** if "lhs" elements are lexicographicalement less than "rhs".
     **
-    ** @param lhs Vector to compare with "rhs".
-    ** @param rhs Vector for comparison of "lhs".
+    ** @param lhs vector to compare with "rhs".
+    ** @param rhs vector for comparison of "lhs".
     ** @return true if "lhs" is lexicographicalement less, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator<  (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
+        bool operator<  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
         {
             return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
         }
 
     /*
-    ** @brief Compare Vector container to know
+    ** @brief Compare vector container to know
     ** if "lhs" elements are lexicographicalement less or equal than "rhs".
     **
-    ** @param lhs Vector to compare with "rhs".
-    ** @param rhs Vector for comparison of "lhs".
+    ** @param lhs vector to compare with "rhs".
+    ** @param rhs vector for comparison of "lhs".
     ** @return true if "lhs" is lexicographicalement less or equal, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator<= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
+        bool operator<= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
         {
             return (!(rhs < lhs));
         }
 
     /*
-    ** @brief Compare Vector container to know
+    ** @brief Compare vector container to know
     ** if "lhs" elements are lexicographicalement superior than "rhs".
     **
-    ** @param lhs Vector to compare with "rhs".
-    ** @param rhs Vector for comparison of "lhs".
+    ** @param lhs vector to compare with "rhs".
+    ** @param rhs vector for comparison of "lhs".
     ** @return true if "lhs" is lexicographicalement superior, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator>  (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
+        bool operator>  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
         {
             return (rhs < lhs);
         }
 
     /*
-    ** @brief Compare Vector container to know
+    ** @brief Compare vector container to know
     ** if "lhs" elements are lexicographicalement superior or equal than "rhs".
     **
-    ** @param lhs Vector to compare with "rhs".
-    ** @param rhs Vector for comparison of "lhs".
+    ** @param lhs vector to compare with "rhs".
+    ** @param rhs vector for comparison of "lhs".
     ** @return true if "lhs" is lexicographicalement superior or equal, false otherwise.
     */
     template <class T, class Alloc>
-        bool operator>= (const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
+        bool operator>= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
         {
             return (!(lhs < rhs));
         }
@@ -1059,7 +1061,7 @@ namespace ft
     ** @param x, y the containers to swap.
     */
     template <class T, class Alloc>
-        void swap (Vector<T,Alloc>& x, Vector<T,Alloc>&y)
+        void swap (vector<T,Alloc>& x, vector<T,Alloc>&y)
         {
             x.swap(y);
         }

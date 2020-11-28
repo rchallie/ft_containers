@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   deque.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: excalibur <excalibur@student.42.fr>        +#+  +:+       +#+        */
+/*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 11:01:04 by excalibur         #+#    #+#             */
-/*   Updated: 2020/07/09 11:27:40 by excalibur        ###   ########.fr       */
+/*   Updated: 2020/11/27 17:47:08 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEQUE_HPP
 # define DEQUE_HPP
 
-# include "Utils.hpp"
+# include "./utils/utils.hpp"
 
 namespace ft
 {
