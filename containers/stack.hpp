@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 11:10:54 by rchallie          #+#    #+#             */
-/*   Updated: 2020/08/07 12:38:52 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/29 16:38:42 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ namespace ft
 
 		private
 			constainer_type ct;
-	}
+	};
 
 	// Each of the operator call the same operator of the
 	// underlying container objects.

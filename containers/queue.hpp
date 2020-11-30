@@ -6,12 +6,14 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 12:15:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/08/07 12:51:40 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/29 16:38:52 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef QUEUE_HPP
 # define QUEUE_HPP
+
+# include "deque.hpp"
 
 namespace ft
 {
@@ -148,7 +150,7 @@ namespace ft
 
 		private:
 			container_type ct;
-	}
+	};
 
 	// Each of the operator call the same operator of the
 	// underlying container objects.

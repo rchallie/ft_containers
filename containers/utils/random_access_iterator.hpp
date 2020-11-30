@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 17:50:14 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/27 23:48:27 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/29 17:20:04 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,9 @@ namespace ft
                 ** @return the reference.
                 */
                 reference operator[](difference_type n) { return (*(operator+(n))); }
+
+                operator random_access_iterator<const T> () const
+                { return (random_access_iterator<const T>(this->_elem)); }
 
                 private:
                     /* Element pointed by the iterator. */

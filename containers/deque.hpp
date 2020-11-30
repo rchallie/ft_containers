@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 11:01:04 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/27 17:47:08 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/30 02:37:10 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define DEQUE_HPP
 
 # include "./utils/utils.hpp"
+# include "./utils/deque_iterator.hpp"
 
 namespace ft
 {
@@ -21,44 +22,199 @@ namespace ft
     {
         public:
 
+            /*
+            ** The first template parameter (T)
+            */
             typedef T   value_type;
 
+            /*
+            ** The second template parameter (Alloc)
+            */
             typedef Alloc   allocator_type;
 
+            /*
+            ** allocator_type::reference
+            ** A type provides a reference to an element stored in
+            ** a deque.
+            ** For the default allocator is a reference to value_type
+            ** (value_type&)
+            */
             typedef typename allocator_type::reference     reference;
 
+            /*
+            ** allocator_type::const_reference
+            ** Type that give a reference to a const element stored.
+            ** Usefull to read and perform const operator.
+            ** A type const_reference can't be used to modify the value
+            ** of an element.
+            ** For the default allocator is a const reference to value_type
+            ** (const value_type&)
+            */
             typedef typename allocator_type::const_reference const_reference;
 
+            /*
+            ** allocator_type::pointer
+            ** Type that give a pointer to an element stored.
+            ** A type pointer can be used to modify the value of
+            ** an element.
+            ** For the default allocator is a pointer to value_type
+            ** (value_type*)
+            */
             typedef typename allocator_type::pointer     pointer;
 
+            /*
+            ** allocator_type::const_pointer
+            ** Type that give a const pointer to an element stored.
+            ** Can't be used to modify the value of an element.
+            ** An iterator is prefered to access to an element.
+            ** For the default allocator is a const pointer to value_type
+            ** (const value_type*)
+            */
             typedef typename allocator_type::const_pointer const_pointer;
 
-            typedef ft::Deque_Iterator<T, T*, reference> iterator;
+            /*
+            ** A random access iterator to value_type
+            ** That can read or modify any element stored.
+            ** Convertible to const_iterator;
+            */
+            typedef ft::Deque_Iterator<value_type> iterator;
 
-            typedef ft::Deque_Iterator<value_type, const_pointer, const_reference> const_iterator;
+            /*
+            ** A random access iterator to const value_type
+            ** That can read element stored.
+            */
+            typedef ft::Deque_Iterator<const value_type> const_iterator;
 
+            /*
+            ** ft::reverse_iterator<iterator>
+            ** That can read or modify any element in a reversed deque.
+            ** Used to iterate through the deque in reverse.
+            */
             typedef ft::reverse_iterator<iterator> reverse_iterator;
 
+            /*
+            ** ft::reverse_iterator<const_iterator>
+            ** That can read any element in a reversed the deque.
+            ** Can't be used to modify, used to iterate through the
+            ** the deque in reverse.
+            */
             typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
+            /*
+            ** A signed integral type:
+            ** Usually the same as ptrdiff_t.
+            ** Can represent the difference between iterators to the
+            ** element actually stored.
+            ** Can be described as te number of element between two pointers.
+            ** (Pointer to an element contains its address).
+            */
             typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
 
+            /*
+            ** An unsigned integral type that can represent any
+            ** non-negative value of difference_type
+            ** Usually the same as size_t.
+            */
             typedef size_t  size_type;
-    
+
+            // Constructors:
+
+            /*
+            ** @brief Default.
+            ** Constructs an empty container, with no elements.
+            ** 
+            ** @param Allocator object.
+            ** The container keeps and uses an internal copy of this
+            ** allocator. It's an alias to the second template parameter.
+            ** If in template this second argument is not defined,
+            ** std::allocator will be used.
+            */
             explicit deque (const allocator_type& alloc = allocator_type())
             :
                 _alloc(alloc)
             { _deque_initialize_map(0); }
 
+            /*
+            ** @brief Fill.
+            ** Constructs a container with "n" elements.
+            ** Each element is a copy of val.
+            **
+            ** @param n The number of elements.
+            ** @param val The element.
+            ** @param allocator_type Allocator object.
+            */
             explicit deque (size_type n, const value_type& val = value_type(),
-                            const allocator_type& alloc = allocator_type());
+                            const allocator_type& alloc = allocator_type())
+            :
+                _alloc(alloc)
+            {
+                _deque_initialize_map(n);
+                while (n--)
+                {
+                    _alloc.construct(this->_data_end._elem, val);
+                    this->_data_end++;
+                }
+            }
             
-            // template <class InputIterator>
-            //     deque (InputIterator first, InputIterator last,
-            //             const allocator_type& alloc = allocator_type());
+            /*
+            ** @brief Range.
+            ** Constructs a container with as many elements as the
+            ** range [first,last), with each element constructed from
+            ** its corresponding element in that range, in the same order.
+            ** (Adapted to counter the effect of :
+            ** deque(static_cast<size_type>(first), static_cast<value_type>(last), a))
+            **
+            ** @param first An iterator is the first value in x.
+            ** @param last An iterator is the last value in x.
+            */
+            template <class InputIterator>
+                deque (InputIterator first, InputIterator last,
+                        const allocator_type& alloc = allocator_type(),
+                        typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+            :
+                _alloc(alloc)
+            {
+                bool is_valid;
+                if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                
+                difference_type n = ft::distance(first, last);
+                _deque_initialize_map(n);
+                while (n--)
+                {
+                    _alloc.construct(this->_data_end._elem, *first++);
+                    this->_data_end++;
+                }
+            }
+            
+            /*
+            ** @brief Copy.
+            ** Construct a deque, initializing its contents
+            ** with a copy of each element of "x" elements in 
+            ** the same order. Use a copy of "x" allocator.
+            **
+            ** @param "x" the deque container to copy.
+            */
+            deque (const deque& x)
+            :
+                _alloc(x._alloc)
+            {
+                _deque_initialize_map(x._data_end._map - x._data_start._map);
 
-            deque (const deque& x);
+                difference_type n = ft::distance(x._data_start, x._data_end);
+                iterator first = x._data_start;
+                while (n--)
+                {
+                    _alloc.construct(this->_data_end._elem, *first++);
+                    this->_data_end++;
+                }
+            }
 
+            /*
+            ** @brief Destroy the container object.
+            ** Destroy all elements in the container and deallocate
+            ** the container capacity.
+            */
             ~deque() {
 
                 map_pointer map_start = this->_data_start._map;
@@ -69,8 +225,26 @@ namespace ft
                 
                 _map_alloc.deallocate(this->_map_start, this->_map_end - this->_map_start);
             }
-
-            deque& operator= (const deque& x);
+            
+            /*
+            ** @brief Assigns contents from "x" to the container.
+            ** Replace content of this and according size.
+            ** All elements before the call are destroyed.
+            **
+            ** @param x the container which we inspire.
+            ** @return *this.
+            */ 
+            deque& operator= (const deque& x)
+            {
+                if (x == *this)
+                    return (*this);
+                this->clear();
+                difference_type n = ft::distance(x._data_start, x._data_end);
+                iterator first = x._data_start;
+                while (n--)
+                    this->push_back(*first++);
+                return (*this);
+            }
 
             // Iterators :
             
@@ -192,7 +366,7 @@ namespace ft
             ** @return the maximum number of elements.
             */
             size_type max_size() const
-            { return (U_SIZE_MAX / sizeof(T)); }
+            { return (allocator_type().max_size()); }
 
             void resize(size_type n, value_type val = value_type())
             {
@@ -441,9 +615,59 @@ namespace ft
                 }
             }
 
-            // iterator insert (iterator position, const value_type& val);
+            iterator insert (iterator position, const value_type& val)
+            {
+                if (position == this->_data_start)
+                {
+                    this->push_front(val);
+                    return (this->_data_start);
+                }
+                else if (position == this->_data_end)
+                {
+                    this->push_back(val);
+                    return (this->_data_end);
+                }
+                else
+                {
+                    difference_type n = ft::distance(position, this->_data_end);
+                    this->push_back(this->back());
+                    for (size_type i = 0; i < (size_type)n + 1; i++)
+                    {
+                        this->_alloc.construct((this->_data_end - i)._elem, *(this->_data_end - 1 - i)._elem);
+                        this->_alloc.destroy(&(*(this->_data_end - 1 - i)));
+                    }
+                    this->_alloc.construct((this->_data_end - n - 1)._elem, val);
+                    return (this->_data_end - n - 1);
+                }
+            }
 
-            // void insert (iterator position, size_type n, const value_type& val);
+            void insert (iterator position, size_type n, const value_type& val)
+            {
+                map_pointer         save_map_start = this->_data_start._map;
+                map_pointer         save_map_end = this->_data_end._map;
+                map_pointer         save_map_ext_start = this->_map_start;
+                map_pointer         save_map_ext_end = this->_map_end;
+                iterator            save_data_start = this->_data_start;
+                iterator            save_data_end = this->_data_end;
+
+                size_type     save_diff_from_start = ft::distance(this->_data_start, position);
+                size_type     save_size_end = this->size();
+
+                _deque_initialize_map((save_data_end - save_data_start) + n);
+
+                size_type count = 0;
+                for (; count < save_diff_from_start; count++)
+                    _alloc.construct((this->_data_end++)._elem, *(save_data_start + count)._elem);
+                while (n--)
+                    _alloc.construct((this->_data_end++)._elem, val);
+                for(; count < save_size_end; count++)
+                    _alloc.construct((this->_data_end++)._elem,
+                        *(save_data_start + count)._elem);
+
+                while (save_map_start != save_map_end + 1)
+                    _alloc.deallocate(*(save_map_start++), _deque_block_size(sizeof(value_type)));
+                _map_alloc.deallocate(save_map_ext_start, save_map_ext_end - save_map_ext_start);
+            }
 
             // template <class InputIterator>
             //     void insert (iterator position, InputIterator first, InputIterator last);
@@ -452,7 +676,32 @@ namespace ft
 
             // iterator erase (iterator first, iterator last);
 
-            void swap (deque& x);
+            void swap (deque& x)
+            {
+                if (x == *this)
+                    return;
+                
+                map_allocator_type  save_map_alloc = x._map_alloc;
+                map_pointer         save_map_start = x._map_start;
+                map_pointer         save_map_end = x._map_end;
+                allocator_type      save_alloc = x._alloc;
+                iterator            save_data_start = x._data_start;
+                iterator            save_data_end = x._data_end;
+
+                x._map_alloc = this->_map_alloc;
+                x._map_start = this->_map_start;
+                x._map_end = this->_map_end;
+                x._alloc = this->_alloc;
+                x._data_start = this->_data_start;
+                x._data_end = this->_data_end;
+
+                this->_map_alloc = save_map_alloc;
+                this->_map_start = save_map_start;
+                this->_map_end = save_map_end;
+                this->_alloc = save_alloc;
+                this->_data_start = save_data_start;
+                this->_data_end = save_data_end;
+            }
 
             void clear()
             {
@@ -531,6 +780,9 @@ namespace ft
             pointer _deque_create_block(void)
             { return (_alloc.allocate( _deque_block_size(sizeof(value_type)) )); }
 
+            /*
+            ** @param n number of block to add.
+            */
             map_pointer _deque_realloc_map_back(size_type n)
             {
                 size_type previous_map_size = (this->_map_end - this->_map_start);
@@ -550,13 +802,33 @@ namespace ft
                 this->_map_start = new_map_start;
                 this->_map_end = new_map_end;
 
-                std::cout << "========================\n";
-                    
                 this->_data_start._map = this->_map_start + 1;
                 this->_data_end._map = this->_map_start + previous_map_size - 1;
                 return (this->_map_start);
             }
+
+            /*
+            ** @param n number of element to extends. 
+            */
+            void _deque_extends_back(size_type n)
+            {
+                std::cout << "DIST = " << ft::distance((*this->_data_end._map), this->_data_end._elem) << std::endl;
+                if ((this->_data_end._elem - (*this->_data_end._map)) + n >= _deque_block_size(sizeof(T)))
+                {
+                    size_type new_n = _deque_block_size(sizeof(T) - (this->_data_end._elem - (*this->_data_end._map)));
+                    size_type block_number = (new_n / _deque_block_size(sizeof(T))) + 1;
+                    std::cout << "Block_number = " << block_number << std::endl;
+                    std::cout << "PRE map = " << this->_data_end._map - this->_data_start._map << std::endl;
+                    _deque_realloc_map_back(block_number);
+                    std::cout << "POST map = " << this->_data_end._map - this->_data_start._map << std::endl;
+                }
+                else
+                    return ;
+            }
             
+            /*
+            ** @param n number of block to add.
+            */
             map_pointer _deque_realloc_map_front(size_type n)
             {
                 size_type previous_map_size = (this->_map_end - this->_map_start);
@@ -582,8 +854,117 @@ namespace ft
 
                 return (this->_map_start);
             }
-
     };
+
+    // Non-member function overloads
+    
+    /*
+    ** @brief Compare deque container to know
+    ** if they are equal. Start to check if the size
+    ** is different.
+    **
+    ** @param lhs deque to compare with "rhs".
+    ** @param rhs deque for comparison of "lhs".
+    ** @return true if they are equal, false otherwise.
+    */
+    template <class T, class Alloc>
+        bool operator== (const ft::deque<T, Alloc>& lhs, const ft::deque<T, Alloc>& rhs)
+        {
+            if (lhs.size() != rhs.size())
+                return (false);
+            typename ft::deque<T>::const_iterator first1 = lhs.begin();
+            typename ft::deque<T>::const_iterator first2 = rhs.begin();
+            while (first1 != lhs.end())
+            {
+                if (first2 == rhs.end() || *first1 != *first2)
+                    return (false);
+                ++first1;
+                ++first2;
+            }
+            return (true);
+        }
+
+    /*
+    ** @brief Compare deque container to know
+    ** if they are different. Equivalent to !(lsh == rhs).
+    **
+    ** @param lhs deque to compare with "rhs".
+    ** @param rhs deque for comparison of "lhs".
+    ** @return true if they are different, false otherwise.
+    */
+    template <class T, class Alloc>
+        bool operator!= (const deque<T, Alloc>& lhs, const deque<T, Alloc>& rhs)
+        {
+            return (!(lhs == rhs));
+        }
+    
+    /*
+    ** @brief Compare deque container to know
+    ** if "lhs" elements are lexicographicalement less than "rhs".
+    **
+    ** @param lhs deque to compare with "rhs".
+    ** @param rhs deque for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement less, false otherwise.
+    */
+    template <class T, class Alloc>
+        bool operator<  (const deque<T, Alloc>& lhs, const deque<T, Alloc>& rhs)
+        {
+            return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+        }
+
+    /*
+    ** @brief Compare deque container to know
+    ** if "lhs" elements are lexicographicalement less or equal than "rhs".
+    **
+    ** @param lhs deque to compare with "rhs".
+    ** @param rhs deque for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement less or equal, false otherwise.
+    */
+    template <class T, class Alloc>
+        bool operator<= (const deque<T, Alloc>& lhs, const deque<T, Alloc>& rhs)
+        {
+            return (!(rhs < lhs));
+        }
+
+    /*
+    ** @brief Compare deque container to know
+    ** if "lhs" elements are lexicographicalement superior than "rhs".
+    **
+    ** @param lhs deque to compare with "rhs".
+    ** @param rhs deque for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement superior, false otherwise.
+    */
+    template <class T, class Alloc>
+        bool operator>  (const deque<T, Alloc>& lhs, const deque<T, Alloc>& rhs)
+        {
+            return (rhs < lhs);
+        }
+
+    /*
+    ** @brief Compare deque container to know
+    ** if "lhs" elements are lexicographicalement superior or equal than "rhs".
+    **
+    ** @param lhs deque to compare with "rhs".
+    ** @param rhs deque for comparison of "lhs".
+    ** @return true if "lhs" is lexicographicalement superior or equal, false otherwise.
+    */
+    template <class T, class Alloc>
+        bool operator>= (const deque<T, Alloc>& lhs, const deque<T, Alloc>& rhs)
+        {
+            return (!(lhs < rhs));
+        }
+    
+    /*
+    ** @brief Overload of swap (deque).
+    ** The contents of container are swaped.
+    **
+    ** @param x, y the containers to swap.
+    */
+    template <class T, class Alloc>
+        void swap (deque<T,Alloc>& x, deque<T,Alloc>&y)
+        {
+            x.swap(y);
+        }
 }
 
 #endif

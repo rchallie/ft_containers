@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 17:54:42 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/28 21:25:29 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/29 19:11:03 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,6 @@
 # include "../containers/vector.hpp"
 # include "../containers/utils/random_access_iterator.hpp"
 # include "tester.hpp"
-
-template <class T>
-std::string equal(const T& t1, const T& t2)
-{
-    return (t1 == t2 ? "✔" : "✘");
-}
-
-template <class T>
-bool equalbool(const T& t1, const T& t2)
-{
-    return (t1 == t2 ? true : false);
-}
 
 template <class T>
 std::string equalContent(
@@ -48,15 +36,6 @@ std::string equalContent(
         stl_it++;
     }
     return ("✔");
-}
-
-bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool)
-{
-    fs << "\nBool result : \n";
-    fs << " - STL : " << (stl_bool ? "true" : "false") << std::endl;
-    fs << " - FT  : " << (ft_bool ? "true" : "false") << std::endl;
-
-    return (stl_bool == ft_bool);
 }
 
 template <class T>
@@ -138,19 +117,6 @@ bool printVectorAttributes(
     return (true);
 }
 
-// t1 == stl
-// t2 == ft
-template<class T>
-static bool printVectorSingleValue(std::fstream& fs, const T& t1, const T& t2)
-{
-    fs << "\n══════════════════════════════════════════════════════════════\n";
-    fs << "Value from :\n";
-    fs << "STL    : " << t1 << "\n";
-    fs << "FT  [" << equal(t1, t2) << "]: " << t2 << "\n";
-    fs << "══════════════════════════════════════════════════════════════\n";
-    return (t1 == t2 ? true : false);
-}
-
 void test_vector()
 {
     std::cout << UNDERLINE << "VECTORS :\n" << NORMAL ;
@@ -229,6 +195,22 @@ void test_vector()
         fs << "\nCompared with:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "std::vector<int> stl_fill_vector_sized(19);\n";
+        fs.close();
+    }
+
+    /* Fill constructor sized & valued */
+    {
+        std::vector<int> stl_fill_vector_sized(19, 42);
+        ft::vector<int> ft_fill_vector_sized(19, 42);
+
+        fs.open("vectors_output/constructor_fill_sized_valued", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printVectorAttributes(fs, stl_fill_vector_sized, ft_fill_vector_sized) == true) ? "[OK]" : "[NOP]");
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "ft::vector<int> ft_fill_vector_sized(19, 42);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "std::vector<int> stl_fill_vector_sized(19, 42);\n";
         fs.close();
     }
 
@@ -342,7 +324,7 @@ void test_vector()
         int from_stl = *(stl_range_vector.begin());
         int from_ft = *(ft_range_vector.begin());
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 87, 92, -5, 8984, 96 };\n";
@@ -379,7 +361,7 @@ void test_vector()
         const int from_stl = *(stl_const_it);
         const int from_ft = *(ft_const_it);
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 87, 92, -5, 8984, 96 };\n";
@@ -416,7 +398,7 @@ void test_vector()
         int from_stl = *(stl_range_vector.end() - 1);
         int from_ft = *(ft_range_vector.end() - 1);
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 48, 967, 52, -45, -9, 956551, 44};\n";
@@ -453,7 +435,7 @@ void test_vector()
         const int from_stl = *(stl_const_it);
         const int from_ft = *(ft_const_it);
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 95, 89, -6121, 48, 5 };\n";
@@ -490,7 +472,7 @@ void test_vector()
         int from_stl = *(stl_range_vector.rbegin());
         int from_ft = *(ft_range_vector.rbegin());
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {250, -1200, -98657, 2, 34};\n";
@@ -527,7 +509,7 @@ void test_vector()
         const int from_stl = *(stl_const_it);
         const int from_ft = *(ft_const_it);
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 958, -561, 54, 789, -8};\n";
@@ -564,7 +546,7 @@ void test_vector()
         int from_stl = *(stl_range_vector.rend() - 1);
         int from_ft = *(ft_range_vector.rend() - 1);
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {78, -951, 562, 8, 745, 51236, 6987};\n";
@@ -601,7 +583,7 @@ void test_vector()
         const int from_stl = *(stl_const_it);
         const int from_ft = *(ft_const_it);
 
-        std::cout << ((printVectorSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 8, -5615, 412, 89, 475};\n";
@@ -849,7 +831,7 @@ void test_vector()
         ft::vector<int> ft_operator(ft_iterator_beg, ft_iterator_beg + 5);
 
         fs.open("vectors_output/operator_at", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_operator[1], ft_operator[1]) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_operator[1], ft_operator[1]) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 8, -5615, 412, 89, 475};\n";
@@ -877,7 +859,7 @@ void test_vector()
         const int ft_const = ft_operator[1];
         
         fs.open("vectors_output/operator_at_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {8, -98, 541, 53361, 9};\n";
@@ -904,7 +886,7 @@ void test_vector()
         ft::vector<int> ft_at(ft_iterator_beg, ft_iterator_beg + 5);
 
         fs.open("vectors_output/at", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_at.at(3), ft_at.at(3)) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_at.at(3), ft_at.at(3)) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {8, -986, -8, 66, 7};\n";
@@ -932,7 +914,7 @@ void test_vector()
         const int ft_const = ft_at.at(4);
         
         fs.open("vectors_output/const_at", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {845, -9, 47, 4, -825};\n";
@@ -959,7 +941,7 @@ void test_vector()
         ft::vector<int> ft_front(ft_iterator_beg, ft_iterator_beg + 5);
 
         fs.open("vectors_output/front", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_front.front(), ft_front.front()) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_front.front(), ft_front.front()) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {2, 0, 982, -9, 87};\n";
@@ -987,7 +969,7 @@ void test_vector()
         const int ft_const = ft_front.front();
 
         fs.open("vectors_output/front_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {5589, -97, -98, -63, 8};\n";
@@ -1014,7 +996,7 @@ void test_vector()
         ft::vector<int> ft_back(ft_iterator_beg, ft_iterator_beg + 5);
 
         fs.open("vectors_output/back", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_back.back(), ft_back.back()) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_back.back(), ft_back.back()) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {2, 0, 982, -9, 87};\n";
@@ -1042,7 +1024,7 @@ void test_vector()
         const int ft_const = ft_back.back();
 
         fs.open("vectors_output/back_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printVectorSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printSingleValue(fs, stl_const, ft_const) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = {5589, -97, -98, -63, 8};\n";

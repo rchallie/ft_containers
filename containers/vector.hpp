@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/28 16:58:05 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/29 19:00:06 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ namespace ft
             ** A random access iterator to const value_type
             ** That can read element stored.
             */
-            typedef ft::random_access_iterator<value_type>            const_iterator;
+            typedef ft::random_access_iterator<const value_type>            const_iterator;
             
             /*
             ** ft::reverse_iterator<iterator>
@@ -131,7 +131,6 @@ namespace ft
             ** An unsigned integral type that can represent any
             ** non-negative value of difference_type
             ** Usually the same as size_t.
-            ** Is the number of elements in a vector.
             */
             typedef typename allocator_type::size_type          size_type;
             
