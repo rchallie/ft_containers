@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/29 19:00:06 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/30 17:31:47 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -621,6 +621,7 @@ namespace ft
                 }
                 else
                 {
+                    _alloc.deallocate(_start, this->capacity());
                     _start = _alloc.allocate( n );
                     _end = _start;
                     _end_capacity = _start + n;
@@ -856,7 +857,7 @@ namespace ft
                     _alloc.destroy(&(*position));
                 else
                 {
-                    for (int i = 0; i < _end - &(*position); i++)
+                    for (int i = 0; i < _end - &(*position) - 1; i++)
                     {
                         _alloc.construct(&(*position) + i, *(&(*position) + i + 1));
                         _alloc.destroy(&(*position) + i + 1);

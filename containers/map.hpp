@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/17 15:44:08 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/27 17:47:34 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/01 00:46:01 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ namespace ft
                 typedef typename ft::Binary_search_tree<value_type>::iterator iterator;
 
                 /* A bidirectional iterator to const value_type */
-                typedef typename ft::Binary_search_tree<value_type>::const_iterator const_iterator;
+                typedef typename ft::Binary_search_tree<const value_type>::const_iterator const_iterator;
 
                 // typedef typename ft::...:reverse_iterator    reverse_iterator;
 
@@ -298,9 +298,7 @@ namespace ft
                 void erase (iterator first, iterator last)
                 {
                     while (first != last)
-                    {
                         this->erase(*first++);
-                    }
                 }
 
                 void swap (Map& x);
@@ -461,7 +459,7 @@ namespace ft
                 { return (ft::make_pair(this->lower_bound(k), this->upper_bound(k))); }
 
                 /*
-                ** @brief Return all the element that have "k" like key.
+                ** @brief Return the element that have "k" like key.
                 ** Like all element in map are unique, that give a pair
                 ** that contain two iterator. The first iterator
                 ** pointing to the lower bound of "k" and the second pointing

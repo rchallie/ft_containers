@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 11:01:04 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/30 02:37:10 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/30 18:10:30 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -615,6 +615,16 @@ namespace ft
                 }
             }
 
+            /*
+            ** @brief Insert an element a the position. Can ecrease de size
+            ** of the container. This action force the container to
+            ** realocate all the elements that were after "postion"
+            ** to their new positions.
+            **
+            ** @param position The position where insert.
+            ** @param val The element to insert.
+            ** @return An iterator to the new element in the container.
+            */
             iterator insert (iterator position, const value_type& val)
             {
                 if (position == this->_data_start)
@@ -641,41 +651,238 @@ namespace ft
                 }
             }
 
+            /*
+            ** @brief Insert an element a "n" amount of time
+            ** before the specified position. Can ecrease de capacity
+            ** of the container. This action force the container to
+            ** realocate all the elements that were after "position"
+            ** to their new positions.
+            **
+            ** @param position The position where insert.
+            ** @param n Amout of element to insert.
+            ** @param val The element to insert.
+            */
             void insert (iterator position, size_type n, const value_type& val)
             {
-                map_pointer         save_map_start = this->_data_start._map;
-                map_pointer         save_map_end = this->_data_end._map;
-                map_pointer         save_map_ext_start = this->_map_start;
-                map_pointer         save_map_ext_end = this->_map_end;
-                iterator            save_data_start = this->_data_start;
-                iterator            save_data_end = this->_data_end;
+                if (position == this->_data_start)
+                {
+                    while (n--)
+                        push_front(n);
+                }
+                else if (position == this->_data_end)
+                {
+                    while (n--)
+                        push_back(n);
+                }
+                else
+                {
+                    map_pointer         save_map_start = this->_data_start._map;
+                    map_pointer         save_map_end = this->_data_end._map;
+                    map_pointer         save_map_ext_start = this->_map_start;
+                    map_pointer         save_map_ext_end = this->_map_end;
+                    iterator            save_data_start = this->_data_start;
+                    iterator            save_data_end = this->_data_end;
 
-                size_type     save_diff_from_start = ft::distance(this->_data_start, position);
-                size_type     save_size_end = this->size();
+                    size_type     save_diff_from_start = ft::distance(this->_data_start, position);
+                    size_type     save_size_end = this->size();
 
-                _deque_initialize_map((save_data_end - save_data_start) + n);
+                    _deque_initialize_map((save_data_end - save_data_start) + n);
 
-                size_type count = 0;
-                for (; count < save_diff_from_start; count++)
-                    _alloc.construct((this->_data_end++)._elem, *(save_data_start + count)._elem);
-                while (n--)
-                    _alloc.construct((this->_data_end++)._elem, val);
-                for(; count < save_size_end; count++)
-                    _alloc.construct((this->_data_end++)._elem,
-                        *(save_data_start + count)._elem);
+                    size_type count = 0;
+                    for (; count < save_diff_from_start; count++)
+                        _alloc.construct((this->_data_end++)._elem, *(save_data_start + count)._elem);
+                    while (n--)
+                        _alloc.construct((this->_data_end++)._elem, val);
+                    for(; count < save_size_end; count++)
+                        _alloc.construct((this->_data_end++)._elem,
+                            *(save_data_start + count)._elem);
 
-                while (save_map_start != save_map_end + 1)
-                    _alloc.deallocate(*(save_map_start++), _deque_block_size(sizeof(value_type)));
-                _map_alloc.deallocate(save_map_ext_start, save_map_ext_end - save_map_ext_start);
+                    while (save_map_start != save_map_end + 1)
+                        _alloc.deallocate(*(save_map_start++), _deque_block_size(sizeof(value_type)));
+                    _map_alloc.deallocate(save_map_ext_start, save_map_ext_end - save_map_ext_start);
+                }
             }
 
-            // template <class InputIterator>
-            //     void insert (iterator position, InputIterator first, InputIterator last);
+            /*
+            ** @brief Insert element in range from ["first" to
+            ** "last") at "position". Can increase the capacity of
+            ** the container. Throw if the iterator given is not valid.
+            ** Reallocate all elements after the dist between first and last.
+            **
+            ** @param position the position where insert.
+            ** @param first the first element in the range.
+            ** @param last the last element in the range.
+            */
+            template <class InputIterator>
+                void insert (iterator position, InputIterator first, InputIterator last,
+                typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+            {
+                bool is_valid;
+                if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                
+                difference_type n = ft::distance(first, last);
+                if (position == this->_data_start)
+                {
+                    while (n--)
+                        push_front(*(--last));
+                }
+                else if (position == this->_data_end)
+                {
+                    while (n--)
+                        push_back(*(first++));
+                }
+                else
+                {
+                    map_pointer         save_map_start = this->_data_start._map;
+                    map_pointer         save_map_end = this->_data_end._map;
+                    map_pointer         save_map_ext_start = this->_map_start;
+                    map_pointer         save_map_ext_end = this->_map_end;
+                    iterator            save_data_start = this->_data_start;
+                    iterator            save_data_end = this->_data_end;
 
-            // iterator erase (iterator position);
+                    size_type     save_diff_from_start = ft::distance(this->_data_start, position);
+                    size_type     save_size_end = this->size();
 
-            // iterator erase (iterator first, iterator last);
+                    _deque_initialize_map((save_data_end - save_data_start) + n);
 
+                    size_type count = 0;
+                    for (; count < save_diff_from_start; count++)
+                        _alloc.construct((this->_data_end++)._elem, *(save_data_start + count)._elem);
+                    while (n--)
+                        _alloc.construct((this->_data_end++)._elem, *first++);
+                    for(; count < save_size_end; count++)
+                        _alloc.construct((this->_data_end++)._elem,
+                            *(save_data_start + count)._elem);
+
+                    while (save_map_start != save_map_end + 1)
+                        _alloc.deallocate(*(save_map_start++), _deque_block_size(sizeof(value_type)));
+                    _map_alloc.deallocate(save_map_ext_start, save_map_ext_end - save_map_ext_start);
+                }
+            }
+
+            /*
+            ** @brief Remove element from the container at "position".
+            ** Reduce the size of 1;
+            **
+            ** @param position the iterator pointing to the
+            ** element to remove.
+            ** @return a pointer to the element a "&(*position) + 1"; 
+            */
+            iterator erase (iterator position)
+            {
+                if (position == this->_data_start)
+                {
+                    pop_front();
+                    return (this->_data_start);
+                }
+                else if (position == this->_data_end)
+                {
+                    pop_back();
+                    return (this->_data_end - 1);
+                }
+                else
+                {
+                    map_pointer         save_map_start = this->_data_start._map;
+                    map_pointer         save_map_end = this->_data_end._map;
+                    map_pointer         save_map_ext_start = this->_map_start;
+                    map_pointer         save_map_ext_end = this->_map_end;
+                    iterator            save_data_start = this->_data_start;
+                    iterator            save_data_end = this->_data_end;
+
+                    difference_type dist = ft::distance(this->_data_start, this->_data_end);
+                    difference_type diff_start_pos = ft::distance(this->_data_start, position);
+                    _deque_initialize_map((save_data_end - save_data_start) - 1);
+
+                    iterator rtn;
+                    size_type count = 0;
+                    while (dist--)
+                    {
+                        if (dist != diff_start_pos)
+                        {
+                            if (save_data_start == position)
+                                rtn = this->_data_end;
+                            _alloc.construct((this->_data_end++)._elem, *(save_data_start + count)._elem);
+                        }
+                        count++;
+                    }
+
+                    while (save_map_start != save_map_end + 1)
+                        _alloc.deallocate(*(save_map_start++), _deque_block_size(sizeof(value_type)));
+                    _map_alloc.deallocate(save_map_ext_start, save_map_ext_end - save_map_ext_start);
+                    return (rtn);
+                }
+            }
+
+            /*
+            ** @brief Remove element from the container a range of element.
+            ** Reduce the size by the number of element removed.
+            ** 
+            ** @param first the first element in the range.
+            ** @param last the last element in the range.
+            ** @return An iterator that point to the first element
+            ** after "last".
+            */
+            iterator erase (iterator first, iterator last)
+            {
+                difference_type n = ft::distance(first, last);
+
+                if (this->rangeHas(this->_data_end - 1, first, last) == true)
+                {
+                    while (n--)
+                        pop_back();
+                    return (this->_data_end - 1);
+                }
+                else if (this->rangeHas(this->_data_start, first, last) == true)
+                {
+                    while (n--)
+                        pop_front();
+                    return (this->_data_start);
+                }
+                else
+                {
+                    map_pointer         save_map_start = this->_data_start._map;
+                    map_pointer         save_map_end = this->_data_end._map;
+                    map_pointer         save_map_ext_start = this->_map_start;
+                    map_pointer         save_map_ext_end = this->_map_end;
+                    iterator            save_data_start = this->_data_start;
+                    iterator            save_data_end = this->_data_end;
+
+                    difference_type dist = ft::distance(this->_data_start, this->_data_end);
+                    difference_type diff_start_pos = ft::distance(this->_data_start, last);
+                    difference_type diff_end_pos = dist - ft::distance(last, this->_data_end);
+                    _deque_initialize_map((save_data_end - save_data_start) - n);
+
+                    iterator rtn;
+                    size_type count = 0;
+                    while (dist--)
+                    {
+                        if (dist < diff_start_pos - 1 || dist > diff_end_pos)
+                        {
+                            if (save_data_start == last + 1)
+                                rtn = this->_data_end;
+                            _alloc.construct((this->_data_end++)._elem, *(save_data_start + count)._elem);
+                        }
+                        count++;
+                    }
+
+                    while (save_map_start != save_map_end + 1)
+                        _alloc.deallocate(*(save_map_start++), _deque_block_size(sizeof(value_type)));
+                    _map_alloc.deallocate(save_map_ext_start, save_map_ext_end - save_map_ext_start);
+                    return (rtn);
+                }
+                return (iterator());
+            }
+
+            /*
+            ** @brief Exchanges the content with "x" content.
+            ** "x" is of same type. Elements of "x" are elements
+            ** of this container and elements of this are of "x".
+            ** All iterators, references, pointer on the swaped
+            ** objects stay valid.
+            **
+            ** @param x the deque to swap.
+            */
             void swap (deque& x)
             {
                 if (x == *this)
@@ -703,6 +910,10 @@ namespace ft
                 this->_data_end = save_data_end;
             }
 
+            /*
+            ** @brief Removes (destroy) all elements from the
+            ** container. Final size is 0.
+            */
             void clear()
             {
                 while (this->_data_end != this->_data_start)
@@ -735,6 +946,17 @@ namespace ft
                     throw (std::out_of_range("deque::checkRange: n (which is "
                             + ft::to_string(n) + ")>= this->size() (which is "
                             + ft::to_string(this->size()) + ")"));
+            }
+
+            bool rangeHas(iterator pos, iterator first, iterator last)
+            {
+                while (first != last)
+                {
+                    if (first == pos)
+                        return (true);
+                    ++first;
+                }
+                return (false);
             }
             
             /*
@@ -805,25 +1027,6 @@ namespace ft
                 this->_data_start._map = this->_map_start + 1;
                 this->_data_end._map = this->_map_start + previous_map_size - 1;
                 return (this->_map_start);
-            }
-
-            /*
-            ** @param n number of element to extends. 
-            */
-            void _deque_extends_back(size_type n)
-            {
-                std::cout << "DIST = " << ft::distance((*this->_data_end._map), this->_data_end._elem) << std::endl;
-                if ((this->_data_end._elem - (*this->_data_end._map)) + n >= _deque_block_size(sizeof(T)))
-                {
-                    size_type new_n = _deque_block_size(sizeof(T) - (this->_data_end._elem - (*this->_data_end._map)));
-                    size_type block_number = (new_n / _deque_block_size(sizeof(T))) + 1;
-                    std::cout << "Block_number = " << block_number << std::endl;
-                    std::cout << "PRE map = " << this->_data_end._map - this->_data_start._map << std::endl;
-                    _deque_realloc_map_back(block_number);
-                    std::cout << "POST map = " << this->_data_end._map - this->_data_start._map << std::endl;
-                }
-                else
-                    return ;
             }
             
             /*

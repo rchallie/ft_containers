@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 11:10:54 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/29 16:38:42 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/03 15:36:42 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,34 +49,13 @@ namespace ft
 				ct(ctnr)
 			{}
 
-			// A FINIR
-			stack (const stack& x)
-			:
-				ct(x.ct)
-			{}
-
 			/*
 			** @brief Destroy the container object.
 			** Detroy all elements in the container.
 			** Use the destructor of the underlying containter object.
 			*/
-			~stack()
-			{ this->~ct(); }
-
-			/*
-			** @brief Assigns contents from "x" to this container.
-			** All elements before the call are destroyed.
-			**
-			** @param x the container which we instpire.
-			** @return *this.
-			*/
-			stack& operator= (const stack& x)
-			{
-				if (x == *this)
-					return (*this);
-				this->ct = x.ct; 
-				return (*this);
-			}
+			// ~stack()
+			// { this->~ct(); }
 
 			/*
 			** @brief Call member "empty()" of the underlying
@@ -114,7 +93,7 @@ namespace ft
 			**
 			** @return a constant reference to the top element in the stack.
 			*/
-			const value_type& top() { return (this->ct.back()); }
+			const value_type& top() const { return (this->ct.back()); }
 
 			/*
 			** @brief insert a new element at the top of the
@@ -124,7 +103,7 @@ namespace ft
 			**
 			** @param val the value to insert.
 			*/
-			void push (const value_type& val) { this->ct.push_back(val)); }
+			void push (const value_type& val) { this->ct.push_back(val); }
 
 			/*
 			** @brief Remove the element on the top of the stack.
@@ -134,8 +113,32 @@ namespace ft
 			*/
 			void pop() { this->ct.pop_back(); }
 
-		private
-			constainer_type ct;
+			/*
+			** @brief Declarations of prototypes for the
+			** non members functions that needs to access
+			** the protected variable.
+			*/
+
+			template <class Tn, class ContainerN>
+				friend bool operator== (const ft::stack<Tn, ContainerN>& lhs, const ft::stack<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator!= (const ft::stack<Tn, ContainerN>& lhs, const ft::stack<Tn, ContainerN>& rhs);
+			
+			template <class Tn, class ContainerN>
+				friend bool operator< (const ft::stack<Tn, ContainerN>& lhs, const ft::stack<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator<= (const ft::stack<Tn, ContainerN>& lhs, const ft::stack<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator> (const ft::stack<Tn, ContainerN>& lhs, const ft::stack<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator>= (const ft::stack<Tn, ContainerN>& lhs, const ft::stack<Tn, ContainerN>& rhs);
+
+		protected:
+			container_type ct;
 	};
 
 	// Each of the operator call the same operator of the

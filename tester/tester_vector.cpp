@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 17:54:42 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/29 19:11:03 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/30 17:33:12 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -626,8 +626,8 @@ void test_vector()
 
     /* Size big */
     {
-        std::vector<int> stl_filled(1000000);
-        ft::vector<int> ft_filled(1000000);
+        std::vector<int> stl_filled(100000);
+        ft::vector<int> ft_filled(100000);
 
         fs.open("vectors_output/size_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printVectorAttributes(fs, stl_filled, ft_filled) == true) ? "[OK]" : "[NOP]");
@@ -1312,8 +1312,8 @@ void test_vector()
         std::vector<int> stl_erase(stl_iterator_beg, stl_iterator_beg + 5);
         ft::vector<int> ft_erase(ft_iterator_beg, ft_iterator_beg + 5);
 
-        stl_erase.erase(stl_erase.begin());
-        ft_erase.erase(ft_erase.begin());
+        stl_erase.erase(stl_erase.begin() + 2);
+        ft_erase.erase(ft_erase.begin() + 2);
         
         fs.open("vectors_output/erase_single", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printVectorAttributes(fs, stl_erase, ft_erase) == true) ? "[OK]" : "[NOP]");

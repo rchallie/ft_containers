@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 16:50:03 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/30 02:35:36 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/11/30 17:58:58 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1540,19 +1540,251 @@ void test_deque()
         fs.close();
     }
 
-    /* Insert range */
+    /* Insert range begin */
     {
+        int range_array[] = {147, 985, -9, -9965, 4};
 
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        std::deque<int> stl_insert(10);
+        ft::deque<int> ft_insert(10);
+
+        stl_insert.insert(stl_insert.begin(), stl_range.begin(), stl_range.end());
+        ft_insert.insert(ft_insert.begin(), ft_range.begin(), ft_range.end());
+
+        fs.open("deques_output/insert_range_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "ft::deque<int> ft_insert(10);\n";
+        fs << "ft_insert.insert(ft_insert.begin(), ft_range.begin(), ft_range.end());\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "std::deque<int> stl_insert(10);\n";
+        fs << "stl_insert.insert(stl_insert.begin(), stl_range.begin(), stl_range.end());\n";
+        fs.close();
+    }
+
+    /* Insert range end */
+    {
+        int range_array[] = {147, 985, -9, -9965, 4};
+
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        std::deque<int> stl_insert(10);
+        ft::deque<int> ft_insert(10);
+
+        stl_insert.insert(stl_insert.end(), stl_range.begin(), stl_range.end());
+        ft_insert.insert(ft_insert.end(), ft_range.begin(), ft_range.end());
+
+        fs.open("deques_output/insert_range_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "ft::deque<int> ft_insert(10);\n";
+        fs << "ft_insert.insert(ft_insert.end(), ft_range.begin(), ft_range.end());\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "std::deque<int> stl_insert(10);\n";
+        fs << "stl_insert.insert(stl_insert.end(), stl_range.begin(), stl_range.end());\n";
+        fs.close();
+    }
+
+    /* Insert range middle */
+    {
+        int range_array[] = {147, 985, -9, -9965, 4};
+
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        std::deque<int> stl_insert(10);
+        ft::deque<int> ft_insert(10);
+
+        stl_insert.insert(stl_insert.begin() + 2, stl_range.begin(), stl_range.end());
+        ft_insert.insert(ft_insert.begin() + 2, ft_range.begin(), ft_range.end());
+
+        fs.open("deques_output/insert_range_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range_array[] = {147, 985, -9, -9965, 4};\n";
+        fs << "ft::deque<int> ft_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_range.push_back(range_array[i]);\n";
+        fs << "ft::deque<int> ft_insert(10);\n";
+        fs << "ft_insert.insert(ft_insert.begin() + 2, ft_range.begin(), ft_range.end());\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range_array[] = {147, 985, -9, -9965, 4};\n";
+        fs << "std::deque<int> stl_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_range.push_back(range_array[i]);\n";
+        fs << "std::deque<int> stl_insert(10);\n";
+        fs << "stl_insert.insert(stl_insert.begin() + 2, stl_range.begin(), stl_range.end());\n";
+        fs.close();
     }
 
     /* Erase simple */
     {
+        int range_array[] = {147, -985, 666, 8, 9};
 
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        stl_range.erase(stl_range.begin() + 2);
+        ft_range.erase(ft_range.begin() + 2);
+        
+        fs.open("deques_output/erase_simple", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "ft::deque<int> ft_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_range.push_back(range_array[i]);\n";
+        fs << "ft_range.erase(ft_range.begin() + 2);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "std::deque<int> stl_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_range.push_back(range_array[i]);\n";
+        fs << "stl_range.erase(stl_range.begin() + 2);\n";
+        fs.close();
     }
 
-    /* Erase range */
+    /* Erase range begin */
     {
+        int range_array[] = {147, -985, 666, 8, 9};
 
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        stl_range.erase(stl_range.begin(), stl_range.end() - 3);
+        ft_range.erase(ft_range.begin(), ft_range.end() - 3);
+        
+        fs.open("deques_output/erase_range_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "ft::deque<int> ft_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_range.push_back(range_array[i]);\n";
+        fs << "ft_range.erase(ft_range.begin() + 2);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "std::deque<int> stl_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_range.push_back(range_array[i]);\n";
+        fs << "stl_range.erase(stl_range.begin() + 2);\n";
+        fs.close();
+    }
+
+        /* Erase range end */
+    {
+        int range_array[] = {147, -985, 666, 8, 9};
+
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        stl_range.erase(stl_range.begin() + 2, stl_range.end());
+        ft_range.erase(ft_range.begin() + 2, ft_range.end());
+        
+        fs.open("deques_output/erase_range_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "ft::deque<int> ft_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_range.push_back(range_array[i]);\n";
+        fs << "ft_range.erase(ft_range.begin() + 2);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "std::deque<int> stl_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_range.push_back(range_array[i]);\n";
+        fs << "stl_range.erase(stl_range.begin() + 2);\n";
+        fs.close();
+    }
+
+    /* Erase range  middle*/
+    {
+        int range_array[] = {147, -985, 666, 8, 9};
+
+        std::deque<int> stl_range;
+        ft::deque<int> ft_range;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_range.push_back(range_array[i]);
+            ft_range.push_back(range_array[i]);
+        }
+
+        stl_range.erase(stl_range.begin() + 1, stl_range.end() - 2);
+        ft_range.erase(ft_range.begin() + 1, ft_range.end() - 2);
+        
+        fs.open("deques_output/erase_range_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "ft::deque<int> ft_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_range.push_back(range_array[i]);\n";
+        fs << "ft_range.erase(ft_range.begin() + 2);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
+        fs << "int range_array[] = {147, -985, 666, 8, 9};\n";
+        fs << "std::deque<int> stl_range;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_range.push_back(range_array[i]);\n";
+        fs << "stl_range.erase(stl_range.begin() + 2);\n";
+        fs.close();
     }
 
     /* Swap member */

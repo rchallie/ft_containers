@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 12:15:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/29 16:38:52 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/01 00:36:49 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,31 +49,13 @@ namespace ft
 				ct(ctnr)
 			{}
 
-			// A FINIR
-			queue (const queue& x);
-
 			/*
 			** @brief Destroy the container object.
 			** Detroy all elements in the container.
 			** Use the destructor of the underlying containter object.
 			*/
-			~queue()
-			{ this->~ct(); }
-
-			/*
-			** @brief Assigns contents from "x" to this container.
-			** All elements before the call are destroyed.
-			**
-			** @param x the container which we instpire.
-			** @return *this.
-			*/
-			queue& operator= (const queue& x)
-			{
-				if (x == *this)
-					return (*this);
-				this->ct = x.ct;
-				return (*this);
-			}
+			// ~queue()
+			// { this->~ct(); }
 
 			/*
 			** @brief Call member "empty()" of the underlying

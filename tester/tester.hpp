@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:17:44 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/29 19:10:49 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/01 00:40:36 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ static bool printSingleValue(std::fstream& fs, const T& t1, const T& t2)
 bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool);
 
 void test_vector();
+void test_stack();
+void test_queue();
 void test_deque();
 
 #endif
