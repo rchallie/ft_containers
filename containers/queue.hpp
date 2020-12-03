@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 12:15:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/01 00:36:49 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/03 21:55:06 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ namespace ft
 			**
 			** @return the const reference.
 			*/
-			const value_type& front() { return (ct.front()); }
+			const value_type& front() const { return (ct.front()); }
 
 			/*
 			** @brief Give a reference to the last
@@ -111,7 +111,7 @@ namespace ft
 			**
 			** @return a constant reference to the last element in the queue.
 			*/
-			const value_type& back() { return (ct.back()); }
+			const value_type& back() const { return (ct.back()); }
 
 			/*
 			** @brief insert a new element at the end of the
@@ -128,9 +128,33 @@ namespace ft
 			** Call the member "pop_back()" of the underlying container
 			** object.
 			*/
-			void pop () { ct.pop_front(); } 
+			void pop () { ct.pop_front(); }
 
-		private:
+			/*
+			** @brief Declarations of prototypes for the
+			** non members functions that needs to access
+			** the protected variable.
+			*/
+
+			template <class Tn, class ContainerN>
+				friend bool operator== (const ft::queue<Tn, ContainerN>& lhs, const ft::queue<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator!= (const ft::queue<Tn, ContainerN>& lhs, const ft::queue<Tn, ContainerN>& rhs);
+			
+			template <class Tn, class ContainerN>
+				friend bool operator< (const ft::queue<Tn, ContainerN>& lhs, const ft::queue<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator<= (const ft::queue<Tn, ContainerN>& lhs, const ft::queue<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator> (const ft::queue<Tn, ContainerN>& lhs, const ft::queue<Tn, ContainerN>& rhs);
+
+			template <class Tn, class ContainerN>
+				friend bool operator>= (const ft::queue<Tn, ContainerN>& lhs, const ft::queue<Tn, ContainerN>& rhs);
+
+		protected:
 			container_type ct;
 	};
 

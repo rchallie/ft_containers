@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 16:50:03 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/30 17:58:58 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/03 23:45:41 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void test_deque()
 {
     std::cout << UNDERLINE << "DEQUE :\n" << NORMAL ;
 
-    mkdir("deques_output", 0777);
+    mkdir("./tester/deques_output", 0777);
     
     std::fstream fs;
 
@@ -122,7 +122,7 @@ void test_deque()
         std::deque<int> stl_default_deque;
         ft::deque<int> ft_default_deque;
 
-        fs.open("deques_output/constructor_default", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_default", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_default_deque, ft_default_deque) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -139,7 +139,7 @@ void test_deque()
         std::deque<int> *stl_pointer_default_deque = new std::deque<int>;
         ft::deque<int> *ft_pointer_default_deque = new ft::deque<int>;
 
-        fs.open("deques_output/constructor_default_pointer", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_default_pointer", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, *stl_pointer_default_deque, *ft_pointer_default_deque) == true) ? "[OK]" : "[NOP]");
         
         fs << "\nCode executed:\n";
@@ -159,7 +159,7 @@ void test_deque()
         std::deque<int> stl_fill_deque(0);
         ft::deque<int> ft_fill_deque(0);
 
-        fs.open("deques_output/constructor_fill_empty", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_fill_empty", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_fill_deque, ft_fill_deque) == true) ? "[OK]" : "[NOP]");
         
         fs << "\nCode executed:\n";
@@ -176,7 +176,7 @@ void test_deque()
         std::deque<int> stl_fill_deque_sized(19);
         ft::deque<int> ft_fill_deque_sized(19);
 
-        fs.open("deques_output/constructor_fill_sized", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_fill_sized", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_fill_deque_sized, ft_fill_deque_sized) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -192,7 +192,7 @@ void test_deque()
         std::deque<int> stl_fill_deque_sized(19, 42);
         ft::deque<int> ft_fill_deque_sized(19, 42);
 
-        fs.open("deques_output/constructor_fill_sized_valued", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_fill_sized_valued", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_fill_deque_sized, ft_fill_deque_sized) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -208,7 +208,7 @@ void test_deque()
         std::deque<int> stl_fill_deque_sized(4000, 42);
         ft::deque<int> ft_fill_deque_sized(4000, 42);
 
-        fs.open("deques_output/constructor_fill_sv_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_fill_sv_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_fill_deque_sized, ft_fill_deque_sized) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -232,7 +232,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/constructor_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int> stl_range_deque(stl_iterator.begin(), stl_iterator.end());
         ft::deque<int> ft_range_deque(ft_iterator.begin(), ft_iterator.end());
@@ -269,7 +269,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/constructor_copy", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/constructor_copy", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int> stl_range_deque(stl_iterator.begin(), stl_iterator.end());
         ft::deque<int> ft_range_deque(ft_iterator.begin(), ft_iterator.end());
@@ -314,7 +314,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/operator_assign", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_assign", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int> stl_assign_deque(stl_iterator.begin(), stl_iterator.end());
         ft::deque<int> ft_assign_deque(ft_iterator.begin(), ft_iterator.end());
@@ -357,7 +357,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::cout << ((printSingleValue(fs, *stl_iterator.begin(), *ft_iterator.begin()) == true) ? "[OK]" : "[NOP]");
 
@@ -389,7 +389,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int>::const_iterator stl_const_it = stl_iterator.begin();
         ft::deque<int>::const_iterator ft_const_it = ft_iterator.begin();
@@ -431,7 +431,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::cout << ((printSingleValue(fs, *(stl_iterator.end() - 1), *(ft_iterator.end() - 1)) == true) ? "[OK]" : "[NOP]");
 
@@ -465,7 +465,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_end_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_end_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int>::const_iterator stl_const_it = stl_iterator.end();
         ft::deque<int>::const_iterator ft_const_it = ft_iterator.end();
@@ -507,7 +507,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_reverse_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_reverse_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::cout << ((printSingleValue(fs, *stl_iterator.rbegin(), *ft_iterator.rbegin()) == true) ? "[OK]" : "[NOP]");
 
@@ -543,7 +543,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_reverse_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_reverse_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int>::const_reverse_iterator stl_const_it = stl_iterator.rbegin();
         ft::deque<int>::const_reverse_iterator ft_const_it = ft_iterator.rbegin();
@@ -585,7 +585,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::cout << ((printSingleValue(fs, *(stl_iterator.rend() - 1), *(ft_iterator.rend() - 1)) == true) ? "[OK]" : "[NOP]");
 
@@ -619,7 +619,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/iterator_revese_rend_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/iterator_revese_rend_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int>::const_reverse_iterator stl_const_it = stl_iterator.rend();
         ft::deque<int>::const_reverse_iterator ft_const_it = ft_iterator.rend();
@@ -656,7 +656,7 @@ void test_deque()
         std::deque<int> stl_filled(20);
         ft::deque<int> ft_filled(20);
 
-        fs.open("deques_output/size_small", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/size_small", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_filled, ft_filled) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -672,7 +672,7 @@ void test_deque()
         std::deque<int> stl_filled(1000000);
         ft::deque<int> ft_filled(1000000);
 
-        fs.open("deques_output/size_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/size_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_filled, ft_filled) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -688,7 +688,7 @@ void test_deque()
         std::deque<int> stl_base;
         ft::deque<int> ft_base;
 
-        fs.open("deques_output/maximum_size", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/maximum_size", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_base, ft_base) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -707,7 +707,7 @@ void test_deque()
         stl_base.resize(85);
         ft_base.resize(85);
 
-        fs.open("deques_output/resize_extension", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/resize_extension", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_base, ft_base) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -728,7 +728,7 @@ void test_deque()
         stl_base.resize(3);
         ft_base.resize(3);
 
-        fs.open("deques_output/resize_reduction", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/resize_reduction", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_base, ft_base) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -746,7 +746,7 @@ void test_deque()
         std::deque<int> stl_base;
         ft::deque<int> ft_base;
 
-        fs.open("deques_output/empty_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/empty_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_base, ft_base) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -762,7 +762,7 @@ void test_deque()
         std::deque<int> stl_base(5);
         ft::deque<int> ft_base(5);
 
-        fs.open("deques_output/empty_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/empty_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_base, ft_base) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -781,7 +781,7 @@ void test_deque()
         stl_base.resize(0);
         ft_base.resize(0);
 
-        fs.open("deques_output/empty_after_resize", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/empty_after_resize", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_base, ft_base) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -809,7 +809,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/operator_at", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_at", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         int from_stl = stl_iterator[1];
         int from_ft = ft_iterator[1];
@@ -846,7 +846,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/operator_at_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_at_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         const int from_stl = stl_iterator[1];
         const int from_ft = ft_iterator[1];
@@ -883,7 +883,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/at", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/at", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         int from_stl = stl_iterator.at(3);
         int from_ft = ft_iterator.at(3);
@@ -920,7 +920,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/at_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/at_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         const int from_stl = stl_iterator.at(2);
         const int from_ft = ft_iterator.at(2);
@@ -957,7 +957,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/front", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/front", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         int from_stl = stl_iterator.front();
         int from_ft = ft_iterator.front();
@@ -994,7 +994,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/front_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/front_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         const int from_stl = stl_iterator.front();
         const int from_ft = ft_iterator.front();
@@ -1031,7 +1031,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/back", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/back", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         int from_stl = stl_iterator.back();
         int from_ft = ft_iterator.back();
@@ -1068,7 +1068,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/back_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/back_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         const int from_stl = stl_iterator.back();
         const int from_ft = ft_iterator.back();
@@ -1108,7 +1108,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/assign_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/assign_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int> stl_assign;
         ft::deque<int> ft_assign;
@@ -1150,7 +1150,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/assign_range_replace", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/assign_range_replace", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::deque<int> stl_assign(42);
         ft::deque<int> ft_assign(42);
@@ -1187,7 +1187,7 @@ void test_deque()
         stl_assign_fill.assign(87, 42);
         ft_assign_fill.assign(87, 42);
         
-        fs.open("deques_output/assign_fill", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/assign_fill", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_assign_fill, ft_assign_fill) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1208,7 +1208,7 @@ void test_deque()
         stl_assign_fill.assign(420, 14);
         ft_assign_fill.assign(420, 14);
         
-        fs.open("deques_output/assign_fill_replace", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/assign_fill_replace", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_assign_fill, ft_assign_fill) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1229,7 +1229,7 @@ void test_deque()
         stl_pushback.push_back(42);
         ft_pushback.push_back(42);
 
-        fs.open("deques_output/push_back_empty", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/push_back_empty", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_pushback, ft_pushback) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1255,7 +1255,7 @@ void test_deque()
             ft_iterator.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/push_back", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/push_back", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         stl_iterator.push_back(999);
         ft_iterator.push_back(999);
@@ -1287,7 +1287,7 @@ void test_deque()
         stl_pushback.push_back(42);
         ft_pushback.push_back(42);
 
-        fs.open("deques_output/push_back_empty", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/push_back_empty", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_pushback, ft_pushback) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1308,7 +1308,7 @@ void test_deque()
         stl_pushback.push_front(42);
         ft_pushback.push_front(42);
 
-        fs.open("deques_output/push_front", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/push_front", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_pushback, ft_pushback) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1337,7 +1337,7 @@ void test_deque()
         stl_popback.pop_back();
         ft_popback.pop_back();
         
-        fs.open("deques_output/pop_back", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/pop_back", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_popback, ft_popback) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1372,7 +1372,7 @@ void test_deque()
         stl_popfront.pop_front();
         ft_popfront.pop_front();
         
-        fs.open("deques_output/pop_front", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/pop_front", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_popfront, ft_popfront) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1407,7 +1407,7 @@ void test_deque()
         stl_insert.insert(stl_insert.begin(), 42);
         ft_insert.insert(ft_insert.begin(), 42);
         
-        fs.open("deques_output/insert_single_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_single_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1442,7 +1442,7 @@ void test_deque()
         stl_insert.insert(stl_insert.end(), 42);
         ft_insert.insert(ft_insert.end(), 42);
         
-        fs.open("deques_output/insert_single_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_single_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1477,7 +1477,7 @@ void test_deque()
         stl_insert.insert(stl_insert.begin() + 2, 42);
         ft_insert.insert(ft_insert.begin() + 2, 42);
         
-        fs.open("deques_output/insert_single_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_single_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1504,7 +1504,7 @@ void test_deque()
         stl_insert.insert(stl_insert.begin() + 2, 10, 42);
         ft_insert.insert(ft_insert.begin() + 2, 10, 42);
 
-        fs.open("deques_output/insert_fill", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_fill", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -1526,7 +1526,7 @@ void test_deque()
         stl_insert.insert(stl_insert.begin() + 2, 10000, 42);
         ft_insert.insert(ft_insert.begin() + 2, 10000, 42);
 
-        fs.open("deques_output/insert_fill_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_fill_big", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -1559,7 +1559,7 @@ void test_deque()
         stl_insert.insert(stl_insert.begin(), stl_range.begin(), stl_range.end());
         ft_insert.insert(ft_insert.begin(), ft_range.begin(), ft_range.end());
 
-        fs.open("deques_output/insert_range_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_range_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -1592,7 +1592,7 @@ void test_deque()
         stl_insert.insert(stl_insert.end(), stl_range.begin(), stl_range.end());
         ft_insert.insert(ft_insert.end(), ft_range.begin(), ft_range.end());
 
-        fs.open("deques_output/insert_range_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_range_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -1625,7 +1625,7 @@ void test_deque()
         stl_insert.insert(stl_insert.begin() + 2, stl_range.begin(), stl_range.end());
         ft_insert.insert(ft_insert.begin() + 2, ft_range.begin(), ft_range.end());
 
-        fs.open("deques_output/insert_range_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/insert_range_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_insert, ft_insert) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -1663,7 +1663,7 @@ void test_deque()
         stl_range.erase(stl_range.begin() + 2);
         ft_range.erase(ft_range.begin() + 2);
         
-        fs.open("deques_output/erase_simple", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/erase_simple", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
@@ -1698,7 +1698,7 @@ void test_deque()
         stl_range.erase(stl_range.begin(), stl_range.end() - 3);
         ft_range.erase(ft_range.begin(), ft_range.end() - 3);
         
-        fs.open("deques_output/erase_range_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/erase_range_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
@@ -1733,7 +1733,7 @@ void test_deque()
         stl_range.erase(stl_range.begin() + 2, stl_range.end());
         ft_range.erase(ft_range.begin() + 2, ft_range.end());
         
-        fs.open("deques_output/erase_range_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/erase_range_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
@@ -1768,7 +1768,7 @@ void test_deque()
         stl_range.erase(stl_range.begin() + 1, stl_range.end() - 2);
         ft_range.erase(ft_range.begin() + 1, ft_range.end() - 2);
         
-        fs.open("deques_output/erase_range_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/erase_range_middle", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_range, ft_range) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";    
@@ -1808,7 +1808,7 @@ void test_deque()
         stl_deque_one.swap(stl_deque_two);
         ft_deque_one.swap(ft_deque_two);
         
-        fs.open("deques_output/swap_member", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/swap_member", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::cout << ((printDequeAttributes(fs, stl_deque_one, ft_deque_one)) ? "[OK]" : "[NOP]");
         std::cout << ((printDequeAttributes(fs, stl_deque_two, ft_deque_two)) ? "[OK]" : "[NOP]");
@@ -1851,7 +1851,7 @@ void test_deque()
         stl_clear.clear();
         ft_clear.clear();
         
-        fs.open("deques_output/clear", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/clear", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printDequeAttributes(fs, stl_clear, ft_clear) == true) ? "[OK]" : "[NOP]");
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1888,7 +1888,7 @@ void test_deque()
             ft_deque_two.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/operator_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
 
@@ -1935,7 +1935,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -1985,7 +1985,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_not_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_not_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2034,7 +2034,7 @@ void test_deque()
             ft_deque_two.push_back(range_array[i]);
         }
 
-        fs.open("deques_output/operator_not_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_not_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
 
@@ -2081,7 +2081,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_inferior_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_inferior_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2131,7 +2131,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_inferior_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_inferior_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2181,7 +2181,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_inf_or_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_inf_or_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2231,7 +2231,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_inf_or_equal_true_equal", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_inf_or_equal_true_equal", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2281,7 +2281,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_inf_or_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_inf_or_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2331,7 +2331,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_superior_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_superior_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2381,7 +2381,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_superior_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_superior_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2431,7 +2431,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_sup_or_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_sup_or_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2481,7 +2481,7 @@ void test_deque()
             ft_deque_two.push_back(range_array_two[i]);
         }
 
-        fs.open("deques_output/operator_sup_or_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/operator_sup_or_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printDequeAttributes(fs, stl_deque_one, ft_deque_one);
         printDequeAttributes(fs, stl_deque_two, ft_deque_two);
@@ -2534,7 +2534,7 @@ void test_deque()
         std::swap(stl_deque_one, stl_deque_two);
         ft::swap(ft_deque_one, ft_deque_two);
         
-        fs.open("deques_output/swap_no_member", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/deques_output/swap_no_member", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         std::cout << ((printDequeAttributes(fs, stl_deque_one, ft_deque_one)) ? "[OK]" : "[NOP]");
         std::cout << ((printDequeAttributes(fs, stl_deque_two, ft_deque_two)) ? "[OK]" : "[NOP]");

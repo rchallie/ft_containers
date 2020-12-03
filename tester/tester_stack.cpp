@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 00:25:51 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/03 16:56:02 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/03 23:44:35 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void test_stack()
 {
     std::cout << UNDERLINE << "STACK :\n" << NORMAL ;
 
-    mkdir("stacks_output", 0777);
+    mkdir("./tester/stacks_output", 0777);
     
     std::fstream fs;
 
@@ -118,7 +118,7 @@ void test_stack()
         std::stack<int> stl_default;
         ft::stack<int> ft_default;
 
-        fs.open("stacks_output/constructor_default", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/constructor_default", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printStackAttributes(fs, stl_default, ft_default) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -136,7 +136,7 @@ void test_stack()
         std::stack<int> stl_empty;
         ft::stack<int> ft_empty;
 
-        fs.open("stacks_output/empty_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/empty_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printStackAttributes(fs, stl_empty, ft_empty) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -156,7 +156,7 @@ void test_stack()
         stl_empty.push(42);
         ft_empty.push(42);
 
-        fs.open("stacks_output/empty_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/empty_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printStackAttributes(fs, stl_empty, ft_empty) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -181,7 +181,7 @@ void test_stack()
             ft_size.push(i);
         }
 
-        fs.open("stacks_output/size", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/size", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printStackAttributes(fs, stl_size, ft_size) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -208,7 +208,7 @@ void test_stack()
             ft_top.push(i);
         }
 
-        fs.open("stacks_output/top", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/top", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printSingleValue(fs, stl_top.top(), ft_top.top()) == true) ? "[OK]" : "[NOP]");
         
         stl_top.pop();
@@ -244,7 +244,7 @@ void test_stack()
             ft_size.push(i * 2);
         }
 
-        fs.open("stacks_output/push", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/push", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printStackAttributes(fs, stl_size, ft_size) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
@@ -271,7 +271,7 @@ void test_stack()
             ft_pop.push(i);
         }
 
-        fs.open("stacks_output/pop", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/pop", std::fstream::in | std::fstream::out | std::fstream::trunc);
         std::cout << ((printStackAttributes(fs, stl_pop, ft_pop) == true) ? "[OK]" : "[NOP]");
         
         stl_pop.pop();
@@ -316,7 +316,7 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -356,7 +356,7 @@ void test_stack()
             ft_pop_two.push(i * 2);
         }
 
-        fs.open("stacks_output/operator_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -396,7 +396,7 @@ void test_stack()
             ft_pop_two.push(i * 2);
         }
 
-        fs.open("stacks_output/operator_net_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_net_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -436,7 +436,7 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_not_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_not_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -484,7 +484,7 @@ void test_stack()
             }
         }
 
-        fs.open("stacks_output/operator_inf_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_inf_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -538,7 +538,7 @@ void test_stack()
             }
         }
 
-        fs.open("stacks_output/operator_inf_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_inf_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -584,7 +584,7 @@ void test_stack()
             ft_pop_two.push(i * 2);
         }
 
-        fs.open("stacks_output/operator_inf_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_inf_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -624,7 +624,7 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_inf_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_inf_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -664,7 +664,7 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_inf_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_inf_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -704,7 +704,7 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_sup_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_sup_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -744,7 +744,7 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_sup_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_sup_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
@@ -784,11 +784,11 @@ void test_stack()
             ft_pop_two.push(i);
         }
 
-        fs.open("stacks_output/operator_sup_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_sup_equal_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
-        std::cout << ((printBoolResult(fs, (stl_pop_one > stl_pop_two), (ft_pop_one > ft_pop_two)) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printBoolResult(fs, (stl_pop_one >= stl_pop_two), (ft_pop_one >= ft_pop_two)) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -832,11 +832,11 @@ void test_stack()
             }
         }
 
-        fs.open("stacks_output/operator_sup_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        fs.open("./tester/stacks_output/operator_sup_equal_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printStackAttributes(fs, stl_pop_one, ft_pop_one);
         printStackAttributes(fs, stl_pop_two, ft_pop_two);
         
-        std::cout << ((printBoolResult(fs, (stl_pop_one < stl_pop_two), (ft_pop_one < ft_pop_two)) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printBoolResult(fs, (stl_pop_one >= stl_pop_two), (ft_pop_one >= ft_pop_two)) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
