@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/29 16:45:16 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/04 00:28:29 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2157,6 +2157,16 @@ namespace ft
     {
         return (lhs.operator==(rhs));
     }
+
+
+    /* List Node : */
+    template <class Data_T>
+    struct Doubly_Linked_Node 
+    {
+        Doubly_Linked_Node  *prev;
+        Doubly_Linked_Node  *next;
+        Data_T              data;
+    };
 
 } /* End of namespace */
 

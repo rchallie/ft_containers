@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 11:01:04 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/30 18:10:30 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/04 00:25:26 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -922,7 +922,8 @@ namespace ft
 
         private:
 
-            typedef typename allocator_type::template rebind<pointer>::other map_allocator_type;
+            typedef typename allocator_type::template
+                rebind<pointer>::other map_allocator_type;
             typedef typename map_allocator_type::pointer map_pointer;
 
             map_allocator_type  _map_alloc;
