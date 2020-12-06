@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 11:01:04 by excalibur         #+#    #+#             */
-/*   Updated: 2020/12/04 00:25:26 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/06 01:33:38 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,8 +175,8 @@ namespace ft
                 _alloc(alloc)
             {
                 bool is_valid;
-                if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
-                    throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
                 
                 difference_type n = ft::distance(first, last);
                 _deque_initialize_map(n);
@@ -368,6 +368,15 @@ namespace ft
             size_type max_size() const
             { return (allocator_type().max_size()); }
 
+            /*
+            ** @brief Resizes the container so that it contain "n"
+            ** element. If "n" is smaller than the actual size
+            ** the container is reduced to "n". If it is greater,
+            ** val is inserting at the end "n - size()" times.
+            **
+            ** @param n the new size of the container.
+            ** @param val the element to set.
+            */
             void resize(size_type n, value_type val = value_type())
             {
                 if (this->max_size() - this->size() < n)
@@ -381,7 +390,7 @@ namespace ft
                 else
                 {
                     while (this->size() > n)
-                        this->pop_back(); // Change to erase
+                        this->pop_back();
                 }
             }
 
@@ -705,7 +714,7 @@ namespace ft
 
             /*
             ** @brief Insert element in range from ["first" to
-            ** "last") at "position". Can increase the capacity of
+            ** "last") at "position". Can increase the size of
             ** the container. Throw if the iterator given is not valid.
             ** Reallocate all elements after the dist between first and last.
             **
@@ -718,8 +727,8 @@ namespace ft
                 typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
             {
                 bool is_valid;
-                if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
-                    throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+                    throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
                 
                 difference_type n = ft::distance(first, last);
                 if (position == this->_data_start)
@@ -815,7 +824,7 @@ namespace ft
             }
 
             /*
-            ** @brief Remove element from the container a range of element.
+            ** @brief Remove a range of element.
             ** Reduce the size by the number of element removed.
             ** 
             ** @param first the first element in the range.

@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/04 00:28:29 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/05 19:00:33 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -619,8 +619,6 @@ namespace ft
             distance (InputIterator first, InputIterator last)
         {
             typename ft::iterator_traits<InputIterator>::difference_type rtn = 0;
-            if (typeid(typename ft::iterator_traits<InputIterator>::iterator_category).name() == typeid(random_access_iterator_tag).name())
-                return (last - first);
             while (first != last)
             {
                 first++;
@@ -2163,10 +2161,34 @@ namespace ft
     template <class Data_T>
     struct Doubly_Linked_Node 
     {
-        Doubly_Linked_Node  *prev;
-        Doubly_Linked_Node  *next;
-        Data_T              data;
+        public :
+
+            Doubly_Linked_Node  *prev;
+            Doubly_Linked_Node  *next;
+            Data_T              data;
+
+            Doubly_Linked_Node()
+            :
+                prev(u_nullptr),
+                next(u_nullptr)
+            {}
+
+            Doubly_Linked_Node(const Data_T& val)
+            :
+                prev(u_nullptr),
+                next(u_nullptr),
+                data(val)
+            {}
+
+            Doubly_Linked_Node(const Data_T& val,
+                Doubly_Linked_Node *prev, Doubly_Linked_Node *next)
+            :
+                prev(prev),
+                next(next),
+                data(val)
+            {}
     };
+
 
 } /* End of namespace */
 

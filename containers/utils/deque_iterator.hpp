@@ -6,12 +6,14 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 16:39:39 by rchallie          #+#    #+#             */
-/*   Updated: 2020/11/29 17:35:40 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/04 18:16:44 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEQUE_ITERATOR_HPP
 # define DEQUE_ITERATOR_HPP
+
+#include "utils.hpp"
 
 namespace ft
 {

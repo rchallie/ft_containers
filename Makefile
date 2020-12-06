@@ -6,7 +6,7 @@
 #    By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 23:23:13 by rchallie          #+#    #+#              #
-#    Updated: 2020/12/03 23:42:59 by rchallie         ###   ########.fr        #
+#    Updated: 2020/12/06 01:49:00 by rchallie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SOURCES_FOLDER	= ./tester/
 SOURCES			=	main.cpp \
 					tester.cpp \
 					tester_vector.cpp \
+					tester_list.cpp \
 					tester_queue.cpp \
 					tester_stack.cpp \
 					tester_deque.cpp
@@ -42,7 +43,7 @@ OBJECTS		 	= $(addprefix $(OBJECTS_FOLDER), $(OBJECT));
 
 # TESTER =======================================================================
 
-$(OBJECTS_FOLDER)%.o :	$(SOURCES_FOLDER)%.cpp	$(INCLUDE)
+$(OBJECTS_FOLDER)%.o :	$(SOURCES_FOLDER)%.cpp	$(INCLUDE) 
 	@mkdir -p	$(OBJECTS_FOLDER)
 	@echo "Compiling: $<"
 	@clang++ $(FLAGS) -c $< -o $@
@@ -57,6 +58,8 @@ clean:
 	@rm -rf $(OBJECTS_FOLDER)
 	@echo "Cleaning: ./tester/vectors_output"
 	@rm -rf ./tester/vectors_output
+	@echo "Cleaning: ./tester/lists_output"
+	@rm -rf ./tester/lists_output
 	@echo "Cleaning: ./tester/stacks_output"
 	@rm -rf ./tester/stacks_output
 	@echo "Cleaning: ./tester/queues_output"
