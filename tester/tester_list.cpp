@@ -6,13 +6,15 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/05 00:08:51 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/06 01:45:59 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/07 02:19:45 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 #include <list>
 #include "../containers/list.hpp"
+
+#include <cmath>
 
 template <class T>
 std::string equalContent(
@@ -104,6 +106,13 @@ bool printListAttributes(
     return (true);
 }
 
+bool is_negative(const int& value) { return (value < 0); }
+
+struct is_near {
+  bool operator() (double first, double second)
+  { return (fabs(first-second)<5.0); }
+};
+
 void test_list()
 {
     std::cout << UNDERLINE << "LIST :\n" << NORMAL ;
@@ -166,7 +175,7 @@ void test_list()
         ft::list<int> ft_list_range(ft_list.begin(), ft_list.end());
 
         fs.open("./tester/lists_output/constructor_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printListAttributes(fs, stl_list_range, ft_list_range) == true) ? "[OK]" : "[NOP]");
 
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
@@ -1253,62 +1262,625 @@ void test_list()
 
     /* Splice entire list */
     {
+        int range[] = {251, -955, 5742, 3, -64};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        std::list<int> stl_list_sec;
+        ft::list<int> ft_list_sec;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+            stl_list_sec.push_back(range[i] + 666);
+            ft_list_sec.push_back(range[i] + 666);
+        }
+
+        fs.open("./tester/lists_output/splice_entire", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
+
+        std::list<int>::iterator stl_list_it = stl_list.begin();
+        ft::list<int>::iterator ft_list_it = ft_list.begin();
+
+        for (int i = 0; i < 3; i++)
+        {
+            stl_list_it++;
+            ft_list_it++;
+        }
+
+        stl_list.splice(stl_list_it, stl_list_sec);
+        ft_list.splice(ft_list_it, ft_list_sec);
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printListAttributes(fs, stl_list_sec, ft_list_sec) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {251, -955, 5742, 3, -64};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "ft::list<int> ft_list_sec;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "{\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "    ft_list_sec.push_back(range[i] + 666);\n";
+        fs << "}\n";
+        fs << "Sending Output ft_list...\n";
+        fs << "ft::list<int>::iterator ft_list_it = ft_list.begin();\n";
+        fs << "for (int i = 0; i < 3; i++)\n";
+        fs << "    ft_list_it++;\n";
+        fs << "ft_list.splice(ft_list_it, ft_list_sec);\n";
+        fs << "Sending Output ft_list...\n";
+        fs << "Sending Output ft_list_sec...\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {251, -955, 5742, 3, -64};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "std::list<int> stl_list_sec;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "{\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "    stl_list_sec.push_back(range[i] + 666);\n";
+        fs << "}\n";
+        fs << "Sending Output stl_list...\n";
+        fs << "std::list<int>::iterator stl_list_it = stl_list.begin();\n";
+        fs << "for (int i = 0; i < 3; i++)\n";
+        fs << "    stl_list_it++;\n";
+        fs << "stl_list.splice(stl_list_it, stl_list_sec);\n";
+        fs << "Sending Output stl_list...\n";
+        fs << "Sending Output stl_list_sec...\n";        
+        fs.close();  
     }
 
     /* Splice single */
     {
+        int range[] = {251, -955, 5742, 3, -64};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        std::list<int> stl_list_sec;
+        ft::list<int> ft_list_sec;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+            stl_list_sec.push_back(range[i] + 666);
+            ft_list_sec.push_back(range[i] + 666);
+        }
+
+        fs.open("./tester/lists_output/splice_single", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
+
+        std::list<int>::iterator stl_list_it = stl_list.begin();
+        ft::list<int>::iterator ft_list_it = ft_list.begin();
+
+        for (int i = 0; i < 3; i++)
+        {
+            stl_list_it++;
+            ft_list_it++;
+        }
+
+        stl_list.splice(stl_list_it, stl_list_sec, stl_list_sec.begin());
+        ft_list.splice(ft_list_it, ft_list_sec, ft_list_sec.begin());
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printListAttributes(fs, stl_list_sec, ft_list_sec) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {251, -955, 5742, 3, -64};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "ft::list<int> ft_list_sec;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "{\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "    ft_list_sec.push_back(range[i] + 666);\n";
+        fs << "}\n";
+        fs << "Sending Output ft_list...\n";
+        fs << "ft::list<int>::iterator ft_list_it = ft_list.begin();\n";
+        fs << "for (int i = 0; i < 3; i++)\n";
+        fs << "    ft_list_it++;\n";
+        fs << "ft_list.splice(ft_list_it, ft_list_sec, ft_list_sec.begin());\n";
+        fs << "Sending Output ft_list...\n";
+        fs << "Sending Output ft_list_sec...\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {251, -955, 5742, 3, -64};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "std::list<int> stl_list_sec;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "{\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "    stl_list_sec.push_back(range[i] + 666);\n";
+        fs << "}\n";
+        fs << "Sending Output stl_list...\n";
+        fs << "std::list<int>::iterator stl_list_it = stl_list.begin();\n";
+        fs << "for (int i = 0; i < 3; i++)\n";
+        fs << "    stl_list_it++;\n";
+        fs << "stl_list.splice(stl_list_it, stl_list_sec, stl_list_sec.begin());\n";
+        fs << "Sending Output stl_list...\n";
+        fs << "Sending Output stl_list_sec...\n";      
+        fs.close();
     }
 
     /* Splice range */
     {
+        int range[] = {147,852,369,-852,95};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        std::list<int> stl_list_sec;
+        ft::list<int> ft_list_sec;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+            stl_list_sec.push_back(range[i] + 666);
+            ft_list_sec.push_back(range[i] + 666);
+        }
+
+        fs.open("./tester/lists_output/splice_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
+
+        std::list<int>::iterator stl_list_it = stl_list.begin();
+        ft::list<int>::iterator ft_list_it = ft_list.begin();
+
+        for (int i = 0; i < 3; i++)
+        {
+            stl_list_it++;
+            ft_list_it++;
+        }
+
+        stl_list.splice(stl_list_it, stl_list_sec, ++(stl_list_sec.begin()), --(stl_list_sec.end()));
+        ft_list.splice(ft_list_it, ft_list_sec, ++(ft_list_sec.begin()), --(ft_list_sec.end()));
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+        std::cout << ((printListAttributes(fs, stl_list_sec, ft_list_sec) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {147,852,369,-852,95};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "ft::list<int> ft_list_sec;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "{\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "    ft_list_sec.push_back(range[i] + 666);\n";
+        fs << "}\n";
+        fs << "Sending Output ft_list...\n";
+        fs << "ft::list<int>::iterator ft_list_it = ft_list.begin();\n";
+        fs << "for (int i = 0; i < 3; i++)\n";
+        fs << "    ft_list_it++;\n";
+        fs << "ft_list.splice(ft_list_it, ft_list_sec, ++(ft_list_sec.begin()), --(ft_list_sec.end()));\n";
+        fs << "Sending Output ft_list...\n";
+        fs << "Sending Output ft_list_sec...\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {147,852,369,-852,95};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "std::list<int> stl_list_sec;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "{\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "    stl_list_sec.push_back(range[i] + 666);\n";
+        fs << "}\n";
+        fs << "Sending Output stl_list...\n";
+        fs << "std::list<int>::iterator stl_list_it = stl_list.begin();\n";
+        fs << "for (int i = 0; i < 3; i++)\n";
+        fs << "    stl_list_it++;\n";
+        fs << "stl_list.splice(stl_list_it, stl_list_sec, ++(stl_list_sec.begin()), --(stl_list_sec.end()));\n";
+        fs << "Sending Output stl_list...\n";
+        fs << "Sending Output stl_list_sec...\n"; 
+        fs.close();  
     }
 
     /* remove */
     {
+        int range[] = {4152, -895, 84, -895, -895};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/remove", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
+        
+        stl_list.remove(-895);
+        ft_list.remove(-895);
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {4152, -895, 84, -895, -895};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {4152, -895, 84, -895, -895};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs.close();  
     }
 
     /* Remove if */
     {
+        int range[] = {147, -985, 854, 96, -2};
+
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/remove_if", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
         
+        stl_list.remove_if(is_negative);
+        ft_list.remove_if(is_negative);
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {147, -985, 854, 96, -2};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "ft_list.remove_if(is_negative);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {147, -985, 854, 96, -2};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "stl_list.remove_if(is_negative);\n";
+        fs.close();  
     }
 
     /* unique() */
     {
+        int range[] = {12, 52, 52, 52, 48, 52, 996, 996, 7};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 9; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/unique", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
+        
+        stl_list.unique();
+        ft_list.unique();
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {12, 52, 52, 52, 48, 52, 996, 996, 7};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 9; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "ft_list.unique();\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {12, 52, 52, 52, 48, 52, 996, 996, 7};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 9; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "stl_list.unique();\n";
+        fs.close();  
     }
 
     /* Unique specific */
     {
+        int range[] = {8, 12, 58, 42, 45, 46, 99};
+
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 7; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/unique_specific", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        printListAttributes(fs, stl_list, ft_list);
         
+        stl_list.unique(is_near());
+        ft_list.unique(is_near());
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {8, 12, 58, 42, 45, 46, 99};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 9; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "ft_list.unique();\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {8, 12, 58, 42, 45, 46, 99};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 9; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "stl_list.unique();\n";
+        fs.close();  
     }
 
     /* Merge */
     {
+        int range[] = {8, 12, 58, 42, 45, 46, 99};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        std::list<int> stl_list_two;
+        ft::list<int> ft_list_two;
+
+        for (int i = 0; i < 7; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+            stl_list_two.push_back(range[i] + 42);
+            ft_list_two.push_back(range[i] + 42);
+        }
+
+        fs.open("./tester/lists_output/merge", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        
+        stl_list.sort();
+        stl_list_two.sort();
+
+        ft_list.sort();
+        ft_list_two.sort();
+
+        printListAttributes(fs, stl_list, ft_list);
+        printListAttributes(fs, stl_list_two, ft_list_two);
+
+        stl_list.merge(stl_list_two);
+        ft_list.merge(ft_list_two);
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {8, 12, 58, 42, 45, 46, 99};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "ft::list<int> ft_list_two;\n";
+        fs << "for (int i = 0; i < 7; i++)\n";
+        fs << "{\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "    ft_list_two.push_back(range[i] + 42);\n";
+        fs << "}\n";
+        fs << "ft_list.sort();\n";
+        fs << "ft_list_two.sort();\n";
+        fs << "Sending output...\n";
+        fs << "ft_list.merge(ft_list_two);\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {8, 12, 58, 42, 45, 46, 99};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "std::list<int> stl_list_two;\n";
+        fs << "for (int i = 0; i < 7; i++)\n";
+        fs << "{\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "    stl_list_two.push_back(range[i] + 42);\n";
+        fs << "}\n";
+        fs << "stl_list.sort();\n";
+        fs << "stl_list_two.sort();\n";
+        fs << "Sending output...\n";
+        fs << "stl_list.merge(stl_list_two);\n";
+        fs.close();
     }
 
     /* Merge compare */
     {
+        int range[] = {14, -20, 51, 92, 97, 124, 0};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        std::list<int> stl_list_two;
+        ft::list<int> ft_list_two;
+
+        for (int i = 0; i < 7; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+            stl_list_two.push_back(range[i] + 42);
+            ft_list_two.push_back(range[i] + 42);
+        }
+
+        fs.open("./tester/lists_output/merge_compare", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        
+        stl_list.sort();
+        stl_list_two.sort();
+
+        ft_list.sort();
+        ft_list_two.sort();
+
+        printListAttributes(fs, stl_list, ft_list);
+        printListAttributes(fs, stl_list_two, ft_list_two);
+
+        stl_list.merge(stl_list_two, std::less<int>());
+        ft_list.merge(ft_list_two, std::less<int>());
+
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {14, -20, 51, 92, 97, 124, 0};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "ft::list<int> ft_list_two;\n";
+        fs << "for (int i = 0; i < 7; i++)\n";
+        fs << "{\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "    ft_list_two.push_back(range[i] + 42);\n";
+        fs << "}\n";
+        fs << "ft_list.sort();\n";
+        fs << "ft_list_two.sort();\n";
+        fs << "Sending output...\n";
+        fs << "ft_list.merge(ft_list_two, std::less<int>());\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {14, -20, 51, 92, 97, 124, 0};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "std::list<int> stl_list_two;\n";
+        fs << "for (int i = 0; i < 7; i++)\n";
+        fs << "{\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "    stl_list_two.push_back(range[i] + 42);\n";
+        fs << "}\n";
+        fs << "stl_list.sort();\n";
+        fs << "stl_list_two.sort();\n";
+        fs << "Sending output...\n";
+        fs << "stl_list.merge(stl_list_two, std::less<int>());\n";
+        fs.close();
     }
+
 
     /* Sort */
     {
+        int range[] = {88, 44, -3, 867, 442};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/sort", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        
+        printListAttributes(fs, stl_list, ft_list);
+
+        stl_list.sort();
+        ft_list.sort();
+        
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {88, 44, -3, 867, 442};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "Sending Output...\n";
+        fs << "ft_list.sort();\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {88, 44, -3, 867, 442};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "Sending Output...\n";
+        fs << "stl_list.sort();\n";
+        fs.close(); 
     }
 
     /* Sort compare */
     {
+        int range[] = {145, 965, 325, -654, -9};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/sort_compare", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        
+        printListAttributes(fs, stl_list, ft_list);
+
+        stl_list.sort(std::less<int>());
+        ft_list.sort(std::less<int>());
+        
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {145, 965, 325, 654, 9};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "Sending Output...\n";
+        fs << "ft_list.sort(std::less<int>());\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {145, 965, 325, 654, 9};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "Sending Output...\n";
+        fs << "stl_list.sort(std::less<int>());\n";
+        fs.close(); 
     }
 
     /* reverse */
     {
+        int range[] = {842, 985, -9666, 98, -7};
 
+        std::list<int> stl_list;
+        ft::list<int> ft_list;
+
+        for (int i = 0; i < 5; i++)
+        {
+            stl_list.push_back(range[i]);
+            ft_list.push_back(range[i]);
+        }
+
+        fs.open("./tester/lists_output/reverse", std::fstream::in | std::fstream::out | std::fstream::trunc);
+        
+        printListAttributes(fs, stl_list, ft_list);
+
+        stl_list.reverse();
+        ft_list.reverse();
+        
+        std::cout << ((printListAttributes(fs, stl_list, ft_list) == true) ? "[OK]" : "[NOP]");
+
+        fs << "\nCode executed:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {842, 985, -9666, 98, -7};\n";
+        fs << "ft::list<int> ft_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    ft_list.push_back(range[i]);\n";
+        fs << "Sending Output...\n";
+        fs << "ft_list.reverse();\n";
+        fs << "\nCompared with:\n";
+        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
+        fs << "int range[] = {842, 985, -9666, 98, -7};\n";
+        fs << "std::list<int> stl_list;\n";
+        fs << "for (int i = 0; i < 5; i++)\n";
+        fs << "    stl_list.push_back(range[i]);\n";
+        fs << "Sending Output...\n";
+        fs << "stl_list.reverse();\n";
+        fs.close();     
     }
 
     std::cout << "\n";

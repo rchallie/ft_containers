@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/03 22:01:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/06 01:47:13 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/07 02:14:11 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -535,41 +535,273 @@ namespace ft
 				}
 			}
 
-			// void splice (iterator position, list& x);
+			/*
+			** @brief Transfers all elements from x into the container,
+			** inserting them at position. Delete this element of the
+			** base list.
+			**
+			** @param position the position within the container where
+			** to insert the list.
+			** @param x the list.
+			*/
+			void splice (iterator position, list& x)
+			{
+				iterator x_beg = x.begin();
+				iterator x_save;
 
-			// void splice (iterator position, list& x, iterator i);
-
-			// void splice (iterator position, list& x, iterator first, iterator last);
-
-			// void remove(const value_type& val);
+				while (x_beg != x.end())
+				{
+					x_save = (++x_beg)--;
+					x._disconnect(x_beg._node);
+					if (x != *this)
+						_insertBefore(position._node, x_beg._node);
+					x_beg = x_save;
+				}
+			}
 
 			/*
+			** @brief Transfers element at "i" from "x" to this
+			** container at "position". Increase size of one.
+			**
+			** @param position the position in this container
+			** @param x the base container of "i".
+			** @param i an iterator on the element to transfert
+			** here
+			*/
+			void splice (iterator position, list& x, iterator i)
+			{
+				x._disconnect(i._node);
+				_insertBefore(position._node, i._node);
+			}
+
+			/*
+			** @brief Transfers all elements from the range
+			** [first, last) into the container, inserting them at
+			** "position". Delete this element of the base list.
+			**
+			** @param position the position within the container where
+			** to insert the list.
+			** @param x the list.
+			*/
+			void splice (iterator position, list& x, iterator first, iterator last)
+			{
+				iterator x_save;
+
+				while (first != last)
+				{
+					x_save = (++first)--;
+					x._disconnect(first._node);
+					if (x != *this)
+						_insertBefore(position._node, first._node);
+					first = x_save;
+				}
+			}
+
+			/*
+			** @brief Remove all element in the container
+			** which have "val" in data storage. Reduce the
+			** size of the container.
+			**
+			** @param val the value of the elements to be removed.
+			*/
+			void remove(const value_type& val)
+			{
+				iterator save;
+				iterator first = _last_node->next;
+
+				while (first != end())
+				{
+					save = (++first)--;
+					if (*first == val)
+						_delete(first._node);
+					first = save;
+				}
+			}
+
+			/*
+			** @brief Removes from the container all the elements
+			** for which Predicate pred returns true.
+			** This calls the destructor of these objects
+			** and reduces the container size by the number
+			** of elements removed.
+			**
+			** @param pred the object / function that define
+			** condition to remove an data from the list.
+			*/
 			template <class Predicate>
-					void remove_if (Predicate pred);
-			*/
+					void remove_if (Predicate pred)
+			{
+				iterator save;
+				iterator first = _last_node->next;
 
-			// void unique();
+				while (first != end())
+				{
+					save = (++first)--;
+					if (pred(*first))
+						_delete(first._node);
+					first = save;
+				}
+			}
 
 			/*
+			** @brief Removes all but the first element
+			** from every consecutive group of equal
+			** elements in the container.
+			*/
+			void unique()
+			{
+				iterator save;
+				iterator first = _last_node->next;
+
+				while (first != end())
+				{
+					save = (++first)--;
+					if (first._node->prev != _last_node
+						&& first._node->prev->data == first._node->data)
+						_delete(first._node);
+					first = save;
+				}	
+			}
+
+			/*
+			** @brief Takes as argument a specific comparison
+			** function that determine the "uniqueness" of an element.
+			** If an element is not defined unique by "binary_pred",
+			** the element is removed.
+			**
+			** @param binary_pred the function / object that
+			** determine the "uniqueness".
+			*/
 			template <class BinaryPredicate>
-					void unique (BinaryPredicate binary_pred);
-			*/
+				void unique (BinaryPredicate binary_pred)
+			{
+				iterator save;
+				iterator first = _last_node->next;
+
+				while (first != end())
+				{
+					save = (++first)--;
+					if (first._node->prev != _last_node
+						&& binary_pred(*first,*((--first)++)))
+						_delete(first._node);
+					first = save;
+				}	
+			}
 	
-			// void merge();
+			/*
+			** @brief Merges x into the list by transferring
+			** all of its elements at their respective ordered
+			** positions into the container (both containers
+			** shall already be ordered).
+			**
+			** @param x the list to merge with this.
+			*/
+			void merge(list& x)
+			{
+				this->merge(x, ft::less<T>());
+			}
 
 			/*
-			template <class Compare>
-					void merge (list& x, Compare comp);
+			** @brief Merges x into the list by transferring
+			** all of its elements at their respective ordered
+			** positions into the container (both containers
+			** shall already be ordered). place determined
+			** by "comp".
+			**
+			** @param x the list to merge with this.
+			** @param comp the comparator function / object
+			** to determine sort of elements
 			*/
+			template <class Compare>
+				void merge (list& x, Compare comp)
+			{
+				if (&x == this)
+					return ;
 
-			// void sort();
+				iterator save;
+				iterator save_x;
+				iterator first = _last_node->next;
+				iterator first_x = x._last_node->next;
+
+				while (first_x != x.end())
+				{
+					save = (++first)--;
+					save_x = (++first_x)--;
+					if (first._node != _last_node && comp(first._node->data, first_x._node->data))
+						first = save;
+					else
+					{
+						x._disconnect(first_x._node);
+						_insertBefore(first._node, first_x._node);
+						first_x = save_x;
+					}
+				}
+			}
 
 			/*
-			template <class Compare>
-					void sort (Compare comp);
+			** @brief Sorts the elements in the list,
+			** altering their position within the container.
+			** The comparison for the sort is data->operator<(),
+			** so less() can be used.
 			*/
+			void sort()
+			{
+				_last_node->next = _mergeSort(_last_node->next, ft::less<T>());
 
-			// void reverse();
+				Doubly_Linked_Node<T> * tmp = _last_node->next;
+				Doubly_Linked_Node<T> * prev_last;
+
+				while (tmp != _last_node)
+				{
+					prev_last = tmp;
+					tmp = tmp->next;
+				}
+
+				_last_node->prev = prev_last;
+			}
+
+			/*
+			** @brief Sorts the elements in the list,
+			** altering their position within the container.
+			** The comparison object for the sort is "comp".
+			*/
+			template <class Compare>
+				void sort (Compare comp)
+			{
+				_last_node->next = _mergeSort(_last_node->next, comp);
+
+				Doubly_Linked_Node<T> * tmp = _last_node->next;
+				Doubly_Linked_Node<T> * prev_last;
+
+				while (tmp != _last_node)
+				{
+					prev_last = tmp;
+					tmp = tmp->next;
+				}
+
+				_last_node->prev = prev_last;
+			}
+
+			/*
+			** @brief Reverses the order of the elements in
+			** the list container.
+			*/
+			void reverse()
+			{
+				Doubly_Linked_Node<T> * tmp = _last_node->next;
+				Doubly_Linked_Node<T> * save_next;
+
+				save_next = _last_node->next;
+				_last_node->next = _last_node->prev;
+				_last_node->prev = save_next;
+				while (tmp != _last_node)
+				{
+					save_next = tmp->next;
+					tmp->next = tmp->prev;
+					tmp->prev = save_next;
+					tmp = save_next;				
+				}
+			}
 
 		private :
 
@@ -584,18 +816,21 @@ namespace ft
 			/*
 			** @brief Create new node.
 			*/
-			Doubly_Linked_Node<T> *_createNode(const T& data, Doubly_Linked_Node<T> * prev = u_nullptr, Doubly_Linked_Node<T> * next = u_nullptr)
+			_node_pointer _createNode(const T& data, Doubly_Linked_Node<T> * prev = u_nullptr, Doubly_Linked_Node<T> * next = u_nullptr)
 			{
-				Doubly_Linked_Node<T> *new_node = _node_alloc.allocate(1);
+				_node_pointer new_node = _node_alloc.allocate(1);
 				_node_alloc.construct(new_node, Doubly_Linked_Node<T>(data));
 				new_node->prev = prev;
 				new_node->next = next;
 				return (new_node);
 			}
 
-			Doubly_Linked_Node<T> *_copyNode(const Doubly_Linked_Node<T> * node)
+			/*
+			** @brief Copy a node.
+			*/
+			_node_pointer _copyNode(const Doubly_Linked_Node<T> * node)
 			{
-				Doubly_Linked_Node<T> *new_node = _node_alloc.allocate(1);
+				_node_pointer new_node = _node_alloc.allocate(1);
 				_node_alloc.construct(new_node, Doubly_Linked_Node<T>(node->data));
 				new_node->prev = node->prev;
 				new_node->next = node->next;
@@ -610,7 +845,7 @@ namespace ft
 			size_type _listSize(void) const
 			{
 				size_type count = 0;
-				Doubly_Linked_Node<T> *tmp = _last_node->next;
+				_node_pointer tmp = _last_node->next;
 
 				while (tmp != _last_node)
 				{
@@ -716,6 +951,19 @@ namespace ft
 			*/
 			void _delete(Doubly_Linked_Node<T> *node)
 			{
+				_disconnect(node);
+				_node_alloc.destroy(node);
+				_node_alloc.deallocate(node, 1);
+			}
+
+			/*
+			** @brief Disconnect "node" from the list without
+			** destroy / deallocate it.
+			**
+			** @param node the node to disconnect.
+			*/
+			void _disconnect(Doubly_Linked_Node<T> *node)
+			{
 				if (node->prev == _last_node)
 					_last_node->next = node->next;
 				else
@@ -723,10 +971,90 @@ namespace ft
 				if (node->next == _last_node)
 					_last_node->prev = node->prev;
 				else
-					node->next->prev = node->prev;
+					node->next->prev = node->prev;	
+			}
 
-				_node_alloc.destroy(node);
-				_node_alloc.deallocate(node, 1);
+			/*
+			** @brief Split used tu separate the actual
+			** part of the list at hafl.
+			**
+			** @param the head of the actual part of the
+			** list.
+			** @return a pointer to the second part of the
+			** part of the list splited.
+			*/
+			_node_pointer _split(Doubly_Linked_Node<T> *head)
+			{
+				_node_pointer fast = head;
+				_node_pointer slow = head;
+
+				while (fast->next != _last_node && fast->next->next != _last_node)
+				{
+					fast = fast->next->next;
+					slow = slow->next;
+				}
+
+				_node_pointer tmp = slow->next;
+				slow->next = _last_node;
+				return (tmp);
+			}
+
+			/*
+			** @brief Merge two part of the list.
+			** If the par contain more than one element,
+			** it will be reconnecte subs parts to be sorted,
+			** and recursivly merge the sorted parts.
+			** Visualization :
+			** https://www.youtube.com/watch?v=ZRPoEKHXTJg
+			**
+			** @param first,second the two part to sort and merge.
+			** @return a pointer to the two part merged.
+			*/
+			template <class Compare>
+			_node_pointer _merge(Doubly_Linked_Node<T> *first, Doubly_Linked_Node<T> *second, Compare comp)
+			{
+				if (first == _last_node)
+					return (second);
+				if (second == _last_node)
+					return (first);
+				
+				if (comp(first->data,second->data))
+				{
+					first->next = _merge(first->next, second, comp);
+					first->next->prev = first;
+					first->prev = _last_node;
+					return (first);
+				}
+				else
+				{
+					second->next = _merge(first, second->next, comp);
+					second->next->prev = second;
+					second->prev = _last_node;
+					return (second);
+				}
+			}
+
+			/*
+			** @brief Merge Sorting. Visualization : 
+			** https://www.youtube.com/watch?v=ZRPoEKHXTJg
+			**
+			** @param head the first element of the part of list.
+			** @param Compare the comparison object.
+			**
+			** @return a pointer to the head of the sorted part.
+			*/
+			template <class Compare>
+			_node_pointer _mergeSort(Doubly_Linked_Node<T> *head, Compare comp)
+			{
+				if (head == _last_node || head->next == _last_node)
+					return (head);
+				
+				_node_pointer second = _split(head);
+
+				head = _mergeSort(head, comp);
+				second = _mergeSort(second, comp);
+
+				return (_merge(head, second, comp));
 			}
 	};
 
