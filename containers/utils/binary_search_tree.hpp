@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:12:26 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/08 16:53:56 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 18:07:51 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ namespace ft
             typedef ft::BST_iterator<Node, Compare> iterator;
 
             /* Same than iterator, here for base container template */
-            typedef ft::BST_iterator<Node, Compare> const_iterator;
+            typedef ft::BST_const_iterator<Node, Compare> const_iterator;
             
             /* Size_t */
             typedef size_t size_type;
@@ -78,7 +78,7 @@ namespace ft
             /*
             ** @brief Insert a new node that contain "to_insert".
             */
-            iterator insertPair(value_type to_insert)
+            ft::pair<iterator, bool> insertPair(value_type to_insert)
             {
                 Node * new_node = _node_alloc.allocate(1);
                 Node * prev_node = _last_node;
@@ -86,16 +86,14 @@ namespace ft
 
                 // side == false = left; side == true = right;
                 bool side = true;
-                bool newone = true;
 
                 while (start_node != _last_node)
                 {
                     int curkey = start_node->value.first;
                     if (curkey == to_insert.first)
                     {
-                        newone = false;
                         start_node->value.second = to_insert.second;
-                        return ;
+                        return (ft::make_pair(iterator(start_node, _last_node), false));
                     }
                     prev_node = start_node;
                     if (to_insert.first > curkey)
@@ -121,7 +119,7 @@ namespace ft
                 _last_node->left = _BST_get_lower_node();
                 _last_node->right = _BST_get_higher_node();
 
-                return (make_pair(iterator(new_node, _last_node), newone));
+                return (ft::make_pair(iterator(new_node, _last_node), true));
             }
 
             /*

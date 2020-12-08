@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/03 22:01:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/08 16:46:24 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 19:43:52 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,13 @@ namespace ft
 			** That can read or modify any element stored.
 			** Convertible to const_iterator;
 			*/
-			typedef ft::List_Iterator<T>  iterator;
+			typedef ft::List_iterator<T>  iterator;
 
 			/*
 			** A bidirectional iterator to const value_type
 			** That can read element stored.
 			*/
-			typedef ft::List_Iterator<const T> const_iterator;
+			typedef ft::List_const_iterator<T> const_iterator;
 
 			/*
 			** ft::reverse_iterator<iterator>
@@ -254,7 +254,7 @@ namespace ft
 			**
 			** @return The const iterator to the first element.
 			*/
-			const_iterator begin() const { return (const_iterator(reinterpret_cast<Doubly_Linked_Node<const int> *>(_last_node->next))); }
+			const_iterator begin() const { return (const_iterator(_last_node->next)); }
 
 			/*
 			** @brief Return an iterator pointing on the past-the-end element
@@ -280,7 +280,7 @@ namespace ft
 			** @return The iterator to the past-the-end element or begin if
 			** the container is empty.
 			*/
-			const_iterator end() const { return (const_iterator(reinterpret_cast<Doubly_Linked_Node<const int> *>(_last_node))); }
+			const_iterator end() const { return (const_iterator(_last_node)); }
 
 			/*
 			** @brief Give a reverse iterator pointing to the last element

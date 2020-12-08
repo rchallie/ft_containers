@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/05 00:08:51 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/07 16:59:31 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 19:43:43 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ bool printListAttributes(
 
 	fs << "Content  [" << content << "]: [";
 
-	typename ft::list<T>::iterator ft_it;
+	typename ft::list<T>::const_iterator ft_it;
 	for(ft_it = ft_list.begin(); ft_it != ft_list.end(); ft_it++)
 	{
 		fs << *ft_it;

@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 16:50:03 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/03 23:45:41 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 19:19:23 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ bool printDequeAttributes(
 
     fs << "Content  [" << content << "]: [";
 
-    typename ft::deque<T>::iterator ft_it;
+    typename ft::deque<T>::const_iterator ft_it;
     for(ft_it = ft_deque.begin(); ft_it != ft_deque.end(); ft_it++)
     {
         fs << *ft_it;

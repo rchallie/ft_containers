@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 18:25:12 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/08 01:31:06 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 22:51:06 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1105,6 +1105,7 @@ namespace ft
             BST_Node (BST_Node* parent = u_nullptr,
                     BST_Node* left = u_nullptr, BST_Node* right = u_nullptr)
             :
+                value(),
                 parent(parent),
                 left(left),
                 right(right)

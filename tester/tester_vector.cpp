@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 17:54:42 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/03 23:45:33 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 19:14:23 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ bool printVectorAttributes(
 
     fs << "Content  [" << content << "]: [";
 
-    typename ft::vector<T>::iterator ft_it;
+    typename ft::vector<T>::const_iterator ft_it;
     for(ft_it = ft_vector.begin(); ft_it != ft_vector.end(); ft_it++)
     {
         fs << *ft_it;

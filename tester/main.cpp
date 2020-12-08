@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 17:53:07 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/07 18:25:01 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 20:59:17 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main()
     // test_vector();
     // std::cout << "\n";
     // test_list();
-    // std::cout << "\n";
+    std::cout << "\n";
     test_map();
     std::cout << "\n";
     // test_deque();

@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:14:11 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/08 16:46:05 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 23:01:18 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ namespace ft
 			** A bidirectional iterator to const value_type
 			** That can read element stored.
 			*/
-            typedef typename ft::Binary_search_tree<const value_type, key_compare>::const_iterator const_iterator;
+            typedef typename ft::Binary_search_tree<value_type, key_compare>::const_iterator const_iterator;
 
 			/*
 			** ft::reverse_iterator<iterator>
@@ -212,9 +212,7 @@ namespace ft
 			** @return The const iterator to the first element.
 			*/
             const_iterator begin() const
-            { return (const_iterator(
-                reinterpret_cast<typename Binary_search_tree<const value_type, Compare>::node_type *>(_bst._last_node->left),
-                reinterpret_cast<typename Binary_search_tree<const value_type, Compare>::node_type *>(_bst._last_node))); }
+            { return (const_iterator(_bst._last_node->left, _bst._last_node)); }
 
 			/*
 			** @brief Return an iterator pointing on the past-the-end element
@@ -242,9 +240,7 @@ namespace ft
 			** the container is empty.
 			*/
             const_iterator end() const
-            { return (const_iterator(
-                reinterpret_cast<typename Binary_search_tree<const value_type, Compare>::node_type *>(_bst._last_node),
-                reinterpret_cast<typename Binary_search_tree<const value_type, Compare>::node_type *>(_bst._last_node))); }
+            { return (const_iterator(_bst._last_node, _bst._last_node)); }
 
             // reverse_iterator rbegin();
 

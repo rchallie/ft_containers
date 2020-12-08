@@ -6,7 +6,7 @@
 #    By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 23:23:13 by rchallie          #+#    #+#              #
-#    Updated: 2020/12/07 21:26:34 by rchallie         ###   ########.fr        #
+#    Updated: 2020/12/09 00:23:10 by rchallie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,13 +18,14 @@ NAME			= ft_container_tester
 SOURCES_FOLDER	= ./tester/
 
 SOURCES			=	main.cpp \
+					tester.cpp \
 					tester_map.cpp
-					# tester.cpp \
-					# tester_vector.cpp \
 					# tester_list.cpp \
+					# tester_deque.cpp \
+					# tester_vector.cpp \
 					# tester_queue.cpp \
-					# tester_stack.cpp \
-					# tester_deque.cpp
+					# tester_stack.cpp 
+					
 # ==============================================================================
 
 # INCLUDES =====================================================================
@@ -67,6 +68,8 @@ clean:
 	@rm -rf ./tester/queues_output
 	@echo "Cleaning: ./tester/deques_output"
 	@rm -rf ./tester/deques_output
+	@echo "Cleaning: ./tester/maps_output"
+	@rm -rf ./tester/maps_output
 
 fclean: clean
 	@echo "Cleaning: $(NAME)"
