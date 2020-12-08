@@ -6,7 +6,7 @@
 #    By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 23:23:13 by rchallie          #+#    #+#              #
-#    Updated: 2020/12/06 01:49:00 by rchallie         ###   ########.fr        #
+#    Updated: 2020/12/07 21:26:34 by rchallie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,13 @@ NAME			= ft_container_tester
 SOURCES_FOLDER	= ./tester/
 
 SOURCES			=	main.cpp \
-					tester.cpp \
-					tester_vector.cpp \
-					tester_list.cpp \
-					tester_queue.cpp \
-					tester_stack.cpp \
-					tester_deque.cpp
+					tester_map.cpp
+					# tester.cpp \
+					# tester_vector.cpp \
+					# tester_list.cpp \
+					# tester_queue.cpp \
+					# tester_stack.cpp \
+					# tester_deque.cpp
 # ==============================================================================
 
 # INCLUDES =====================================================================

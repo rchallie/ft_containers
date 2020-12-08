@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:17:44 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/04 16:07:00 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/07 18:24:43 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool);
 
 void test_vector();
 void test_list();
+void test_map();
 void test_stack();
 void test_queue();
 void test_deque();

@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/03 22:01:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/07 02:14:11 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/08 16:46:24 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ namespace ft
 			** Usually the same as ptrdiff_t.
 			** Can represent the difference between iterators to the
 			** element actually stored.
-			** Can be described as te number of element between two pointers.
+			** Can be described as the number of element between two pointers.
 			** (Pointer to an element contains its address).
 			*/
 			typedef typename iterator_traits<iterator>::difference_type difference_type;
@@ -122,6 +122,12 @@ namespace ft
 			*/
 			typedef size_t  size_type;
 
+			/*
+			** @brief Default :
+			** Construct an empty list container object.
+			**
+			** @param alloc the Allocator type.
+			*/
 			explicit list (const allocator_type& alloc = allocator_type())
 			:
 				_alloc(alloc)
@@ -132,6 +138,16 @@ namespace ft
 				_last_node->next = _last_node;
 			}
 
+			/*
+			** @brief Init :
+			** Construct list container object of size "n".
+			** If "val" is not defined, default value of container
+			** is used tu initialize the values. 
+			**
+			** @param n the size of the list.
+			** @param the values of data of the list.
+			** @param alloc the Allocator type.
+			*/
 			explicit list (size_type n, const value_type& val = value_type(),
 											const allocator_type& alloc = allocator_type())
 			:
@@ -144,6 +160,14 @@ namespace ft
 				this->insert(end(), n, val);
 			}
 
+			/*
+			** @brief Iterator:
+			** Construct a list container, of size last-first containing
+			** value of [first, last).
+			**
+			** @param first,last the range of content.
+			** @param alloc the allocator type.
+			*/
 			template <class InputIterator>
 					list (InputIterator first, InputIterator last,
 					const allocator_type& alloc = allocator_type(),
@@ -152,8 +176,8 @@ namespace ft
 				_alloc(alloc)
 			{
 				bool is_valid;
-                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
-                    throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+				if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+					throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
 
 				_last_node = _node_alloc.allocate(1);
 				_node_alloc.construct(_last_node, Doubly_Linked_Node<T>());
@@ -162,9 +186,32 @@ namespace ft
 				this->insert(end(), first, last);
 			}
 
+			/*
+			** @brief Copy :
+			** Construct the container to be a copy of "x".
+			**
+			** @param x the lsit to copy.
+			*/
+			list (const list& x)
+			:
+				_alloc(x._alloc)
+			{
+				_last_node = _node_alloc.allocate(1);
+				_node_alloc.construct(_last_node, Doubly_Linked_Node<T>());
+				_last_node->prev = _last_node;
+				_last_node->next = _last_node;
+				
+				const_iterator beg = x.begin();
+				const_iterator end = x.end();
 
-			list (const list& x);
+				while (beg != end)
+					this->_insertBefore(_last_node, _createNode((beg++)._node->data));
+			}
 
+			/*
+			** @brief Destructor:
+			** Clear the container and deallocate everythings.
+			*/
 			~list()
 			{
 				this->clear();
@@ -172,98 +219,111 @@ namespace ft
 				_node_alloc.deallocate(_last_node, 1);
 			}
 
-			list& operator= (const list & x);
+			/*
+			** @brief Assign "x" to this.
+			**
+			** @param x the list where get elements.
+			** @return this list.
+			*/
+			list& operator= (const list & x)
+			{
+				if (&x == this)
+					return (*this);
+				this->clear();
+				this->insert(x.begin(), x.end());
+				return (*this);
+			}
 
-            /*
-            ** @brief Return an iterator pointing on the first element
-            ** in the container. If the container is empty, the
-            ** returned iterator value shall no be dereferenced.
-            ** The iterator is of type iterator (bidirectional iterator
-            ** on value_type reference).
-            **
-            ** @return The iterator to the first element.
-            */
+			/*
+			** @brief Return an iterator pointing on the first element
+			** in the container. If the container is empty, the
+			** returned iterator value shall no be dereferenced.
+			** The iterator is of type iterator (bidirectional iterator
+			** on value_type reference).
+			**
+			** @return The iterator to the first element.
+			*/
 			iterator begin() { return (iterator(_last_node->next)); }
 
-            /*
-            ** @brief Return an iterator pointing on the first element
-            ** in the container. If the container is empty, the
-            ** returned iterator value shall no be dereferenced.
-            ** The iterator is of type const_iterator (bidirectional
-            ** iterator on const value_type reference).
-            **
-            ** @return The iterator to the first element.
-            */
+			/*
+			** @brief Return a const iterator pointing on the first element
+			** in the container. If the container is empty, the
+			** returned iterator value shall no be dereferenced.
+			** The iterator is of type const_iterator (bidirectional
+			** iterator on const value_type reference).
+			**
+			** @return The const iterator to the first element.
+			*/
 			const_iterator begin() const { return (const_iterator(reinterpret_cast<Doubly_Linked_Node<const int> *>(_last_node->next))); }
 
-            /*
-            ** @brief Return an iterator pointing on the past-the-end element
-            ** in the container. Past-the-end is the theorical element
-            ** following the last element in the container. If the container is
-            ** empty, return the same than begin.
-            ** The iterator is of type iterator (bidirectional iterator
-            ** on value_type reference).
-            **
-            ** @return The iterator to the past-the-end element or begin if
-            ** the container is empty.
-            */
+			/*
+			** @brief Return an iterator pointing on the past-the-end element
+			** in the container. Past-the-end is the theorical element
+			** following the last element in the container. If the container is
+			** empty, return the same than begin.
+			** The iterator is of type iterator (bidirectional iterator
+			** on value_type reference).
+			**
+			** @return The iterator to the past-the-end element or begin if
+			** the container is empty.
+			*/
 			iterator end() { return (iterator(_last_node)); }
 
-            /*
-            ** @brief Return an iterator pointing on the past-the-end element
-            ** in the container. Past-the-end is the theorical element
-            ** following the last element in the container. If the container is
-            ** empty, return the same than begin.
-            ** The iterator is of type const_iterator (bidirectional
-            ** iterator on const value_type reference).
-            **
-            ** @return The iterator to the past-the-end element or begin if
-            ** the container is empty.
-            */
+			/*
+			** @brief Return an iterator pointing on the past-the-end element
+			** in the container. Past-the-end is the theorical element
+			** following the last element in the container. If the container is
+			** empty, return the same than begin.
+			** The iterator is of type const_iterator (bidirectional
+			** iterator on const value_type reference).
+			**
+			** @return The iterator to the past-the-end element or begin if
+			** the container is empty.
+			*/
 			const_iterator end() const { return (const_iterator(reinterpret_cast<Doubly_Linked_Node<const int> *>(_last_node))); }
 
-            /*
-            ** @brief Give a reverse iterator pointing to the last element
-            ** in the container (this->end() - 1).
-            ** This is a reversed bidirectional iterator.
-            **
-            ** @return A reverse Iterator to the reverse beginning of the.
-            */
+			/*
+			** @brief Give a reverse iterator pointing to the last element
+			** in the container (this->end() - 1).
+			** This is a reversed bidirectional iterator.
+			**
+			** @return A reverse Iterator to the reverse beginning of the.
+			*/
 			reverse_iterator rbegin() { return (reverse_iterator(end())); }
 
-            /*
-            ** @brief Give a const reverse iterator pointing to the last 
-            ** element in the container (this->end() - 1).
-            ** This is a constant reversed bidirectional iterator.
-            **
-            ** @return A const reverse Iterator to the reverse beginning of the.
-            */
+			/*
+			** @brief Give a const reverse iterator pointing to the last 
+			** element in the container (this->end() - 1).
+			** This is a constant reversed bidirectional iterator.
+			**
+			** @return A const reverse Iterator to the reverse beginning of the.
+			*/
 			const_reverse_iterator rbegin() const { return (const_reverse_iterator(end())); }
 
-            /*
-            ** @brief Give a reverse iterator point to the
-            ** theorical element preceding the first element
-            ** in the container.
-            **
-            ** @return the reverse iterator.
-            */
+			/*
+			** @brief Give a reverse iterator point to the
+			** theorical element preceding the first element
+			** in the container.
+			**
+			** @return the reverse iterator.
+			*/
 			reverse_iterator rend() { return (reverse_iterator(begin())); }
 
-            /*
-            ** @brief Give a const reverse iterator point to the
-            ** theorical element preceding the first element
-            ** in the container. 
-            **
-            ** @return the const reverse iterator.
-            */
+			/*
+			** @brief Give a const reverse iterator point to the
+			** theorical element preceding the first element
+			** in the container. 
+			**
+			** @return the const reverse iterator.
+			*/
 			const_reverse_iterator rend() const { return (reverse_iterator(begin())); }
 
-            /*
-            ** @brief Returns whether the container is empty.
-            ** Does not modify container in any way.
-            **
-            ** @return true if the container size is 0, false otherwise.
-            */
+			/*
+			** @brief Returns whether the container is empty.
+			** Does not modify container in any way.
+			**
+			** @return true if the container size is 0, false otherwise.
+			*/
 			bool empty() const { return (_last_node->next == _last_node ? true : false); }
 
 			/*
@@ -274,65 +334,65 @@ namespace ft
 			*/
 			size_type size() const { return (_listSize()); }
 
-            /*
-            ** @brief Returns the maximum potential number of elements the the
-            ** container can hold.
-            ** This size is due to known system or library limitations.
-            ** The container is not garanteed to have this size, it can
-            ** fail a allocation for exemple.
-            ** 
-            ** Documentation :
-            ** https://www.viva64.com/en/a/0050/
-            **
-            ** @return The maximum potential number of elements the
-            ** container can hold.
-            ** (An unsigned integral type)
-            */
+			/*
+			** @brief Returns the maximum potential number of elements the the
+			** container can hold.
+			** This size is due to known system or library limitations.
+			** The container is not garanteed to have this size, it can
+			** fail a allocation for exemple.
+			** 
+			** Documentation :
+			** https://www.viva64.com/en/a/0050/
+			**
+			** @return The maximum potential number of elements the
+			** container can hold.
+			** (An unsigned integral type)
+			*/
 			size_type max_size() const { return node_allocator().max_size(); }
 
-            /*
-            ** @brief Return a reference to the first element
-            ** of the container. Call this on an empty container
-            ** cause undefined behavior.
-            **
-            ** @return the reference.
-            */
+			/*
+			** @brief Return a reference to the first element
+			** of the container. Call this on an empty container
+			** cause undefined behavior.
+			**
+			** @return the reference.
+			*/
 			reference front() { return (_last_node->next->data); }
 
-            /*
-            ** @brief Return a const reference to the first element
-            ** of the container. Call this on an empty container
-            ** cause undefined behavior.
-            **
-            ** @return The const reference.
-            */
+			/*
+			** @brief Return a const reference to the first element
+			** of the container. Call this on an empty container
+			** cause undefined behavior.
+			**
+			** @return The const reference.
+			*/
 			const_reference front() const { return (_last_node->next->data); }
 
-            /*
-            ** @brief Return a reference to the last element in the container.
-            ** If the container is empty, occur undefined behavior.
-            **
-            ** @return The reference to the last element.
-            */
+			/*
+			** @brief Return a reference to the last element in the container.
+			** If the container is empty, occur undefined behavior.
+			**
+			** @return The reference to the last element.
+			*/
 			reference back() { return (_last_node->prev->data); }
 
-            /*
-            ** @brief Return a const reference to the last element in the container.
-            ** If the container is empty, occur undefined behavior.
-            **
-            ** @return The const reference to the last element.
-            */
+			/*
+			** @brief Return a const reference to the last element in the container.
+			** If the container is empty, occur undefined behavior.
+			**
+			** @return The const reference to the last element.
+			*/
 			const_reference back() const { return (_last_node->prev->data); }
 
-            /*
-            ** @brief Assign values between iterators [first; last]
-            ** in the container in the same order. All element held
-            ** in the container before the call of this function are
-            ** destroyed and replaced by new content.
-            **
-            ** @param first,last the two iterators were the new
-            ** element are.
-            */
+			/*
+			** @brief Assign values between iterators [first; last]
+			** in the container in the same order. All element held
+			** in the container before the call of this function are
+			** destroyed and replaced by new content.
+			**
+			** @param first,last the two iterators were the new
+			** element are.
+			*/
 			template <class InputIterator>
 					void assign (InputIterator first, InputIterator last)
 			{
@@ -340,106 +400,106 @@ namespace ft
 				this->insert(this->end(), first, last);
 			}
 
-            /*
-            ** @brief Assign new content ("val") to the container
-            ** "n" times. All element held
-            ** in the container before the call of this function are
-            ** destroyed and replaced by new content.
-            **
-            ** @paran n the number of new elements.
-            ** @param val the new element.
-            */
+			/*
+			** @brief Assign new content ("val") to the container
+			** "n" times. All element held
+			** in the container before the call of this function are
+			** destroyed and replaced by new content.
+			**
+			** @paran n the number of new elements.
+			** @param val the new element.
+			*/
 			void assign (size_type n, const value_type& val)
 			{
 				this->clear();
 				this->insert(this->end(), n, val);
 			}
 
-            /*
-            ** @brief Add new element at the beginning of the container.
-            ** The content of "val" is copied (moved) to the new element.
-            ** 
-            ** @param val The value to be copied.
-            */
+			/*
+			** @brief Add new element at the beginning of the container.
+			** The content of "val" is copied (moved) to the new element.
+			** 
+			** @param val The value to be copied.
+			*/
 			void push_front (const value_type& val) { _insertBeginning(_createNode(val)); }
 
-            /*
-            ** @brief Delete the first element of the container.
-            ** Reduce the size of the container of one.
-            ** If the container is empty, cause undefined behavior.
-            */
+			/*
+			** @brief Delete the first element of the container.
+			** Reduce the size of the container of one.
+			** If the container is empty, cause undefined behavior.
+			*/
 			void pop_front() { _delete(_last_node->next); }
 
-            /*
-            ** @brief Add new element at the end of the container.
-            ** The content of "val" is copied (moved) to the new element.
-            ** 
-            ** @param val The value to be copied.
-            */
+			/*
+			** @brief Add new element at the end of the container.
+			** The content of "val" is copied (moved) to the new element.
+			** 
+			** @param val The value to be copied.
+			*/
 			void push_back(const value_type& val) { _insertEnd(_createNode(val)); }
 
-            /*
-            ** @brief Delete the last element of the container.
-            ** Reduce the size of the container of one.
-            ** If the container is empty, cause undefined behavior.
-            */
+			/*
+			** @brief Delete the last element of the container.
+			** Reduce the size of the container of one.
+			** If the container is empty, cause undefined behavior.
+			*/
 			void pop_back() { _delete(_last_node->prev); }
 
-            /*
-            ** @brief Insert an element a the position. Can ecrease de size
-            ** of the container. This action add a node to the list.
-            **
-            ** @param position The position where insert.
-            ** @param val The element to insert.
-            ** @return An iterator to the new element in the container.
-            */
+			/*
+			** @brief Insert an element a the position. Can ecrease de size
+			** of the container. This action add a node to the list.
+			**
+			** @param position The position where insert.
+			** @param val The element to insert.
+			** @return An iterator to the new element in the container.
+			*/
 			iterator insert (iterator position, const value_type& val)
 			{ return (_insertBefore(position._node, _createNode(val))); }
 
-            /*
-            ** @brief Insert an element a the position. Can ecrease de size
-            ** of the container. This action add "n" nodes to the list.
-            **
-            ** @param position The position where insert.
-            ** @param val The element to insert.
-            ** @return An iterator to the new element in the container.
-            */
+			/*
+			** @brief Insert an element a the position. Can ecrease de size
+			** of the container. This action add "n" nodes to the list.
+			**
+			** @param position The position where insert.
+			** @param val The element to insert.
+			** @return An iterator to the new element in the container.
+			*/
 			void insert (iterator position, size_type n, const value_type& val)
 			{
 				while (n--)
 					_insertBefore(position._node, _createNode(val));
 			}
 
-            /*
-            ** @brief Insert element in range from ["first" to
-            ** "last") at "position". Can increase the size of
-            ** the container. Throw if the iterator given is not valid.
-            **
-            ** @param position the position where insert.
-            ** @param first the first element in the range.
-            ** @param last the last element in the range.
-            */
+			/*
+			** @brief Insert element in range from ["first" to
+			** "last") at "position". Can increase the size of
+			** the container. Throw if the iterator given is not valid.
+			**
+			** @param position the position where insert.
+			** @param first the first element in the range.
+			** @param last the last element in the range.
+			*/
 			template <class InputIterator>
 				void insert (iterator position, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
 			{
 				bool is_valid;
-                if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
-                    throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+				if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+					throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
 
 				difference_type n = ft::distance(first, last);
 				while (n--)
 					_insertBefore(position._node, _copyNode((first++)._node));
 			}
 
-            /*
-            ** @brief Remove element from the container at "position".
-            ** Reduce the size of 1;
-            **
-            ** @param position the iterator pointing to the
-            ** element to remove.
-            ** @return an iterator to the next element after position. 
-            */
+			/*
+			** @brief Remove element from the container at "position".
+			** Reduce the size of 1;
+			**
+			** @param position the iterator pointing to the
+			** element to remove.
+			** @return an iterator to the next element after position. 
+			*/
 			iterator erase (iterator position)
 			{
 				iterator rtn(position._node->next);
@@ -447,15 +507,15 @@ namespace ft
 				return (rtn);
 			}
 
-            /*
-            ** @brief Remove a range of element.
-            ** Reduce the size by the number of element removed.
-            ** 
-            ** @param first the first element in the range.
-            ** @param last the last element in the range.
-            ** @return An iterator that point to the first element
-            ** after "last".
-            */
+			/*
+			** @brief Remove a range of element.
+			** Reduce the size by the number of element removed.
+			** 
+			** @param first the first element in the range.
+			** @param last the last element in the range.
+			** @return An iterator that point to the first element
+			** after "last".
+			*/
 			iterator erase (iterator first, iterator last)
 			{
 				iterator rtn(last._node->next);
@@ -466,15 +526,15 @@ namespace ft
 				return (rtn);
 			}
 
-            /*
-            ** @brief Exchanges the content with "x" content.
-            ** "x" is of same type. Elements of "x" are elements
-            ** of this container and elements of this are of "x".
-            ** All iterators, references, pointer on the swaped
-            ** objects stay valid.
-            **
-            ** @param x the container to swap.
-            */
+			/*
+			** @brief Exchanges the content with "x" content.
+			** "x" is of same type. Elements of "x" are elements
+			** of this container and elements of this are of "x".
+			** All iterators, references, pointer on the swaped
+			** objects stay valid.
+			**
+			** @param x the container to swap.
+			*/
 			void swap (list& x)
 			{
 				if (x == *this)
@@ -493,19 +553,19 @@ namespace ft
 				this->_last_node = save_last_node;
 			}
 
-            /*
-            ** @brief Resizes the container so that it contain "n"
-            ** element. If "n" is smaller than the actual size
-            ** the container is reduced to "n". If it is greater,
-            ** val is inserting at the end "n - size()" times.
-            **
-            ** @param n the new size of the container.
-            ** @param val the element to set.
-            */
+			/*
+			** @brief Resizes the container so that it contain "n"
+			** element. If "n" is smaller than the actual size
+			** the container is reduced to "n". If it is greater,
+			** val is inserting at the end "n - size()" times.
+			**
+			** @param n the new size of the container.
+			** @param val the element to set.
+			*/
 			void resize (size_type n, value_type val = value_type())
 			{
 				if (this->max_size() - this->size() < n)
-                    throw (std::length_error("list::resize"));
+					throw (std::length_error("list::resize"));
 				if (n > this->size())
 				{
 					n -= this->size();
@@ -514,15 +574,15 @@ namespace ft
 				}
 				else
 				{
-                    while (this->size() > n)
-                        this->pop_back();
-                }
+					while (this->size() > n)
+						this->pop_back();
+				}
 			}
 
-            /*
-            ** @brief Removes (destroy) all elements from the
-            ** container. Final size is 0.
-            */
+			/*
+			** @brief Removes (destroy) all elements from the
+			** container. Final size is 0.
+			*/
 			void clear()
 			{
 				Doubly_Linked_Node<T> *tmp = _last_node->next;
@@ -1058,15 +1118,15 @@ namespace ft
 			}
 	};
 
-    /*
-    ** @brief Compare list container to know
-    ** if they are equal. Start to check if the size
-    ** is different.
-    **
-    ** @param lhs list to compare with "rhs".
-    ** @param rhs list for comparison of "lhs".
-    ** @return true if they are equal, false otherwise.
-    */
+	/*
+	** @brief Compare list container to know
+	** if they are equal. Start to check if the size
+	** is different.
+	**
+	** @param lhs list to compare with "rhs".
+	** @param rhs list for comparison of "lhs".
+	** @return true if they are equal, false otherwise.
+	*/
 	template <class T, class Alloc>
 		bool operator== (const ft::list<T,Alloc>& lhs, const ft::list<T,Alloc>& rhs)
 		{
@@ -1084,82 +1144,82 @@ namespace ft
 			return (true);
 		}
 
-    /*
-    ** @brief Compare list container to know
-    ** if they are different. Equivalent to !(lsh == rhs).
-    **
-    ** @param lhs list to compare with "rhs".
-    ** @param rhs list for comparison of "lhs".
-    ** @return true if they are different, false otherwise.
-    */
+	/*
+	** @brief Compare list container to know
+	** if they are different. Equivalent to !(lsh == rhs).
+	**
+	** @param lhs list to compare with "rhs".
+	** @param rhs list for comparison of "lhs".
+	** @return true if they are different, false otherwise.
+	*/
 	template <class T, class Alloc>
 		bool operator!= (const ft::list<T,Alloc>& lhs, const ft::list<T,Alloc>& rhs)
-        {
-            return (!(lhs == rhs));
-        }
+		{
+			return (!(lhs == rhs));
+		}
 
-    /*
-    ** @brief Compare list container to know
-    ** if "lhs" elements are lexicographicalement less than "rhs".
-    **
-    ** @param lhs list to compare with "rhs".
-    ** @param rhs list for comparison of "lhs".
-    ** @return true if "lhs" is lexicographicalement less, false otherwise.
-    */
+	/*
+	** @brief Compare list container to know
+	** if "lhs" elements are lexicographicalement less than "rhs".
+	**
+	** @param lhs list to compare with "rhs".
+	** @param rhs list for comparison of "lhs".
+	** @return true if "lhs" is lexicographicalement less, false otherwise.
+	*/
 	template <class T, class Alloc>
 		bool operator<  (const ft::list<T,Alloc>& lhs, const ft::list<T,Alloc>& rhs)
-        {
-            return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
-        }
+		{
+			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		}
 
-    /*
-    ** @brief Compare list container to know
-    ** if "lhs" elements are lexicographicalement less or equal than "rhs".
-    **
-    ** @param lhs list to compare with "rhs".
-    ** @param rhs list for comparison of "lhs".
-    ** @return true if "lhs" is lexicographicalement less or equal, false otherwise.
-    */
+	/*
+	** @brief Compare list container to know
+	** if "lhs" elements are lexicographicalement less or equal than "rhs".
+	**
+	** @param lhs list to compare with "rhs".
+	** @param rhs list for comparison of "lhs".
+	** @return true if "lhs" is lexicographicalement less or equal, false otherwise.
+	*/
 	template <class T, class Alloc>
 		bool operator<= (const ft::list<T,Alloc>& lhs, const ft::list<T,Alloc>& rhs)
 		{
-            return (!(rhs < lhs));
+			return (!(rhs < lhs));
 		}
 
-    /*
-    ** @brief Compare list container to know
-    ** if "lhs" elements are lexicographicalement superior than "rhs".
-    **
-    ** @param lhs list to compare with "rhs".
-    ** @param rhs list for comparison of "lhs".
-    ** @return true if "lhs" is lexicographicalement superior, false otherwise.
-    */
+	/*
+	** @brief Compare list container to know
+	** if "lhs" elements are lexicographicalement superior than "rhs".
+	**
+	** @param lhs list to compare with "rhs".
+	** @param rhs list for comparison of "lhs".
+	** @return true if "lhs" is lexicographicalement superior, false otherwise.
+	*/
 	template <class T, class Alloc>
 		bool operator>  (const ft::list<T,Alloc>& lhs, const ft::list<T,Alloc>& rhs)
 		{
-            return (rhs < lhs);
+			return (rhs < lhs);
 		}
 
-    /*
-    ** @brief Compare list container to know
-    ** if "lhs" elements are lexicographicalement superior or equal than "rhs".
-    **
-    ** @param lhs list to compare with "rhs".
-    ** @param rhs list for comparison of "lhs".
-    ** @return true if "lhs" is lexicographicalement superior or equal, false otherwise.
-    */
+	/*
+	** @brief Compare list container to know
+	** if "lhs" elements are lexicographicalement superior or equal than "rhs".
+	**
+	** @param lhs list to compare with "rhs".
+	** @param rhs list for comparison of "lhs".
+	** @return true if "lhs" is lexicographicalement superior or equal, false otherwise.
+	*/
 	template <class T, class Alloc>
 		bool operator>= (const ft::list<T,Alloc>& lhs, const ft::list<T,Alloc>& rhs)
 		{
-            return (!(lhs < rhs));
+			return (!(lhs < rhs));
 		}
 
-    /*
-    ** @brief Overload of swap (list).
-    ** The contents of container are swaped.
-    **
-    ** @param x, y the containers to swap.
-    */
+	/*
+	** @brief Overload of swap (list).
+	** The contents of container are swaped.
+	**
+	** @param x, y the containers to swap.
+	*/
 	template <class T, class Alloc>
 		void swap (ft::list<T,Alloc>& x, ft::list<T,Alloc>& y)
 		{
