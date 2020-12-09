@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:14:11 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/08 23:01:18 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/09 01:45:40 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,66 +18,66 @@
 
 namespace ft
 {
-    template < class Key, class T, class Compare = ft::less<Key>,
-                class Alloc = std::allocator<ft::pair<const Key, T> > >
-    class map
-    {
-        public:
+	template < class Key, class T, class Compare = ft::less<Key>,
+				class Alloc = std::allocator<ft::pair<const Key, T> > >
+	class map
+	{
+		public:
 
 			/*
 			** The first template parameter (Key)
 			*/
-            typedef Key     key_type;
+			typedef Key     key_type;
 
 			/*
 			** The second template parameter (T)
 			*/
-            typedef T       mapped_type;
+			typedef T       mapped_type;
 
-            /*
-            ** Type of stocked value create with Key and T.
-            ** pair<Key, T>
-            */
-            typedef ft::pair<key_type, mapped_type> value_type;
+			/*
+			** Type of stocked value create with Key and T.
+			** pair<Key, T>
+			*/
+			typedef ft::pair<key_type, mapped_type> value_type;
 
-            /*
+			/*
 			** The third template parameter (Compare)
 			*/
-            typedef Compare     key_compare;
+			typedef Compare     key_compare;
 
-            /* 
-            ** Function class to compare elements
-            */
-            class value_compare : ft::binary_function<value_type, value_type, bool>
-            {
-                friend class map;
-                
-                protected:
-                    Compare comp;
-                    value_compare (Compare c) : comp(c) {}
-                
-                public:
+			/* 
+			** Function class to compare elements
+			*/
+			class value_compare : ft::binary_function<value_type, value_type, bool>
+			{
+				friend class map<key_type, mapped_type, key_compare, Alloc>;
+				
+				protected:
+					Compare comp;
+					value_compare (Compare c) : comp(c) {}
+				
+				public:
 
-                    /* 
-                    ** Result type, first argument type and second argument type are
-                    ** stocked int binary_function.
-                    */
+					/* 
+					** Result type, first argument type and second argument type are
+					** stocked int binary_function.
+					*/
 
-                    /*
-                    ** @brief Call the compare function to compare
-                    ** "x" and "y".
-                    **
-                    ** @param x,y values to compare.
-                    ** @return boolean from comparison function.
-                    */
-                    bool operator() (const value_type& x, const value_type& y) const
-                    { return (comp(x.first, y.first)); }
-            };
+					/*
+					** @brief Call the compare function to compare
+					** "x" and "y".
+					**
+					** @param x,y values to compare.
+					** @return boolean from comparison function.
+					*/
+					bool operator() (const value_type& x, const value_type& y) const
+					{ return (comp(x.first, y.first)); }
+			};
 
 			/*
 			** The fourth template parameter (Alloc)
 			*/
-            typedef Alloc  allocator_type;
+			typedef Alloc  allocator_type;
 
 
 			/*
@@ -87,7 +87,7 @@ namespace ft
 			** For the default allocator is a reference to value_type
 			** (value_type&)
 			*/
-            typedef typename allocator_type::reference   reference;
+			typedef typename allocator_type::reference   reference;
 
 			/*
 			** allocator_type::const_reference
@@ -98,7 +98,7 @@ namespace ft
 			** For the default allocator is a const reference to value_type
 			** (const value_type&)
 			*/
-            typedef typename allocator_type::const_reference const_reference;
+			typedef typename allocator_type::const_reference const_reference;
 
 			/*
 			** allocator_type::pointer
@@ -108,7 +108,7 @@ namespace ft
 			** For the default allocator is a pointer to value_type
 			** (value_type*)
 			*/
-            typedef typename allocator_type::pointer     pointer;
+			typedef typename allocator_type::pointer     pointer;
 
 			/*
 			** allocator_type::const_pointer
@@ -118,27 +118,27 @@ namespace ft
 			** For the default allocator is a const pointer to value_type
 			** (const value_type*)
 			*/
-            typedef typename allocator_type::const_pointer const_pointer;
+			typedef typename allocator_type::const_pointer const_pointer;
 
 			/*
 			** A bidirectional iterator to value_type
 			** That can read or modify any element stored.
 			** Convertible to const_iterator;
 			*/
-            typedef typename ft::Binary_search_tree<value_type, key_compare>::iterator iterator;
+			typedef typename ft::Binary_search_tree<value_type, key_compare>::iterator iterator;
 
 			/*
 			** A bidirectional iterator to const value_type
 			** That can read element stored.
 			*/
-            typedef typename ft::Binary_search_tree<value_type, key_compare>::const_iterator const_iterator;
+			typedef typename ft::Binary_search_tree<value_type, key_compare>::const_iterator const_iterator;
 
 			/*
 			** ft::reverse_iterator<iterator>
 			** That can read or modify any element in a reversed container.
 			** Used to iterate through the container in reverse.
 			*/
-            typedef typename ft::reverse_iterator<iterator>    reverse_iterator;
+			typedef typename ft::reverse_iterator<iterator>    reverse_iterator;
 
 			/*
 			** ft::reverse_iterator<const_iterator>
@@ -146,9 +146,9 @@ namespace ft
 			** Can't be used to modify, used to iterate through the
 			** the container in reverse.
 			*/
-            typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
-        
-            /*
+			typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
+		
+			/*
 			** A signed integral type:
 			** Usually the same as ptrdiff_t.
 			** Can represent the difference between iterators to the
@@ -156,14 +156,14 @@ namespace ft
 			** Can be described as the number of element between two pointers.
 			** (Pointer to an element contains its address).
 			*/
-            typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
+			typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
 
 			/*
 			** An unsigned integral type that can represent any
 			** non-negative value of difference_type
 			** Usually the same as size_t.
 			*/
-            typedef size_t size_type;
+			typedef size_t size_type;
 
 			/*
 			** @brief Default :
@@ -171,24 +171,24 @@ namespace ft
 			**
 			** @param alloc the Allocator type.
 			*/
-            explicit map (const key_compare& comp = key_compare(),
-                const allocator_type& alloc = allocator_type())
-            :
-                _alloc(alloc),
-                _comp(comp),
-                _bst()
-            {}
+			explicit map (const key_compare& comp = key_compare(),
+				const allocator_type& alloc = allocator_type())
+			:
+				_alloc(alloc),
+				_comp(comp),
+				_bst()
+			{}
 
-            // template <class InputIterator>
-            //     map (InputIterator first, InputIterator last,
-            //         const key_compare& comp = key_compare(),
-            //         const allocator_type& alloc = allocator_type());
-            
-            // map(const map& x);
+			// template <class InputIterator>
+			//     map (InputIterator first, InputIterator last,
+			//         const key_compare& comp = key_compare(),
+			//         const allocator_type& alloc = allocator_type());
+			
+			// map(const map& x);
 
-            // ~map();
+			// ~map();
 
-            // map& operator= (const map& x);
+			// map& operator= (const map& x);
 
 			/*
 			** @brief Return an iterator pointing on the first element
@@ -199,8 +199,8 @@ namespace ft
 			**
 			** @return The iterator to the first element.
 			*/
-            iterator begin()
-            { return (iterator(_bst._last_node->left, _bst._last_node)); }
+			iterator begin()
+			{ return (iterator(_bst._last_node->left, _bst._last_node)); }
 
 			/*
 			** @brief Return a const iterator pointing on the first element
@@ -211,8 +211,8 @@ namespace ft
 			**
 			** @return The const iterator to the first element.
 			*/
-            const_iterator begin() const
-            { return (const_iterator(_bst._last_node->left, _bst._last_node)); }
+			const_iterator begin() const
+			{ return (const_iterator(_bst._last_node->left, _bst._last_node)); }
 
 			/*
 			** @brief Return an iterator pointing on the past-the-end element
@@ -225,8 +225,8 @@ namespace ft
 			** @return The iterator to the past-the-end element or begin if
 			** the container is empty.
 			*/
-            iterator end()
-            { return (iterator(_bst._last_node, _bst._last_node)); }
+			iterator end()
+			{ return (iterator(_bst._last_node, _bst._last_node)); }
 
 			/*
 			** @brief Return a const iterator pointing on the past-the-end element
@@ -239,16 +239,20 @@ namespace ft
 			** @return The const iterator to the past-the-end element or begin if
 			** the container is empty.
 			*/
-            const_iterator end() const
-            { return (const_iterator(_bst._last_node, _bst._last_node)); }
+			const_iterator end() const
+			{ return (const_iterator(_bst._last_node, _bst._last_node)); }
 
-            // reverse_iterator rbegin();
+			// reverse_iterator rbegin()
+			// { return (reverse_iterator(this->end())); }
 
-            // const_reverse_iterator rbegin() const;
+			// const_reverse_iterator rbegin() const
+			// { return (const_reverse_iterator(this->end())); }
 
-            // reverse_iterator rend();
+			// reverse_iterator rend()
+			// { return (reverse_iterator(this->begin())); }
 
-            // const_reverse_iterator rend() const;
+			// const_reverse_iterator rend() const
+			// { return (const_reverse_iterator(this->begin())); }
 
 			/*
 			** @brief Returns whether the container is empty.
@@ -256,8 +260,8 @@ namespace ft
 			**
 			** @return true if the container size is 0, false otherwise.
 			*/
-            bool empty() const
-            { return (_bst._last_node->parent == _bst._last_node); }
+			bool empty() const
+			{ return (_bst._last_node->parent == _bst._last_node); }
 
 			/*
 			** @brief return the number of elements
@@ -265,17 +269,17 @@ namespace ft
 			**
 			** @return the number of elements.
 			*/
-            size_type size() const
-            {
-                size_type rtn = 0;
+			size_type size() const
+			{
+				size_type rtn = 0;
 
-                const_iterator beg = this->begin();
-                const_iterator end = this->end();
+				const_iterator beg = this->begin();
+				const_iterator end = this->end();
 
-                while (beg++ != end)
-                    rtn++;
-                return (rtn);
-            }
+				while (beg++ != end)
+					rtn++;
+				return (rtn);
+			}
 
 			/*
 			** @brief Returns the maximum potential number of elements the the
@@ -291,72 +295,173 @@ namespace ft
 			** container can hold.
 			** (An unsigned integral type)
 			*/
-            size_type max_size() const
-            { return (_bst.max_size()); }
+			size_type max_size() const
+			{ return (_bst.max_size()); }
 
-            // mapped_type& operator[] (const key_type& k);
+			/*
+			** @brief If "k" match with the key of an
+			** element in the container, this will return 
+			** the mapped value from this element. If "k" doesn't
+			** match, this will insert a new element with "k" like
+			** key and a mapped value initialized.
+			**
+			** @param k the key.
+			** @return an reference to the mapped value.
+			*/
+			mapped_type& operator[] (const key_type& k)
+			{ return ((*((this->insert(ft::make_pair(k , mapped_type()))).first)).second); } 
 
-            /*
-            ** @brief Insert a "value_type" (pair) in the container.
-            ** Can increase the container size.
-            **
-            ** @param val the pair to add to the container.
-            ** @return An pair containing in key the iterator
-            ** position of the inserted value and contain
-            ** a bool at true if a new element was inserted
-            ** or false if an equivalent key already exist, on value.
-            */
-            pair<iterator,bool> insert (const value_type& val)
-            {
-                return (_bst.insertPair(val));
-            }
+			/*
+			** @brief Insert a "value_type" (pair) in the container.
+			** Can increase the container size.
+			**
+			** @param val the pair to add to the container.
+			** @return An pair containing in key the iterator
+			** position of the inserted value and contain
+			** a bool at true if a new element was inserted
+			** or false if an equivalent key already exist, on value.
+			*/
+			pair<iterator,bool> insert (const value_type& val)
+			{ return (_bst.insertPair(val)); }
 
-            // iterator insert (iterator position, const value_type& val);
+			// iterator insert (iterator position, const value_type& val);
 
-            /*
-            template <class InputIterator>
-                void insert (InputIterator first, InputIterator last);
-            */
+			/*
+			template <class InputIterator>
+				void insert (InputIterator first, InputIterator last);
+			*/
 
-            // void erase (iterator position);
+			// void erase (iterator position);
 
-            // size_type erase (const key_type& k);
+			// size_type erase (const key_type& k);
    
-            //  void erase (iterator first, iterator last);
+			//  void erase (iterator first, iterator last);
 
-            // void swap (map& x);
+			// void swap (map& x);
 
-            // void clear();
+			// void clear();
 
-            // key_compare key_comp() const;
+			/*
+			** @brief Return a copy of the key comparison object.
+			**
+			** @param the key comparison object.
+			*/
+			key_compare key_comp() const
+			{ return (key_compare()); }
 
-            // value_compare value_comp() const;
+			/*
+			** @brief Return a copy of the value comparison object.
+			**
+			** @param the value comparison object.
+			*/
+			value_compare value_comp() const
+			{ return (value_compare(key_compare())); }
 
-            // iterator find (const key_type& k);
+			// iterator find (const key_type& k);
 
-            // const_iterator find (const key_type& k) const;
+			// const_iterator find (const key_type& k) const;
 
-            // size_type count (const key_type& k) const;
+			// size_type count (const key_type& k) const;
 
-            // iterator lower_bound (const key_type& k);
+			/*
+			** @brief Return a iterator pointing to the first element
+			** in the container who have a key that is not
+			** concidered to go before "k". If an element have "k"
+			** like key, give an iterator to it.
+			**
+			** @param k the key.
+			** @return the iterator.
+			*/
+			iterator lower_bound (const key_type& k)
+			{
+				iterator beg = this->begin();
+				iterator end = this->end();
 
-            // const_iterator lower_bound (const key_type& k) const;
+				while (beg != end)
+				{
+					if (_comp((*beg).first, k) == false)
+						break;
+					beg++;
+				}
+				return (beg);
+			}
 
-            // iterator upper_bound (const key_type& k);
+			/*
+			** @brief Return a const iterator pointing to the first element
+			** in the container who have a key that is not
+			** concidered to go before "k". If an element have "k"
+			** like key, give an const iterator to it.
+			**
+			** @param k the key.
+			** @return the iterator.
+			*/
+			const_iterator lower_bound (const key_type& k) const
+			{
+				const_iterator beg = this->begin();
+				const_iterator end = this->end();
 
-            // const_iterator upper_bound (const key_type& k) const;
+				while (beg != end)
+				{
+					if (_comp((*beg).first, k) == false)
+						break;
+					beg++;
+				}
+				return (beg);
+			}
 
-            // pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-            
-            // pair<iterator,iterator>             equal_range (const key_type& k);
+			/*
+			** @brief return an iterator pointing to the next element
+			** whose key is concidered to go after "k".
+			**
+			** @param k the key.
+			** @return the iterator.
+			*/
+			iterator upper_bound (const key_type& k)
+			{
+				iterator beg = this->begin();
+				iterator end = this->end();
 
-        private:
+				while (beg != end)
+				{
+					if (_comp(k, (*beg).first))
+						break;
+					beg++;
+				}
+				return (beg);
+			}
 
-            allocator_type                          _alloc;
-            Compare                                 _comp;
-            Binary_search_tree<value_type, Compare>  _bst;
+			/*
+			** @brief return an const iterator pointing to the next element
+			** whose key is concidered to go after "k".
+			**
+			** @param k the key.
+			** @return the const iterator.
+			*/
+			const_iterator upper_bound (const key_type& k) const
+			{
+				const_iterator beg = this->begin();
+				const_iterator end = this->end();
 
-    };
+				while (beg != end)
+				{
+					if (_comp(k, (*beg).first))
+						break;
+					beg++;
+				}
+				return (beg);
+			}
+
+			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+			
+			// pair<iterator,iterator>             equal_range (const key_type& k);
+
+		private:
+
+			allocator_type                          _alloc;
+			Compare                                 _comp;
+			Binary_search_tree<value_type, Compare>  _bst;
+
+	};
 }
 
 #endif
