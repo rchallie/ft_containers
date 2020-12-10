@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 11:10:54 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/03 15:36:42 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 21:34:35 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ namespace ft
 			** Detroy all elements in the container.
 			** Use the destructor of the underlying containter object.
 			*/
-			// ~stack()
-			// { this->~ct(); }
+			~stack()
+			{}
 
 			/*
 			** @brief Call member "empty()" of the underlying

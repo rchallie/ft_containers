@@ -6,7 +6,7 @@
 #    By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 23:23:13 by rchallie          #+#    #+#              #
-#    Updated: 2020/12/09 00:23:10 by rchallie         ###   ########.fr        #
+#    Updated: 2020/12/10 21:36:51 by rchallie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,12 +19,12 @@ SOURCES_FOLDER	= ./tester/
 
 SOURCES			=	main.cpp \
 					tester.cpp \
-					tester_map.cpp
-					# tester_list.cpp \
-					# tester_deque.cpp \
-					# tester_vector.cpp \
-					# tester_queue.cpp \
-					# tester_stack.cpp 
+					tester_map.cpp \
+					tester_list.cpp \
+					tester_deque.cpp \
+					tester_vector.cpp \
+					tester_queue.cpp \
+					tester_stack.cpp
 					
 # ==============================================================================
 

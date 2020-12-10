@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:14:11 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/10 01:57:41 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 21:35:37 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ namespace ft
 			/*
 			** allocator_type::reference
 			** A type provides a reference to an element stored in
-			** a list.
+			** the container.
 			** For the default allocator is a reference to value_type
 			** (value_type&)
 			*/
@@ -178,16 +178,66 @@ namespace ft
 				_bst()
 			{}
 
-			// template <class InputIterator>
-			//     map (InputIterator first, InputIterator last,
-			//         const key_compare& comp = key_compare(),
-			//         const allocator_type& alloc = allocator_type());
+			/*
+			** @brief Iterator:
+			** Construct a list container, of size last-first containing
+			** value of [first, last).
+			**
+			** @param first,last the range of content.
+			** @param alloc the allocator type.
+			*/
+			template <class InputIterator>
+				map (InputIterator first, InputIterator last,
+					const key_compare& comp = key_compare(),
+					const allocator_type& alloc = allocator_type(),
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+			:	
+				_alloc(alloc),
+				_comp(comp),
+				_bst()
+			{
+				bool is_valid;
+				if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+					throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+				this->insert(first, last);
+			}
 			
-			// map(const map& x);
+			/*
+			** @brief Copy :
+			** Construct the container to be a copy of "x".
+			**
+			** @param x the lsit to copy.
+			*/
+			map(const map& x)
+			:
+				_alloc(x._alloc),
+				_comp(x._comp),
+				_bst()
+			{
+				this->insert(x.begin(), x.end());
+			}
 
-			// ~map();
+			/*
+			** @brief Destructor:
+			** Clear the container and deallocate everythings.
+			*/
+			~map()
+			{ this->clear(); }
 
-			// map& operator= (const map& x);
+			/*
+			** @brief Assign "x" to this.
+			**
+			** @param x the list where get elements.
+			** @return this list.
+			*/
+			map& operator= (const map& x)
+			{
+				if (&x == this)
+					return (*this);
+				this->clear();
+				this->insert(x.begin(), x.end());
+				return (*this);
+			}
 
 			/*
 			** @brief Return an iterator pointing on the first element
@@ -241,17 +291,45 @@ namespace ft
 			const_iterator end() const
 			{ return (const_iterator(_bst._last_node, _bst._last_node)); }
 
-			// reverse_iterator rbegin()
-			// { return (reverse_iterator(this->end())); }
+			/*
+			** @brief Give a reverse iterator pointing to the last element
+			** in the container (this->end() - 1).
+			** This is a reversed bidirectional iterator.
+			**
+			** @return A reverse Iterator to the reverse beginning of the container.
+			*/
+			reverse_iterator rbegin()
+			{ return (reverse_iterator(this->end())); }
 
-			// const_reverse_iterator rbegin() const
-			// { return (const_reverse_iterator(this->end())); }
+			/*
+			** @brief Give a const reverse iterator pointing to the last 
+			** element in the container (this->end() - 1).
+			** This is a constant reversed bidirectional iterator.
+			**
+			** @return A const reverse Iterator to the reverse beginning of the container.
+			*/
+			const_reverse_iterator rbegin() const
+			{ return (const_reverse_iterator(this->end())); }
 
-			// reverse_iterator rend()
-			// { return (reverse_iterator(this->begin())); }
+			/*
+			** @brief Give a reverse iterator point to the
+			** theorical element preceding the first element
+			** in the container.
+			**
+			** @return the reverse iterator.
+			*/
+			reverse_iterator rend()
+			{ return (reverse_iterator(this->begin())); }
 
-			// const_reverse_iterator rend() const
-			// { return (const_reverse_iterator(this->begin())); }
+			/*
+			** @brief Give a const reverse iterator point to the
+			** theorical element preceding the first element
+			** in the container. 
+			**
+			** @return the const reverse iterator.
+			*/
+			const_reverse_iterator rend() const
+			{ return (const_reverse_iterator(this->begin())); }
 
 			/*
 			** @brief Returns whether the container is empty.
@@ -269,16 +347,7 @@ namespace ft
 			** @return the number of elements.
 			*/
 			size_type size() const
-			{
-				size_type rtn = 0;
-
-				const_iterator beg = this->begin();
-				const_iterator end = this->end();
-
-				while (beg++ != end)
-					rtn++;
-				return (rtn);
-			}
+			{ return (_bst._last_node->value.first); }
 
 			/*
 			** @brief Returns the maximum potential number of elements the the
@@ -308,7 +377,14 @@ namespace ft
 			** @return an reference to the mapped value.
 			*/
 			mapped_type& operator[] (const key_type& k)
-			{ return ((*((this->insert(ft::make_pair(k , mapped_type()))).first)).second); } 
+			{
+				iterator tmp = this->find(k);
+
+				if (tmp == this->end())
+					this->insert(ft::make_pair(k, mapped_type()));
+				tmp = this->find(k);
+				return ((*tmp).second);
+			} 
 
 			/*
 			** @brief Insert a "value_type" (pair) in the container.
@@ -341,9 +417,25 @@ namespace ft
 			}
 
 			/*
-			template <class InputIterator>
-				void insert (InputIterator first, InputIterator last);
+			** @brief Insert element in range from ["first" to
+			** "last"). Can increase the size of
+			** the container. Throw if the iterator given is not valid.
+			**
+			** @param first the first element in the range.
+			** @param last the last element in the range.
 			*/
+			template <class InputIterator>
+				void insert (InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+			{
+				bool is_valid;
+				if (!(is_valid = ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+					throw (ft::InvalidIteratorException<typename ft::is_input_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+
+				difference_type n = ft::distance(first, last);
+				while (n--)
+					this->insert(*(first++));
+			}
 
 			/*
 			** @brief Remove the element in the container at the iterator
@@ -440,7 +532,24 @@ namespace ft
 			const_iterator find (const key_type& k) const
 			{ return (const_iterator(_bst.searchByKey(ft::make_pair(k, mapped_type())), _bst._last_node)); }
 
-			// size_type count (const key_type& k) const;
+			/*
+			** @brief Search in the countair if an element
+			** has "k" like key.
+			**
+			** @param k the key to find.
+			** @return 1 if the container have an element
+			** with k like key, 0 otherwise.
+			*/
+			size_type count (const key_type& k) const
+			{
+				const_iterator beg = this->begin();
+				const_iterator end = this->end();
+
+				while (beg != end)
+					if ((*(beg++)).first == k)
+						return (1);
+				return (0);
+			}
 
 			/*
 			** @brief Return a iterator pointing to the first element
@@ -508,9 +617,31 @@ namespace ft
 			const_iterator upper_bound (const key_type& k) const
 			{ return (const_iterator(this->upper_bound(k))); }
 
-			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-			
-			// pair<iterator,iterator>             equal_range (const key_type& k);
+			/*
+			** @brief Return all the element that have "k" like key.
+			** Like all element in map are unique, that give a pair
+			** that contain two const iterator. The first iterator
+			** pointing to the lower bound of "k" and the second pointing
+			** to the upper bound of "k".
+			**
+			** @param k the key.
+			** @return the pair containing the two const iterator.
+			*/
+			ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const
+			{ return (ft::make_pair(this->lower_bound(k), this->upper_bound(k))); }
+
+			/*
+			** @brief Return the element that have "k" like key.
+			** Like all element in map are unique, that give a pair
+			** that contain two iterator. The first iterator
+			** pointing to the lower bound of "k" and the second pointing
+			** to the upper bound of "k".
+			**
+			** @param k the key.
+			** @return the pair containing the two iterator.
+			*/
+			ft::pair<iterator, iterator> equal_range (const key_type& k)
+			{ return (ft::make_pair(this->lower_bound(k), this->upper_bound(k))); }
 
 		private:
 

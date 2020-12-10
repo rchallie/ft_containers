@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:22:36 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/10 00:18:25 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 17:39:37 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,21 @@ namespace ft
 	{
 		public :
 
+			typedef typename T::value_type    value_type;
+
 			/* The iterator category */
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category iterator_category;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::iterator_category iterator_category;
 
 			/* The value_type pointed by the iterator (BST)*/
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type    value_type;
 
 			/* The difference type */
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type   difference_type;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::difference_type   difference_type;
 
 			/* The pointer to the value */
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer   pointer;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::pointer   pointer;
 
 			/* The reference to the value */
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference reference;
-
-			typedef typename value_type::value_type sub_value_value_type;
-			
-			typedef sub_value_value_type& sub_value_reference;
-
-			typedef sub_value_value_type* sub_value_pointer;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::reference reference;
 
 			/*
 			** @brief Default.
@@ -56,7 +51,7 @@ namespace ft
 			/*
 			** @brief Create an iterator on "node_p".
 			*/
-			BST_iterator(pointer node_p, pointer last_node,
+			BST_iterator(T * node_p, T * last_node,
 						const Compare& comp = Compare())
 			:
 				_node(node_p),
@@ -130,7 +125,7 @@ namespace ft
 			**
 			** @return the const reference.
 			*/
-			sub_value_reference operator*() const
+			reference operator*() const
 			{ return (this->_node->value); }
 
 			/*
@@ -140,7 +135,7 @@ namespace ft
 			**
 			** @return the const pointer.
 			*/
-			sub_value_pointer operator->() const
+			pointer operator->() const
 			{ return (&this->_node->value); }
 
 			/*
@@ -151,7 +146,7 @@ namespace ft
 			*/
 			BST_iterator& operator++(void)
 			{
-				pointer cursor = _node;
+				T* cursor = _node;
 
 				if (_node->right == _last_node)
 				{
@@ -200,7 +195,7 @@ namespace ft
 			*/
 			BST_iterator& operator--(void)
 			{
-				pointer cursor = _node;
+				T* cursor = _node;
 
 				if (_node->left == _last_node)
 				{
@@ -241,8 +236,8 @@ namespace ft
 				return (tmp);
 			}            
 
-			pointer     _node;
-			pointer     _last_node;
+			T *			_node;
+			T *			_last_node;
 			Compare     _comp;
 	};
 
@@ -251,27 +246,23 @@ namespace ft
 	{
 		public :
 
+			typedef typename T::value_type    value_type;
+
 			/* The iterator category */
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category iterator_category;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::iterator_category iterator_category;
 
 			/* The value_type pointed by the iterator (BST)*/
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type    value_type;
 
 			/* The difference type */
-			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type   difference_type;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::difference_type   difference_type;
 
 			/* The pointer to the value */
-			typedef const typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer   pointer;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::pointer   pointer;
 
 			/* The reference to the value */
-			typedef const typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference reference;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::reference reference;
 
-			typedef typename value_type::value_type sub_value_value_type;
 			
-			typedef sub_value_value_type& sub_value_reference;
-
-			typedef sub_value_value_type* sub_value_pointer;
-
 			/*
 			** @brief Default.
 			** Create an iterator that pointing to inisialized 
@@ -368,7 +359,7 @@ namespace ft
 			**
 			** @return the const reference.
 			*/
-			sub_value_reference operator*() const
+			reference operator*() const
 			{ return (this->_node->value); }
 
 			/*
@@ -378,7 +369,7 @@ namespace ft
 			**
 			** @return the const pointer.
 			*/
-			sub_value_pointer operator->() const
+			pointer operator->() const
 			{ return (&this->_node->value); }
 
 			/*

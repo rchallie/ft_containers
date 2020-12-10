@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/07 12:15:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/03 21:55:06 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 21:35:11 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ namespace ft
 			** Detroy all elements in the container.
 			** Use the destructor of the underlying containter object.
 			*/
-			// ~queue()
-			// { this->~ct(); }
+			~queue()
+			{}
 
 			/*
 			** @brief Call member "empty()" of the underlying

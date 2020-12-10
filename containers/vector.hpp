@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/18 12:45:54 by excalibur         #+#    #+#             */
-/*   Updated: 2020/11/30 17:31:47 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 21:34:57 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ namespace ft
             ** Destroy all elements in the container and deallocate
             ** the container capacity.
             */ 
-            virtual ~vector()
+            ~vector()
             {
                 this->clear();
                 _alloc.deallocate(_start, this->capacity());

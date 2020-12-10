@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/03 22:01:32 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/08 19:43:52 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 17:41:09 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,7 +287,7 @@ namespace ft
 			** in the container (this->end() - 1).
 			** This is a reversed bidirectional iterator.
 			**
-			** @return A reverse Iterator to the reverse beginning of the.
+			** @return A reverse Iterator to the reverse beginning of the container.
 			*/
 			reverse_iterator rbegin() { return (reverse_iterator(end())); }
 
@@ -296,7 +296,7 @@ namespace ft
 			** element in the container (this->end() - 1).
 			** This is a constant reversed bidirectional iterator.
 			**
-			** @return A const reverse Iterator to the reverse beginning of the.
+			** @return A const reverse Iterator to the reverse beginning of the container.
 			*/
 			const_reverse_iterator rbegin() const { return (const_reverse_iterator(end())); }
 
@@ -580,8 +580,8 @@ namespace ft
 			}
 
 			/*
-			** @brief Removes (destroy) all elements from the
-			** container. Final size is 0.
+			** @brief Removes (destroy) & deallocate
+			** all elements from the container. Final size is 0.
 			*/
 			void clear()
 			{

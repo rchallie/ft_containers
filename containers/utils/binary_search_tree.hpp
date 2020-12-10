@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:12:26 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/10 01:58:38 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 21:32:14 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,15 @@ namespace ft
 			}
 
 			/*
+			** It's at that use the tree to delete all nodes.
+			*/
+			~Binary_search_tree ()
+			{
+				_node_alloc.destroy(_last_node);
+				_node_alloc.deallocate(_last_node, 1);	
+			}
+
+			/*
 			** @brief Insert a new node that contain "to_insert".
 			*/
 			ft::pair<iterator, bool> insertPair(value_type to_insert)
@@ -115,7 +124,7 @@ namespace ft
 				
 				_last_node->left = _BST_get_lower_node(_last_node->parent);
 				_last_node->right = _BST_get_higher_node(_last_node->parent);
-
+				_last_node->value.first += 1;
 				return (ft::make_pair(iterator(new_node, _last_node), true));
 			}
 
@@ -189,6 +198,10 @@ namespace ft
 				return (root);
 			}
 
+			/*
+			** @brief Used to re set link between node is necessary, and
+			** delete node.
+			*/
 			void _replaceNodeInParent(node_pointer node, node_pointer new_node)
 			{
 				if (node->parent != _last_node)
@@ -203,16 +216,21 @@ namespace ft
 				}
 				else
 					_last_node->parent = new_node;
-					
+
 				_last_node->left = _BST_get_lower_node(_last_node->parent);
 				_last_node->right = _BST_get_higher_node(_last_node->parent);
-					
-				_node_alloc.destroy(node);
-				_node_alloc.deallocate(node, 1);
+				_last_node->value.first -= 1;
 				
 				new_node->parent = node->parent;
+				
+				_node_alloc.destroy(node);
+				_node_alloc.deallocate(node, 1);
 			}
 
+			/*
+			** @brief used to move replacer node and re set all link between
+			** node where it's necessary and delete to_remove.
+			*/
 			void _replaceDoubleChildren(node_pointer& to_remove, node_pointer new_node)
 			{
 				if (new_node->parent != _last_node)
@@ -251,6 +269,7 @@ namespace ft
 
 				_last_node->left = _BST_get_lower_node(_last_node->parent);
 				_last_node->right = _BST_get_higher_node(_last_node->parent);
+				_last_node->value.first -= 1;
 
 				_node_alloc.destroy(to_remove);
 				_node_alloc.deallocate(to_remove, 1);
