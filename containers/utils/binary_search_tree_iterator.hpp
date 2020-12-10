@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:22:36 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/09 01:00:19 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 00:18:25 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,8 @@ namespace ft
 						cursor = cursor->parent;
 					_node = cursor;
 				}
+				else if (cursor == _last_node)
+					_node = _last_node->right;
 				else
 				{
 					cursor = _node->right;
@@ -209,7 +211,7 @@ namespace ft
 					_node = cursor;
 				}
 				else if (cursor == _last_node)
-					operator++();
+					_node = _last_node->right;
 				else
 				{
 					cursor = _node->left;
@@ -397,6 +399,8 @@ namespace ft
 						cursor = cursor->parent;
 					_node = cursor;
 				}
+				else if (cursor == _last_node)
+					_node = _last_node->right;
 				else
 				{
 					cursor = _node->right;
@@ -445,7 +449,7 @@ namespace ft
 					_node = cursor;
 				}
 				else if (cursor == _last_node)
-					operator++();
+					_node = _last_node->right;
 				else
 				{
 					cursor = _node->left;

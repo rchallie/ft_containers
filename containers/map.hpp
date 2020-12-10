@@ -6,7 +6,7 @@
 /*   By: rchallie <rchallie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 17:14:11 by rchallie          #+#    #+#             */
-/*   Updated: 2020/12/09 01:45:40 by rchallie         ###   ########.fr       */
+/*   Updated: 2020/12/10 01:57:41 by rchallie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ namespace ft
 			** The fourth template parameter (Alloc)
 			*/
 			typedef Alloc  allocator_type;
-
 
 			/*
 			** allocator_type::reference
@@ -324,22 +323,84 @@ namespace ft
 			pair<iterator,bool> insert (const value_type& val)
 			{ return (_bst.insertPair(val)); }
 
-			// iterator insert (iterator position, const value_type& val);
+			/*
+			** @brief Use "position" like an hint to know
+			** where "val" can be insert. Like this information
+			** can be wrong and that the allocation system is
+			** based on a strict stoage, "position" is not used.
+			**
+			** @param position hint.
+			** @param val the pair to insert in the container.
+			** @return an iterator pointing to the newly inserted
+			** value or to the already existed value.
+			*/
+			iterator insert (iterator position, const value_type& val)
+			{
+				(void)position;
+				return (_bst.insertPair(val).first);
+			}
 
 			/*
 			template <class InputIterator>
 				void insert (InputIterator first, InputIterator last);
 			*/
 
-			// void erase (iterator position);
+			/*
+			** @brief Remove the element in the container at the iterator
+			** position. Reduce the size of the container.
+			**
+			** @param position the iterator pointing to the element to remove.
+			*/
+			void erase (iterator position)
+			{ this->erase((*position).first); }
 
-			// size_type erase (const key_type& k);
-   
-			//  void erase (iterator first, iterator last);
+			/*
+			** @brief Remove the element in the container that has like key
+			** "k". Reduce the size of the container.
+			**
+			** @param k the key.
+			** @return The number of element removed, 0 if no element have "k"
+			** like key, 1 otherwise.
+			*/
+			size_type erase (const key_type& k)
+			{
+				if (this->find(k) == this->end())
+					return (0);
+				_bst.removeByKey(ft::make_pair(k, mapped_type()));
+				return (1);
+			}
 
-			// void swap (map& x);
+			/*
+			** @brief Remove a range [first, last) element of the container.
+			** The container size is reduced by the number of element
+			** int the range.
+			**
+			** @param first,last the range.
+			*/
+			void erase (iterator first, iterator last)
+			{
+				while (first != last)
+					this->erase((*(first++)).first);
+			}
 
-			// void clear();
+			/*
+			** @brief Exchanges the content with "x" content.
+			** "x" is of same type. Elements of "x" are elements
+			** of this container and elements of this are of "x".
+			** All iterators, references, pointer on the swaped
+			** objects stay valid.
+			**
+			** @param x the container to swap.
+			*/
+			void swap (map& x)
+			{ _bst.swap(x._bst); }
+
+			/*
+			** @brief Removes (destroy) & deallocate
+			** all elements from the container. Final size is 0.
+			*/
+			void clear()
+			{ this->erase(this->begin(), this->end()); }
 
 			/*
 			** @brief Return a copy of the key comparison object.
@@ -357,9 +418,27 @@ namespace ft
 			value_compare value_comp() const
 			{ return (value_compare(key_compare())); }
 
-			// iterator find (const key_type& k);
+			/*
+			** @brief Search in the container to find the pair
+			** that have like key "k".
+			**
+			** @param k the key to find.
+			** @return an iterator pointing to the pair object that
+			** have like key "k". 
+			*/
+			iterator find (const key_type& k)
+			{ return (iterator(_bst.searchByKey(ft::make_pair(k, mapped_type())), _bst._last_node)); }
 
-			// const_iterator find (const key_type& k) const;
+			/*
+			** @brief Search in the container to find the pair
+			** that have like key "k".
+			**
+			** @param k the key to find.
+			** @return an const iterator pointing to the pair object that
+			** have like key "k". 
+			*/
+			const_iterator find (const key_type& k) const
+			{ return (const_iterator(_bst.searchByKey(ft::make_pair(k, mapped_type())), _bst._last_node)); }
 
 			// size_type count (const key_type& k) const;
 
@@ -396,18 +475,7 @@ namespace ft
 			** @return the iterator.
 			*/
 			const_iterator lower_bound (const key_type& k) const
-			{
-				const_iterator beg = this->begin();
-				const_iterator end = this->end();
-
-				while (beg != end)
-				{
-					if (_comp((*beg).first, k) == false)
-						break;
-					beg++;
-				}
-				return (beg);
-			}
+			{ return (const_iterator(this->lower_bound(k))); }
 
 			/*
 			** @brief return an iterator pointing to the next element
@@ -438,18 +506,7 @@ namespace ft
 			** @return the const iterator.
 			*/
 			const_iterator upper_bound (const key_type& k) const
-			{
-				const_iterator beg = this->begin();
-				const_iterator end = this->end();
-
-				while (beg != end)
-				{
-					if (_comp(k, (*beg).first))
-						break;
-					beg++;
-				}
-				return (beg);
-			}
+			{ return (const_iterator(this->upper_bound(k))); }
 
 			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			
